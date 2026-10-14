@@ -4,7 +4,7 @@ import { catchError, EMPTY } from 'rxjs';
 import { ProfileCardComponent, type PlayerProfile } from './profile-card/profile-card.component';
 import { SoldiersComponent } from './soldiers/soldiers.component';
 import { Bf6StatsService, type Bf6Stats } from './services/bf6-stats.service';
-import { compareDailyStats } from './services/bf6-stats-history';
+import { removeLegacyStatsHistory } from './services/bf6-stats-history';
 import { VideosComponent } from './videos/videos.component';
 
 @Component({
@@ -33,11 +33,11 @@ export class AppComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    removeLegacyStatsHistory();
     for (const player of this.players.filter(player => !player.privateProfile)) {
       this.statsService.getStats(player.name, player.id).pipe(
         catchError(() => EMPTY), takeUntilDestroyed(this.destroyRef)
       ).subscribe(stats => {
-        compareDailyStats(player.name, stats);
         this.recordStats({ playerId: player.id, stats });
       });
     }

@@ -4,9 +4,8 @@ export const HISTORY_METRICS = ['killDeath', 'hoursPlayed', 'matchesPlayed', 'ac
 export type HistoryMetric = typeof HISTORY_METRICS[number];
 type Values = Record<HistoryMetric, number | null>;
 export type StatsSnapshot = { savedAt: string; values: Values };
-type History = { version: 2; snapshots: StatsSnapshot[] };
 export type StatsComparison = { baseline: StatsSnapshot | null; savedAt: string };
-type StorageAccess = Pick<Storage, 'getItem' | 'setItem'>;
+type LegacyStorage = Pick<Storage, 'length' | 'key' | 'removeItem'>;
 
 const sharedHistory = new Map<string, StatsSnapshot[]>();
 
@@ -37,60 +36,32 @@ function calendarDay(date: Date): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 }
 
-function storedSnapshots(name: string, target: StorageAccess): StatsSnapshot[] {
-  try {
-    const raw = target.getItem(`bf6-stats-history:v2:${encodeURIComponent(name)}`);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return parsed?.version === 2 && Array.isArray(parsed.snapshots) ? parsed.snapshots.filter(validSnapshot) : [];
-    }
-    const legacy = JSON.parse(target.getItem(`bf6-stats-history:v1:${encodeURIComponent(name)}`) ?? 'null');
-    return [legacy?.previous, legacy?.latest].filter(validSnapshot);
-  } catch { return []; }
-}
-
-/** Read the daily history without creating or changing stored readings. */
-export function getDailyStatsHistory(name: string, now = new Date(), storage?: StorageAccess): StatsSnapshot[] {
-  try {
-    const daily = new Map<string, StatsSnapshot>();
-    let local: StatsSnapshot[] = [];
-    try { local = storedSnapshots(name, storage ?? globalThis.localStorage); } catch { /* Shared history works without local storage. */ }
-    for (const snapshot of [...(sharedHistory.get(name) ?? []), ...local].sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
-      if (Date.parse(snapshot.savedAt) <= now.getTime()) daily.set(calendarDay(new Date(snapshot.savedAt)), snapshot);
-    }
-    return [...daily.values()];
-  } catch { return []; }
-}
-
-/** Retain one live snapshot per Berlin calendar day; compare with the latest earlier day. */
-export function compareDailyStats(name: string, stats: Bf6Stats, now = new Date(), storage?: StorageAccess): StatsComparison | null {
-  if (stats.killDeath === 0 && !(stats.hoursPlayed && stats.hoursPlayed > 0) && !(stats.matchesPlayed && stats.matchesPlayed > 0)) return null;
+/** Retire only the old BF6 history keys, preserving other data on this origin. */
+export function removeLegacyStatsHistory(storage?: LegacyStorage): void {
   try {
     const target = storage ?? globalThis.localStorage;
-    const key = `bf6-stats-history:v2:${encodeURIComponent(name)}`;
-    const raw = target.getItem(key);
-    let snapshots = storedSnapshots(name, target);
-    const today = calendarDay(now);
-    const daily = new Map<string, StatsSnapshot>();
-    for (const snapshot of snapshots.sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
-      if (Date.parse(snapshot.savedAt) <= now.getTime()) daily.set(calendarDay(new Date(snapshot.savedAt)), snapshot);
+    const keys: string[] = [];
+    for (let index = 0; index < target.length; index++) {
+      const key = target.key(index);
+      if (key?.startsWith('bf6-stats-history:v1:') || key?.startsWith('bf6-stats-history:v2:')) keys.push(key);
     }
-    // An API fallback must never be saved as today's live reading.
-    if (!stats.capturedAt) daily.set(today, {
-      savedAt: now.toISOString(), values: Object.fromEntries(HISTORY_METRICS.map(key => [key, stats[key]])) as Values
-    });
-    snapshots = [...daily.values()].sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt));
-    const baseline = getDailyStatsHistory(name, now, target).filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < today).at(-1) ?? null;
-    const serialized = JSON.stringify({ version: 2, snapshots } satisfies History);
-    if (serialized !== raw && (snapshots.length || raw)) target.setItem(key, serialized);
-    // The bundled fallback can be older than the baseline. Comparing it would
-    // incorrectly report lost matches, hours or shots during an API outage.
-    if (stats.capturedAt) return null;
-    return { baseline, savedAt: daily.get(today)?.savedAt ?? stats.capturedAt ?? now.toISOString() };
-  } catch {
-    // Disabled storage or a full quota must not prevent displaying live statistics.
-    if (stats.capturedAt) return null;
-    const baseline = getDailyStatsHistory(name, now, storage).filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < calendarDay(now)).at(-1) ?? null;
-    return baseline ? { baseline, savedAt: now.toISOString() } : null;
+    for (const key of keys) target.removeItem(key);
+  } catch { /* Restricted browser storage must not prevent the page from loading. */ }
+}
+
+/** Read the published daily history; live browser requests never change it. */
+export function getDailyStatsHistory(name: string, now = new Date()): StatsSnapshot[] {
+  const daily = new Map<string, StatsSnapshot>();
+  for (const snapshot of [...(sharedHistory.get(name) ?? [])].sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
+    if (Date.parse(snapshot.savedAt) <= now.getTime()) daily.set(calendarDay(new Date(snapshot.savedAt)), snapshot);
   }
+  return [...daily.values()];
+}
+
+/** Compare live statistics with the latest published day before today. */
+export function compareDailyStats(name: string, stats: Bf6Stats, now = new Date()): StatsComparison | null {
+  // A bundled API fallback must not report changes against a newer daily reading.
+  if (stats.capturedAt || (stats.killDeath === 0 && !(stats.hoursPlayed && stats.hoursPlayed > 0) && !(stats.matchesPlayed && stats.matchesPlayed > 0))) return null;
+  const baseline = getDailyStatsHistory(name, now).filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < calendarDay(now)).at(-1) ?? null;
+  return { baseline, savedAt: now.toISOString() };
 }

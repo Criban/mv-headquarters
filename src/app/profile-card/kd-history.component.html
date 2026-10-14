@@ -26,7 +26,7 @@
       <input id="kd-history-day" type="range" min="0" [max]="chart().points.length - 1" step="1" [value]="index()" [attr.aria-valuetext]="formatDate(point.savedAt) + ': ' + formatValue(point.value) + ' K/D'" (input)="selectSlider($event)" />
     } @else { <p class="empty-note">Der erste Tageswert ist gespeichert. Ab einem weiteren Tag entsteht hier dein Verlauf.</p> }
   } @else {
-    <div class="empty-state"><h3>Noch kein Verlauf vorhanden</h3><p>Sobald Live-Statistiken geladen werden, wird der erste Tageswert gespeichert.</p></div>
+    <div class="empty-state"><h3>Noch kein Verlauf vorhanden</h3><p>Nach der ersten automatischen Erfassung erscheint hier der Tageswert.</p></div>
   }
-  <p id="kd-history-note" class="history-note">Ein Wert pro Tag und Spieler aus der gemeinsamen Historie, ergänzt durch Live-Abrufe in diesem Browser. Tage ohne erfolgreiche Erfassung bleiben frei; API-Ersatzdaten erzeugen keinen neuen Tageswert.</p>
+  <p id="kd-history-note" class="history-note">Ein Wert pro Tag und Spieler aus der gemeinsamen Historie. Die automatische Erfassung aktualisiert den heutigen Stand; Tage ohne erfolgreiche Erfassung bleiben frei.</p>
 </dialog>
