@@ -51,7 +51,7 @@ assert.deepEqual(getDailyStatsHistory('A', now), []);
 
 const chartSource = await readFile(new URL('../src/app/profile-card/kd-history-chart.ts', import.meta.url), 'utf8');
 const chartCompiled = ts.transpileModule(chartSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const { kdHistoryChart } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
+const { kdHistoryChart, kdHistoryReadings, historyDateKey } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
 assert.deepEqual(kdHistoryChart([]).points, []);
 const single = kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: initial }]);
 assert.equal(single.points[0].x, 360, 'One reading is centered');
@@ -62,4 +62,26 @@ assert.ok(plot.points[2].y < plot.points[0].y && plot.points[0].y < plot.points[
 assert.ok(plot.points.every(point => Number.isFinite(point.y) && point.y >= 32 && point.y <= 244));
 assert.equal(kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: { ...initial, killDeath: null } }]).points.length, 0);
 assert.ok(kdHistoryChart([1, 2].map(day => ({ savedAt: `2026-10-0${day}T10:00:00Z`, values: { ...initial, killDeath: 0 } }))).points.every(point => Number.isFinite(point.y)), 'Constant zero readings have a valid scale');
-console.log('PASS shared daily history, comparisons, fallback, Berlin midnight/DST, selective legacy cleanup and K/D chart.');
+const periodNow = new Date('2026-10-14T12:00:00Z');
+const periodReadings = [
+  snapshot('2025-10-31T12:00:00Z'), snapshot('2025-11-01T12:00:00Z'),
+  snapshot('2026-09-14T21:59:00Z'), snapshot('2026-09-14T22:00:00Z'),
+  snapshot('2026-09-30T21:30:00Z'), snapshot('2026-09-30T22:30:00Z'),
+  snapshot('2026-10-14T10:00:00Z'), snapshot('2026-10-15T10:00:00Z'),
+  snapshot('2026-10-14T11:00:00Z', { ...initial, killDeath: null }), snapshot('invalid')
+];
+const originalReadings = JSON.stringify(periodReadings);
+assert.deepEqual(kdHistoryReadings(periodReadings, '30', null, periodNow).map(r => r.savedAt), [
+  '2026-09-14T22:00:00Z', '2026-09-30T21:30:00Z', '2026-09-30T22:30:00Z', '2026-10-14T10:00:00Z'
+], '30 calendar days include Berlin midnight and exclude old, future and invalid values');
+assert.deepEqual(kdHistoryReadings([...periodReadings].reverse(), 'year', null, periodNow).map(r => r.savedAt), [
+  '2025-11-01T12:00:00Z', '2026-09-30T21:30:00Z', '2026-10-14T10:00:00Z'
+], 'Year includes current and previous eleven months, picking the newest valid value per Berlin month');
+assert.equal(kdHistoryReadings(periodReadings, 'all', null, periodNow).length, 4, 'All retains older months');
+assert.equal(kdHistoryReadings(periodReadings, 'all', '2026-09', periodNow).length, 3, 'Month detail restores every saved day in that Berlin month');
+assert.equal(JSON.stringify(periodReadings), originalReadings, 'Aggregation preserves source history');
+assert.equal(historyDateKey('2026-09-30T22:30:00Z'), '2026-10-01');
+assert.deepEqual(kdHistoryReadings([], 'year', null, periodNow), []);
+const yearReadings = Array.from({ length: 24 }, (_, i) => snapshot(new Date(Date.UTC(2025, i, 15, 12)).toISOString()));
+assert.equal(kdHistoryReadings(yearReadings, 'year', null, new Date('2026-12-31T12:00:00Z')).length, 12);
+console.log('PASS shared daily history, comparisons, fallback, Berlin midnight/DST, selective legacy cleanup, K/D chart and period aggregation.');
