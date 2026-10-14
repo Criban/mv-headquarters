@@ -22,14 +22,41 @@ export function normalizeReading(player) {
   return { savedAt: new Date(player.capturedAt).toISOString(), values };
 }
 
+export function validateImportedReading(reading) {
+  if (!reading || typeof reading.savedAt !== 'string' || !Number.isFinite(Date.parse(reading.savedAt))) throw new Error('Invalid imported date');
+  const keys = ['killDeath', 'hoursPlayed', 'matchesPlayed', 'accuracy', 'shotsFired'];
+  if (!reading.values || keys.some(key => reading.values[key] !== null && (typeof reading.values[key] !== 'number' || !Number.isFinite(reading.values[key]) || reading.values[key] < 0))) throw new Error('Invalid imported metrics');
+  if (reading.values.killDeath === null || (reading.values.accuracy !== null && reading.values.accuracy > 100)) throw new Error('Invalid imported K/D or accuracy');
+  return { savedAt: new Date(reading.savedAt).toISOString(), values: Object.fromEntries(keys.map(key => [key, reading.values[key]])) };
+}
+
+export async function importBrowserHistory(sql, history) {
+  if (history?.version !== 2 || !history.players || typeof history.players !== 'object' || Array.isArray(history.players)) throw new Error('Invalid import format');
+  const entries = Object.entries(history.players).flatMap(([name, readings]) => {
+    if (!['MV-8lackh4wk', 'MV-Criban', 'MV-54bI44'].includes(name) || !Array.isArray(readings)) throw new Error('Invalid imported player');
+    return readings.map(reading => [name, validateImportedReading(reading)]);
+  }).sort((a, b) => Date.parse(b[1].savedAt) - Date.parse(a[1].savedAt));
+  // Local history has no full API response. Store just its genuine metrics.
+  // Existing database days take priority, including today's automatic capture.
+  await sql.transaction([
+    sql`ALTER TABLE bf6_daily_stats ALTER COLUMN snapshot DROP NOT NULL`,
+    ...entries.map(([name, reading]) => sql`INSERT INTO bf6_daily_stats (player_name, day, captured_at, metrics, snapshot)
+      VALUES (${name}, (${reading.savedAt}::timestamptz AT TIME ZONE 'Europe/Berlin')::date,
+        ${reading.savedAt}::timestamptz, ${JSON.stringify(reading.values)}::jsonb, NULL)
+      ON CONFLICT (player_name, day) DO NOTHING`)
+  ]);
+}
+
 export function buildExports(rows, now = new Date()) {
   const players = Object.create(null);
   const latest = Object.create(null);
   for (const row of rows) {
-    const reading = normalizeReading(row.snapshot);
+    const reading = row.metrics
+      ? validateImportedReading({ savedAt: new Date(row.captured_at).toISOString(), values: row.metrics })
+      : normalizeReading(row.snapshot);
     if (Date.parse(reading.savedAt) > now.getTime()) continue;
     (players[row.player_name] ??= []).push(reading);
-    if (!latest[row.player_name] || Date.parse(reading.savedAt) > Date.parse(latest[row.player_name].capturedAt)) latest[row.player_name] = row.snapshot;
+    if (row.snapshot && (!latest[row.player_name] || Date.parse(row.snapshot.capturedAt) > Date.parse(latest[row.player_name].capturedAt))) latest[row.player_name] = row.snapshot;
   }
   for (const readings of Object.values(players)) readings.sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt));
   return { history: { version: 2, generatedAt: now.toISOString(), players }, snapshot: { players: latest } };
@@ -47,19 +74,19 @@ export async function saveSnapshots(sql, snapshot) {
 }
 
 async function exportHistory(sql) {
-  const rows = await sql`SELECT player_name, snapshot FROM bf6_daily_stats ORDER BY captured_at`;
+  const rows = await sql`SELECT player_name, captured_at, metrics, snapshot FROM bf6_daily_stats ORDER BY captured_at`;
   const exported = buildExports(rows);
   const destination = fileURLToPath(new URL('../public/data/bf6-stats-history.json', import.meta.url));
   await mkdir(fileURLToPath(new URL('../public/data/', import.meta.url)), { recursive: true });
   await writeFile(destination + '.tmp', JSON.stringify(exported.history) + '\n');
   await rename(destination + '.tmp', destination);
-  if (rows.length) await writeSnapshot(exported.snapshot);
+  if (Object.keys(exported.snapshot.players).length) await writeSnapshot(exported.snapshot);
   console.log('Exported ' + rows.length + ' daily readings.');
 }
 
 async function main() {
   const command = process.argv[2];
-  if (!['init', 'sync', 'export'].includes(command)) throw new Error('Usage: neon-history.mjs init|sync|export');
+  if (!['init', 'sync', 'export', 'import'].includes(command)) throw new Error('Usage: neon-history.mjs init|sync|export|import');
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required; use a GitHub Actions secret or local environment.');
   const { neon, neonConfig } = await import('@neondatabase/serverless');
   neonConfig.fetchFunction = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(30000) });
@@ -70,6 +97,7 @@ async function main() {
     console.log('History schema ready.');
     return;
   }
+  if (command === 'import') await importBrowserHistory(sql, JSON.parse(await readFile(new URL('../database/imports/browser-history.json', import.meta.url), 'utf8')));
   if (command === 'sync') await saveSnapshots(sql, await captureSnapshots());
   await exportHistory(sql);
 }

@@ -11,6 +11,10 @@ on:
         description: Create the Neon history table before capturing
         type: boolean
         default: false
+      import_browser_history:
+        description: Import the supplied browser history (existing database days stay unchanged)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -35,7 +39,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run history:init
+      - name: Import and export browser history
+        if: github.event_name == 'workflow_dispatch' && inputs.import_browser_history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run history:import
       - name: Capture and export shared history
+        if: github.event_name != 'workflow_dispatch' || !inputs.import_browser_history
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |

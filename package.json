@@ -9,7 +9,8 @@
     "history:init": "node scripts/neon-history.cjs init",
     "history:sync": "node scripts/neon-history.cjs sync",
     "history:export": "node scripts/neon-history.cjs export",
-    "test:history": "node scripts/check-bf6-history.mjs && node scripts/check-neon-history.mjs"
+    "test:history": "node scripts/check-bf6-history.mjs && node scripts/check-neon-history.mjs",
+    "history:import": "node scripts/neon-history.cjs import"
   },
   "dependencies": {
     "@angular/common": "^21.0.0",

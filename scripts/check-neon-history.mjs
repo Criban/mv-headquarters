@@ -29,3 +29,21 @@ assert.equal(transactions, 1);
 await assert.rejects(saveSnapshots(sql, { players: { A: early, B: { ...late, capturedAt: 'invalid' } } }));
 assert.equal(transactions, 1, 'All readings are validated before the atomic write');
 console.log('Neon normalization, atomic capture and export checks passed.');
+
+const imported = JSON.parse(await readFile(new URL('../database/imports/browser-history.json', import.meta.url), 'utf8'));
+const importedRows = imported.players['MV-8lackh4wk'].map(reading => ({ player_name: 'MV-8lackh4wk', captured_at: reading.savedAt, metrics: reading.values, snapshot: null }));
+const historyOnly = buildExports(importedRows, new Date('2026-10-15T00:00:00Z'));
+assert.equal(historyOnly.history.players['MV-8lackh4wk'].length, 12);
+assert.deepEqual(historyOnly.history.players['MV-8lackh4wk'], imported.players['MV-8lackh4wk']);
+assert.equal(Object.keys(historyOnly.snapshot.players).length, 0, 'Imported metrics never create fake API fallback data');
+console.log('Imported browser history exports all twelve actual days.');
+
+for (const [name, snapshots] of Object.entries(imported.players)) {
+  assert.equal(snapshots.length, 12);
+  const rows = snapshots.map(reading => ({ player_name: name, captured_at: reading.savedAt, metrics: reading.values, snapshot: null }));
+  assert.deepEqual(buildExports(rows, new Date('2026-10-15T00:00:00Z')).history.players[name], snapshots);
+}
+assert.equal(imported.players['MV-Criban'][0].values.killDeath, 2.02, 'Criban uses the genuine v2 history');
+assert.ok(imported.players['MV-54bI44'].every(reading => reading.values.killDeath === 3.05));
+assert.equal(Object.values(imported.players).flat().length, 36);
+console.log('All 36 supplied readings retain their player identities and values.');

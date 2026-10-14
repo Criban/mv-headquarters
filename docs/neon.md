@@ -31,3 +31,11 @@ DATABASE_URL als Umgebungsvariable setzen (nicht ausgeben). npm run history:init
 GitHub-Zeitpläne können verspätet laufen oder ausfallen und werden bei öffentlichen Repositories nach 60 Tagen ohne Repository-Aktivität deaktiviert. Es gibt daher keine garantierte tägliche Erfassung; fehlende Tage werden nicht erfunden. Das Frontend liest die gemeinsame Historie beim Seitenaufruf, neue Exportdaten stehen nach einem erneuten Laden zur Verfügung. Neon-Free-Kontingente und Actions-Verbrauch im Blick behalten.
 
 Quellen: https://neon.com/docs/serverless/serverless-driver und https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+
+## Bestehende Browserhistorie importieren
+
+Die vom Betreiber bereitgestellten je zwölf Tagesstände für MV-8lackh4wk, MV-Criban und MV-54bI44 (02.–14.10.2026, ohne 06.10.) stehen unverändert in database/imports/browser-history.json. Die vollständigen v2-Historien werden verwendet; die älteren v1-Duplikate werden nicht zusätzlich importiert. Der bei Criban mitgelieferte v1-Eintrag enthält Blackhawk-Werte und wird nicht übernommen. Es werden keine fehlenden Tage ergänzt.
+
+Nach Veröffentlichung dieser Änderungen unter Actions → Publish GitHub Pages → Run workflow die Option import_browser_history aktivieren. Dieser Lauf importiert und veröffentlicht die Historie ohne neue API-Abfrage. Lokal entspricht dies npm run history:import mit gesetztem DATABASE_URL. Bereits vorhandene Datenbanktage bleiben vollständig erhalten; wiederholte Importe sind daher sicher. Bei mehreren mitgelieferten Ständen desselben Tages wird der neueste zuerst eingefügt.
+
+Der Import erlaubt historische Metriken ohne vollständigen API-Abzug. Dazu wird snapshot nullable; die reguläre Erfassung speichert weiterhin vollständige Antworten. Die Ersatzanzeige verwendet ausschließlich echte API-Abzüge. Browserdaten enthalten keinen historischen Rang oder Waffenstatistiken; solche Werte werden nicht erfunden. Weitere bereitgestellte Spielerhistorien können im gleichen JSON-Format ergänzt werden.

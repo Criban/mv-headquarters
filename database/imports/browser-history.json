@@ -1,0 +1,371 @@
+{
+  "version": 2,
+  "players": {
+    "MV-8lackh4wk": [
+      {
+        "savedAt": "2026-10-02T14:59:00.917Z",
+        "values": {
+          "killDeath": 2.67,
+          "hoursPlayed": 226.53722222222223,
+          "matchesPlayed": 542,
+          "accuracy": 24,
+          "shotsFired": 303692
+        }
+      },
+      {
+        "savedAt": "2026-10-03T20:28:06.188Z",
+        "values": {
+          "killDeath": 2.67,
+          "hoursPlayed": 226.53722222222223,
+          "matchesPlayed": 542,
+          "accuracy": 24,
+          "shotsFired": 303692
+        }
+      },
+      {
+        "savedAt": "2026-10-04T14:32:58.816Z",
+        "values": {
+          "killDeath": 2.66,
+          "hoursPlayed": 228.15222222222224,
+          "matchesPlayed": 546,
+          "accuracy": 23.99,
+          "shotsFired": 306095
+        }
+      },
+      {
+        "savedAt": "2026-10-05T19:35:37.970Z",
+        "values": {
+          "killDeath": 2.66,
+          "hoursPlayed": 229.59472222222223,
+          "matchesPlayed": 550,
+          "accuracy": 23.99,
+          "shotsFired": 308543
+        }
+      },
+      {
+        "savedAt": "2026-10-07T16:37:17.266Z",
+        "values": {
+          "killDeath": 2.66,
+          "hoursPlayed": 229.59472222222223,
+          "matchesPlayed": 550,
+          "accuracy": 23.99,
+          "shotsFired": 308543
+        }
+      },
+      {
+        "savedAt": "2026-10-08T20:08:49.881Z",
+        "values": {
+          "killDeath": 2.65,
+          "hoursPlayed": 231.40055555555554,
+          "matchesPlayed": 555,
+          "accuracy": 23.97,
+          "shotsFired": 311394
+        }
+      },
+      {
+        "savedAt": "2026-10-09T14:13:05.933Z",
+        "values": {
+          "killDeath": 2.65,
+          "hoursPlayed": 231.40055555555554,
+          "matchesPlayed": 555,
+          "accuracy": 23.97,
+          "shotsFired": 311394
+        }
+      },
+      {
+        "savedAt": "2026-10-10T12:09:22.898Z",
+        "values": {
+          "killDeath": 2.65,
+          "hoursPlayed": 232.90805555555556,
+          "matchesPlayed": 559,
+          "accuracy": 24,
+          "shotsFired": 313173
+        }
+      },
+      {
+        "savedAt": "2026-10-11T13:32:30.098Z",
+        "values": {
+          "killDeath": 2.65,
+          "hoursPlayed": 232.90805555555556,
+          "matchesPlayed": 559,
+          "accuracy": 24,
+          "shotsFired": 313173
+        }
+      },
+      {
+        "savedAt": "2026-10-12T19:06:08.253Z",
+        "values": {
+          "killDeath": 2.64,
+          "hoursPlayed": 234.20361111111112,
+          "matchesPlayed": 562,
+          "accuracy": 23.99,
+          "shotsFired": 315155
+        }
+      },
+      {
+        "savedAt": "2026-10-13T19:32:36.909Z",
+        "values": {
+          "killDeath": 2.64,
+          "hoursPlayed": 235.52277777777778,
+          "matchesPlayed": 565,
+          "accuracy": 23.99,
+          "shotsFired": 316882
+        }
+      },
+      {
+        "savedAt": "2026-10-14T12:07:01.200Z",
+        "values": {
+          "killDeath": 2.64,
+          "hoursPlayed": 235.52277777777778,
+          "matchesPlayed": 565,
+          "accuracy": 23.99,
+          "shotsFired": 316882
+        }
+      }
+    ],
+    "MV-Criban": [
+      {
+        "savedAt": "2026-10-02T14:59:00.612Z",
+        "values": {
+          "killDeath": 2.02,
+          "hoursPlayed": 223.58555555555554,
+          "matchesPlayed": 581,
+          "accuracy": 23,
+          "shotsFired": 238166
+        }
+      },
+      {
+        "savedAt": "2026-10-03T20:28:07.431Z",
+        "values": {
+          "killDeath": 2.02,
+          "hoursPlayed": 223.91083333333333,
+          "matchesPlayed": 582,
+          "accuracy": 22.99,
+          "shotsFired": 238692
+        }
+      },
+      {
+        "savedAt": "2026-10-04T14:32:58.826Z",
+        "values": {
+          "killDeath": 2.02,
+          "hoursPlayed": 225.52583333333334,
+          "matchesPlayed": 586,
+          "accuracy": 22.99,
+          "shotsFired": 241234
+        }
+      },
+      {
+        "savedAt": "2026-10-05T19:35:38.783Z",
+        "values": {
+          "killDeath": 2.02,
+          "hoursPlayed": 226.96833333333333,
+          "matchesPlayed": 590,
+          "accuracy": 22.98,
+          "shotsFired": 243978
+        }
+      },
+      {
+        "savedAt": "2026-10-07T16:37:16.997Z",
+        "values": {
+          "killDeath": 2.02,
+          "hoursPlayed": 226.96833333333333,
+          "matchesPlayed": 590,
+          "accuracy": 22.98,
+          "shotsFired": 243978
+        }
+      },
+      {
+        "savedAt": "2026-10-08T20:08:43.301Z",
+        "values": {
+          "killDeath": 2.01,
+          "hoursPlayed": 228.77444444444444,
+          "matchesPlayed": 595,
+          "accuracy": 22.96,
+          "shotsFired": 246603
+        }
+      },
+      {
+        "savedAt": "2026-10-09T14:13:14.952Z",
+        "values": {
+          "killDeath": 2.01,
+          "hoursPlayed": 228.77444444444444,
+          "matchesPlayed": 595,
+          "accuracy": 22.96,
+          "shotsFired": 246603
+        }
+      },
+      {
+        "savedAt": "2026-10-10T12:09:24.413Z",
+        "values": {
+          "killDeath": 2.01,
+          "hoursPlayed": 229.34583333333333,
+          "matchesPlayed": 596,
+          "accuracy": 22.97,
+          "shotsFired": 247142
+        }
+      },
+      {
+        "savedAt": "2026-10-11T13:32:22.399Z",
+        "values": {
+          "killDeath": 2.01,
+          "hoursPlayed": 229.69222222222223,
+          "matchesPlayed": 597,
+          "accuracy": 22.95,
+          "shotsFired": 247836
+        }
+      },
+      {
+        "savedAt": "2026-10-12T19:06:06.724Z",
+        "values": {
+          "killDeath": 2,
+          "hoursPlayed": 230.98777777777778,
+          "matchesPlayed": 600,
+          "accuracy": 22.93,
+          "shotsFired": 250319
+        }
+      },
+      {
+        "savedAt": "2026-10-13T19:32:36.444Z",
+        "values": {
+          "killDeath": 2,
+          "hoursPlayed": 232.8513888888889,
+          "matchesPlayed": 605,
+          "accuracy": 22.99,
+          "shotsFired": 252677
+        }
+      },
+      {
+        "savedAt": "2026-10-14T12:06:53.443Z",
+        "values": {
+          "killDeath": 2,
+          "hoursPlayed": 232.8513888888889,
+          "matchesPlayed": 605,
+          "accuracy": 22.99,
+          "shotsFired": 252677
+        }
+      }
+    ],
+    "MV-54bI44": [
+      {
+        "savedAt": "2026-10-02T14:58:43.352Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-03T20:28:01.469Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-04T14:32:58.831Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-05T19:35:15.506Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-07T16:37:07.330Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-08T20:08:33.059Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-09T14:13:22.873Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-10T12:09:21.414Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-11T13:32:32.009Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-12T19:06:05.313Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-13T19:31:25.646Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      },
+      {
+        "savedAt": "2026-10-14T12:06:53.445Z",
+        "values": {
+          "killDeath": 3.05,
+          "hoursPlayed": 157.01166666666666,
+          "matchesPlayed": 347,
+          "accuracy": 23.26,
+          "shotsFired": 144726
+        }
+      }
+    ]
+  }
+}
