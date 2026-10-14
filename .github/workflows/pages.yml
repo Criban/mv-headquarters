@@ -6,6 +6,8 @@ on:
   schedule:
     - cron: '0 12 * * *'
       timezone: 'Europe/Berlin'
+    - cron: '45 21 * * *'
+      timezone: 'Europe/Berlin'
     - cron: '30 23 * * *'
       timezone: 'Europe/Berlin'
   workflow_dispatch:
@@ -53,7 +55,18 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           if [ -n "$DATABASE_URL" ]; then
-            npm run history:sync
+            for attempt in 1 2 3; do
+              if npm run history:sync; then
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then
+                echo "History capture failed after three attempts; keeping the previous publication."
+                exit 1
+              fi
+              delay=$((attempt * 30))
+              echo "History capture failed on attempt $attempt; retrying in $delay seconds."
+              sleep "$delay"
+            done
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "DATABASE_URL is required for scheduled history capture."
             exit 1
