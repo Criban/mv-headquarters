@@ -1,6 +1,6 @@
 # Neon für MV Headquarters
 
-GitHub Pages liefert weiterhin das Angular-Frontend aus. Der Pages-Workflow erfasst alle sechs Stunden (00:17, 06:17, 12:17, 18:17 UTC) die öffentlichen BF6-Profile, speichert validierte Tagesstände in Neon und veröffentlicht die Historie als JSON zusammen mit der Seite. Auch Pushes auf main und manuelle Workflow-Läufe erfassen einen Stand. Es gibt keine Datenbankzugangsdaten im Frontend und keine Schreibzugriffe aus dem Browser.
+GitHub Pages liefert weiterhin das Angular-Frontend aus. Der Pages-Workflow erfasst täglich um 12:00 und 23:30 Uhr Berliner Zeit die öffentlichen BF6-Profile. Die Workflow-Zeitzone Europe/Berlin berücksichtigt Sommer- und Winterzeit automatisch. Der Job speichert validierte Tagesstände in Neon und veröffentlicht die Historie als JSON zusammen mit der Seite. Auch Pushes auf main und manuelle Workflow-Läufe erfassen einen Stand. Es gibt keine Datenbankzugangsdaten im Frontend und keine Schreibzugriffe aus dem Browser.
 
 ## Einrichten
 

@@ -50,4 +50,4 @@ Der Workflow `.github/workflows/pages.yml` baut und veröffentlicht die Seite na
 
 ## Gemeinsame Statistik-Historie
 
-Einrichtung, GitHub-Secret und erster Workflow-Lauf: [Neon-Anleitung](docs/neon.md). Der Pages-Workflow erfasst alle sechs Stunden validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten.
+Einrichtung, GitHub-Secret und erster Workflow-Lauf: [Neon-Anleitung](docs/neon.md). Der Pages-Workflow erfasst täglich um 12:00 und 23:30 Uhr Berliner Zeit validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten.
