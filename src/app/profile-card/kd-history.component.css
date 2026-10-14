@@ -1,14 +1,14 @@
 :host { display:contents; }
-dialog { width:min(760px,calc(100vw - 32px)); max-height:calc(100svh - 32px); overflow:auto; padding:28px; border:1px solid var(--line); background:radial-gradient(ellipse at 90% 0%,#d5dcac0c,transparent 65%),#171d19; color:var(--text); box-shadow:0 24px 100px #0008; }
-dialog::backdrop { background:#050906bb; backdrop-filter:blur(5px); }
+dialog { width:min(760px,calc(100vw - 32px)); max-height:calc(100svh - 32px); overflow:auto; padding:28px; border:1px solid var(--line); background:radial-gradient(ellipse at 90% 0%,var(--accent-soft),transparent 65%),var(--surface); color:var(--text); box-shadow:0 24px 100px #0008; }
+dialog::backdrop { background:#040813bb; backdrop-filter:blur(5px); }
 header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
 .eyebrow { color:var(--muted); font-size:10px; letter-spacing:1.5px; margin:0 0 8px; overflow-wrap:anywhere; }
 h2 { font:600 36px/1 'Barlow Condensed',sans-serif; margin:0; }
 .close-button { background:transparent; color:var(--text); border:1px solid var(--line); width:44px; height:44px; flex-shrink:0; cursor:pointer; }
-.close-button:hover { background:#d5dcac12; }
+.close-button:hover { background:var(--accent-soft); }
 .periods { display:flex; gap:8px; margin-top:26px; }
 .periods button, .detail-button { padding:10px 16px; border:1px solid var(--line); background:transparent; color:var(--muted); font:600 12px 'Barlow',sans-serif; cursor:pointer; }
-.periods button[aria-pressed=true] { background:var(--accent); border-color:var(--accent); color:#171d19; }
+.periods button[aria-pressed=true] { background:var(--accent); border-color:var(--accent); color:var(--surface); }
 .detail-button { margin-top:10px; color:var(--accent); }
 .periods button:focus-visible, .detail-button:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .reading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:28px 0 12px; font-variant-numeric:tabular-nums; }
@@ -23,7 +23,7 @@ svg { display:block; width:100%; overflow:visible; }
 .history-line { fill:none; stroke:var(--accent); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
 .history-point { fill:var(--accent); }
 .selected-line { stroke:var(--accent); stroke-opacity:.3; stroke-dasharray:3 5; }
-.selected-point { fill:var(--accent); stroke:#171d19; stroke-width:3; }
+.selected-point { fill:var(--accent); stroke:var(--surface); stroke-width:3; }
 .slider-label { display:flex; justify-content:space-between; gap:12px; margin-top:18px; color:var(--muted); font-size:10px; letter-spacing:1px; }
 .slider-label span { letter-spacing:0; }
 input[type=range] { display:block; width:100%; min-height:36px; margin:6px 0; accent-color:var(--accent); cursor:pointer; }

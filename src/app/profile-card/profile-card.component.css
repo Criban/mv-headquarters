@@ -1,10 +1,10 @@
-﻿:host { display: block; }
+:host { display: block; }
 .player-panel { border-top: 1px solid var(--line); padding-top: 22px; }
 .player-heading { display:flex; justify-content:space-between; align-items:center; font-size:10px; letter-spacing:1.5px; color:var(--muted); }
-.member-badge { background:var(--accent); color:#151813; padding:5px 8px; font-weight:700; }
+.member-badge { background:var(--accent); color:var(--ink); padding:5px 8px; font-weight:700; }
 h2 { font:600 clamp(28px,2.6vw,40px)/1.1 'Barlow Condensed',sans-serif; margin:12px 0; overflow-wrap:anywhere; }
 .player-description { color:var(--muted); font-size:14px; line-height:1.5; margin:0 0 20px; }
-.stats-panel { min-height:150px; }
+.stats-panel { min-height:150px; background:linear-gradient(135deg,#72e5f506,transparent 65%),var(--surface-glass); }
 .main-stat { display:flex; align-items:center; justify-content:space-between; height:114px; padding:20px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .main-stat > span { font-size:18px; font-weight:600; }
 small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter-spacing:1.5px; }
@@ -60,4 +60,4 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
   .weapon-stats { min-height:100px; padding-top:8px; }
   .weapon-stats li { padding:3px 0; }
 }
-.private-profile { border-top:1px solid var(--line); padding:20px 0; } .private-profile h3 { color:var(--accent); font-size:12px; letter-spacing:1px; margin:0 0 12px; } .private-profile p { color:var(--muted); font-size:14px; line-height:1.6; margin:0; }
+.private-profile { border-top:1px solid var(--line); padding:20px 0; background:var(--surface-glass); } .private-profile h3 { color:var(--accent); font-size:12px; letter-spacing:1px; margin:0 0 12px; } .private-profile p { color:var(--muted); font-size:14px; line-height:1.6; margin:0; }

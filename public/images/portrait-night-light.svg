@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
+  <defs>
+    <linearGradient id="light" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#388eaa"/>
+      <stop offset=".28" stop-color="#3b647f"/>
+      <stop offset=".55" stop-color="#42485f"/>
+      <stop offset=".8" stop-color="#77445d"/>
+      <stop offset="1" stop-color="#b24a65"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#light)" d="M0 0h1024v1536H0z"/>
+</svg>

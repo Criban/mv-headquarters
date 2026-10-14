@@ -1,6 +1,20 @@
+<!-- Apply directional ambient light to the complete portrait, including animated layers. -->
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter [attr.id]="'portrait-night-' + index()" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feColorMatrix in="SourceGraphic" type="matrix" values=".92 0 0 0 0  0 .98 0 0 0  0 0 1.08 0 0  0 0 0 1 0" result="coolPortrait" />
+      <feImage [attr.href]="src() === 'images/54bi44-camping-chair.png' ? 'images/portrait-night-light-mirrored.svg' : 'images/portrait-night-light.svg'" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="ambientLight" />
+      <feComposite in="ambientLight" in2="SourceGraphic" operator="in" result="surfaceLight" />
+      <feComponentTransfer in="surfaceLight" result="subtleLight">
+        <feFuncA type="linear" slope=".55" />
+      </feComponentTransfer>
+      <feBlend in="subtleLight" in2="coolPortrait" mode="soft-light" />
+    </filter>
+  </defs>
+</svg>
 @if (index() === 0 && !failed()) {
   <svg class="soldier-image blackhawk-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
-    role="img" [attr.aria-label]="description()" xmlns="http://www.w3.org/2000/svg">
+    role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-night-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
     <image href="images/blackhawk-rig/legs.png" x="90" y="395" width="798.72" height="1198.08" (error)="failed.set(true)" />
     <g class="ribcage">
       <image href="images/blackhawk-rig/torso.png" x="200" y="95" width="634.88" height="952.32" (error)="failed.set(true)" />
@@ -14,7 +28,7 @@
   </svg>
 } @else if (index() === 1 && !failed()) {
   <svg class="soldier-image criban-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
-    role="img" [attr.aria-label]="description()" xmlns="http://www.w3.org/2000/svg">
+    role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-night-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
     <image href="images/criban-rig/legs.png" x="102" y="425" width="778.24" height="1167.36" (error)="failed.set(true)" />
     <g class="arm-left">
       <image href="images/criban-rig/arm-left.png" x="45" y="55" width="819.2" height="1228.8" (error)="failed.set(true)" />
@@ -30,5 +44,5 @@
     </g>
   </svg>
 } @else {
-  <img class="soldier-image" [class.kingcoffee-portrait]="index() === 2" [src]="src()" [alt]="description()" width="1024" height="1536">
+  <img class="soldier-image" [class.kingcoffee-portrait]="index() === 2" [src]="src()" [alt]="description()" [style.--portrait-light-filter]="'url(#portrait-night-' + index() + ')'" width="1024" height="1536">
 }
