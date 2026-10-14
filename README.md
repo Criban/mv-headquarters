@@ -29,7 +29,7 @@ Nach Änderungen an `angular.json` den Entwicklungsserver neu starten (`Strg+C`,
 
 ## BF6-Statistik-Abzug
 
-Beim Seitenaufruf werden die BF6-Statistiken aller öffentlichen Profile geladen. K/D, Stunden, Matches, Treffgenauigkeit und abgefeuerte Schüsse werden pro Spieler und Kalendertag (Europe/Berlin) im Local Storage dieses Browsers gespeichert. Weitere Abrufe am selben Tag aktualisieren den heutigen Stand. Alle älteren Tagesstände bleiben im Format `{ version: 2, snapshots: [{ savedAt, values }] }` unter `bf6-stats-history:v2:<Spielername>` erhalten und können später für Visualisierungen verwendet werden. Vorhandene v1-Verläufe werden übernommen. Verglichen wird immer mit dem jüngsten gespeicherten Tag vor heute, auch nach längeren Besuchspausen. Zuwächse erscheinen grün, Rückgänge rot und unveränderte Werte grau. Der Hinweis nennt Datum und Uhrzeit des Vergleichs; Treffgenauigkeit wird in Prozentpunkten verglichen. Ohne früheren Stand gibt es keine Vergleichsanzeige. API-Ersatzdaten werden weder mit früheren Ständen verglichen noch als heutige Live-Daten gespeichert. So entstehen bei API-Fehlern oder Timeouts keine irreführenden Rückgänge durch einen älteren Ersatzstand. Sobald wieder Live-Daten verfügbar sind, wird der Vergleich mit dem erhaltenen Verlauf fortgesetzt. Der Verlauf bleibt auf diesen Browser beschränkt.
+Beim Seitenaufruf werden die BF6-Statistiken aller öffentlichen Profile geladen. K/D, Stunden, Matches, Treffgenauigkeit und abgefeuerte Schüsse werden pro Spieler und Kalendertag (Europe/Berlin) im Local Storage dieses Browsers gespeichert. Weitere Abrufe am selben Tag aktualisieren den heutigen Stand. Alle älteren Tagesstände bleiben im Format `{ version: 2, snapshots: [{ savedAt, values }] }` unter `bf6-stats-history:v2:<Spielername>` erhalten und können später für Visualisierungen verwendet werden. Vorhandene v1-Verläufe werden übernommen. Verglichen wird immer mit dem jüngsten gespeicherten Tag vor heute, auch nach längeren Besuchspausen. Zuwächse erscheinen grün, Rückgänge rot und unveränderte Werte grau. Der Hinweis nennt Datum und Uhrzeit des Vergleichs; Treffgenauigkeit wird in Prozentpunkten verglichen. Ohne früheren Stand gibt es keine Vergleichsanzeige. API-Ersatzdaten werden weder mit früheren Ständen verglichen noch als heutige Live-Daten gespeichert. So entstehen bei API-Fehlern oder Timeouts keine irreführenden Rückgänge durch einen älteren Ersatzstand. Sobald wieder Live-Daten verfügbar sind, wird der Vergleich mit dem erhaltenen Verlauf fortgesetzt. Die lokale Historie wird durch die veröffentlichte Neon-Tageshistorie ergänzt. Einrichtung und Erfassungsrhythmus stehen in [Neon](docs/neon.md).
 
 Bereits gespeicherte Dummy-Teststände werden beim nächsten Statistikabruf aus dem Verlauf entfernt. Der Verlaufstest läuft mit `node scripts/check-bf6-history.mjs`.
 
@@ -41,9 +41,13 @@ Die BF6-Ansicht zeigt auch die abgefeuerten Schüsse (`shotsFired`). Die Histori
 
 Der Abzug wird mit der Seite ausgeliefert. Bei API-Fehlern, ungültiger K/D oder Zeitüberschreitungen lädt die Statistikansicht automatisch diese Datei. Sie kennzeichnet die gespeicherten Werte und zeigt Datum und Uhrzeit des Abzugs in der Zeitzone Europe/Berlin. „Live-Daten erneut laden“ versucht erneut die API. Bei erfolgreichen API-Abfragen werden weiterhin Live-Daten angezeigt. Zum Aktualisieren den Befehl erneut ausführen und die Seite mit der aktualisierten Datei veröffentlichen.
 
-Inoffizielles Fanprojekt, nicht mit EA oder DICE verbunden. Kein eigenes Backend.
+Inoffizielles Fanprojekt, nicht mit EA oder DICE verbunden. Die gemeinsame Tageshistorie wird durch GitHub Actions in Neon gespeichert; das Frontend bleibt statisch.
 
 
 ## GitHub Pages
 
 Der Workflow `.github/workflows/pages.yml` baut und veröffentlicht die Seite nach jedem Push auf `main`. Im Repository unter Settings > Pages als Quelle GitHub Actions wählen. Der Basis-Pfad wird automatisch aus der Pages-Konfiguration übernommen. Auch die Hallenkulisse funktioniert im Unterverzeichnis einer Projektseite.
+
+## Gemeinsame Statistik-Historie
+
+Einrichtung, GitHub-Secret und erster Workflow-Lauf: [Neon-Anleitung](docs/neon.md). Der Pages-Workflow erfasst alle sechs Stunden validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten.

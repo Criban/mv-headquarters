@@ -1,8 +1,9 @@
 ﻿import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, finalize, forkJoin, map, Observable, of, shareReplay, tap, throwError, timeout } from 'rxjs';
+import { catchError, defer, finalize, forkJoin, map, Observable, of, shareReplay, tap, throwError, timeout } from 'rxjs';
 import { topWeapons, type WeaponStats } from './weapon-stats';
 import { parseAccuracy } from './accuracy';
+import { setSharedStatsHistory } from './bf6-stats-history';
 export interface Bf6Stats { killDeath: number; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; }
 type ProfileResponse = { playerProfiles?: { playerCard?: { rank?: unknown }; rankName?: unknown; stats?: { name?: string; value?: unknown }[] }[] };
 type Snapshot = { players: Record<string, { capturedAt: string; response: Record<string, unknown>; profile: ProfileResponse }> };
@@ -11,6 +12,10 @@ export class Bf6StatsService {
   private readonly http = inject(HttpClient);
   private readonly cache = new Map<string, { stats: Bf6Stats; expiresAt: number }>();
   private readonly pending = new Map<string, Observable<Bf6Stats>>();
+  private readonly history = defer(() => this.http.get<unknown>('data/bf6-stats-history.json')).pipe(
+    timeout(5000), tap(setSharedStatsHistory), catchError(() => of(null)),
+    shareReplay({ bufferSize: 1, refCount: false })
+  );
   private readonly cacheDuration = 5 * 60 * 1000;
 
   invalidateCache(name: string, playerId?: string): void {
@@ -28,9 +33,8 @@ export class Bf6StatsService {
     this.cache.delete(key);
     const pending = this.pending.get(key);
     if (pending) return pending;
-    const request = this.fetchStats({ name }).pipe(
+    const statsRequest = this.fetchStats({ name }).pipe(
       catchError(error => /^\d+$/.test(playerId ?? '') ? this.fetchStats({ playerid: playerId! }) : throwError(() => error)),
-      tap(stats => this.cache.set(key, { stats, expiresAt: Date.now() + this.cacheDuration })),
       catchError(() => this.http.get<Snapshot>('data/bf6-stats-snapshot.json').pipe(
         timeout(5000),
         map(snapshot => {
@@ -39,9 +43,9 @@ export class Bf6StatsService {
           return { ...this.parseStats(player.response, player.profile), capturedAt: player.capturedAt };
         })
       )),
-      finalize(() => this.pending.delete(key)),
       shareReplay({ bufferSize: 1, refCount: false })
     );
+    const request = forkJoin({ stats: statsRequest, history: this.history }).pipe(map(({ stats }) => stats), tap(stats => { if (!stats.capturedAt) this.cache.set(key, { stats, expiresAt: Date.now() + this.cacheDuration }); }), finalize(() => this.pending.delete(key)), shareReplay({ bufferSize: 1, refCount: false }));
     this.pending.set(key, request);
     return request;
   }

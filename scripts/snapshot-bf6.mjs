@@ -1,8 +1,9 @@
 import { mkdir, writeFile, rename } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const identities = [{ name: 'MV-8lackh4wk', playerid: '1811857213' }, { name: 'MV-Criban', playerid: '353727533' }, { name: 'MV-54bI44', playerid: '1008896742053' }];
 const endpoint = 'https://api.gametools.network/bf6/';
+export async function captureSnapshots() {
 const players = {};
 for (const { name, playerid } of identities) {
   const common = { platform: 'ea', skip_battlelog: 'true', lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
@@ -44,9 +45,19 @@ for (const { name, playerid } of identities) {
   };
   console.log(`${name}: snapshot captured (${players[name].capturedAt})`);
 }
+return { players };
+}
+
+export async function writeSnapshot(snapshot) {
 const directory = fileURLToPath(new URL('../public/data/', import.meta.url));
 const destination = fileURLToPath(new URL('../public/data/bf6-stats-snapshot.json', import.meta.url));
 await mkdir(directory, { recursive: true });
-await writeFile(`${destination}.tmp`, JSON.stringify({ players }, null, 2) + '\n');
+await writeFile(`${destination}.tmp`, JSON.stringify(snapshot, null, 2) + '\n');
 await rename(`${destination}.tmp`, destination);
 console.log('Saved public/data/bf6-stats-snapshot.json');
+
+}
+
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  await writeSnapshot(await captureSnapshots());
+}

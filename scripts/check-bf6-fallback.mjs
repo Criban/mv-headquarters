@@ -10,12 +10,12 @@ import path from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temporary = await mkdtemp(path.join(root, 'scripts', '.bf6-check-'));
-const files = ['accuracy', 'weapon-stats', 'bf6-stats.service', 'history-totals', 'battlefield-history'];
+const files = ['accuracy', 'weapon-stats', 'bf6-stats-history', 'bf6-stats.service', 'history-totals', 'battlefield-history'];
 try {
   for (const file of files) {
     const source = await readFile(path.join(root, file === 'history-totals' || file === 'battlefield-history' ? 'src/app/data' : 'src/app/services', `${file}.ts`), 'utf8');
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022, experimentalDecorators: true } }).outputText;
-    await writeFile(path.join(temporary, `${file}.mjs`), compiled.replace(/from '\.\/(accuracy|weapon-stats)'/g, "from './$1.mjs'"));
+    await writeFile(path.join(temporary, `${file}.mjs`), compiled.replace(/from '\.\/(accuracy|weapon-stats|bf6-stats-history)'/g, "from './$1.mjs'"));
   }
   const { Bf6StatsService } = await import(pathToFileURL(path.join(temporary, 'bf6-stats.service.mjs')));
   const snapshot = JSON.parse(await readFile(path.join(root, 'public/data/bf6-stats-snapshot.json'), 'utf8'));
@@ -49,6 +49,7 @@ try {
     const calls = [];
     const http = { get(url) {
       calls.push(url);
+      if (url === 'data/bf6-stats-history.json') return of({ version: 2, players: {} });
       if (url.startsWith('data/')) return mode === 'missing-snapshot' ? throwError(() => new Error('Missing snapshot')) : of(snapshot);
       if ((mode === 'stats-error' || mode === 'missing-snapshot') && url.includes('/stats/')) return throwError(() => new Error('API failure'));
       if (mode === 'profile-error' && url.includes('/profile/')) return throwError(() => new Error('Profile failure'));
@@ -68,19 +69,19 @@ try {
       assert.ok(result.weapons.length > 0);
       assert.equal(result.capturedAt, mode === 'live' ? undefined : snapshot.players[name].capturedAt);
       assert.equal(calls.includes('data/bf6-stats-snapshot.json'), mode !== 'live');
-      const firstCallCount = calls.length;
+      const firstCallCount = calls.filter(url => url !== 'data/bf6-stats-history.json').length;
       await firstValueFrom(service.getStats(name));
-      assert.equal(calls.length, mode === 'live' ? firstCallCount : firstCallCount * 2,
+      assert.equal(calls.filter(url => url !== 'data/bf6-stats-history.json').length, mode === 'live' ? firstCallCount : firstCallCount * 2,
         'Only successful API responses should be cached');
       if (mode === 'live') {
         service.invalidateCache(name);
         await firstValueFrom(service.getStats(name));
-        assert.equal(calls.length, firstCallCount * 2, 'Reload must bypass cached stats');
+        assert.equal(calls.filter(url => url !== 'data/bf6-stats-history.json').length, firstCallCount * 2, 'Reload must bypass cached stats');
         const realNow = Date.now;
         try {
           Date.now = () => realNow() + 5 * 60 * 1000 + 1;
           await firstValueFrom(service.getStats(name));
-          assert.equal(calls.length, firstCallCount * 3, 'Expired stats must be fetched again');
+          assert.equal(calls.filter(url => url !== 'data/bf6-stats-history.json').length, firstCallCount * 3, 'Expired stats must be fetched again');
         } finally {
           Date.now = realNow;
         }
@@ -93,6 +94,7 @@ try {
     const playerName = 'MV-Criban';
     const playerId = mode === 'unknown-id' ? 'unknown' : '353727533';
     const http = { get(url, options) {
+      if (url === 'data/bf6-stats-history.json') return of({ version: 2, players: {} });
       if (url.startsWith('data/')) { calls.push({ snapshot: true }); return of(snapshot); }
       const params = options.params;
       calls.push({ url, name: params.get('name'), playerid: params.get('playerid') });
@@ -116,10 +118,10 @@ try {
     if (!usesSnapshot) {
       const count = calls.length;
       await firstValueFrom(service.getStats(playerName, playerId));
-      assert.equal(calls.length, count, 'Successful ID fallback must be cached');
+      assert.equal(calls.filter(url => url !== 'data/bf6-stats-history.json').length, count, 'Successful ID fallback must be cached');
       service.invalidateCache(playerName, playerId);
       await firstValueFrom(service.getStats(playerName, playerId));
-      assert.equal(calls.length, count * 2);
+      assert.equal(calls.filter(url => url !== 'data/bf6-stats-history.json').length, count * 2);
     }
     console.log(`PASS playerid fallback ${mode}`);
   }

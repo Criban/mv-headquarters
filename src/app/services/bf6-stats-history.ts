@@ -8,6 +8,19 @@ type History = { version: 2; snapshots: StatsSnapshot[] };
 export type StatsComparison = { baseline: StatsSnapshot | null; savedAt: string };
 type StorageAccess = Pick<Storage, 'getItem' | 'setItem'>;
 
+const sharedHistory = new Map<string, StatsSnapshot[]>();
+
+/** Load the published server history; it never writes browser data to the server. */
+export function setSharedStatsHistory(value: unknown): void {
+  if (!value || typeof value !== 'object') return;
+  const history = value as { version?: unknown; players?: Record<string, unknown> };
+  if (history.version !== 2 || !history.players || typeof history.players !== 'object' || Array.isArray(history.players)) return;
+  sharedHistory.clear();
+  for (const [name, readings] of Object.entries(history.players)) {
+    if (Array.isArray(readings)) sharedHistory.set(name, readings.filter(validSnapshot));
+  }
+}
+
 function validSnapshot(value: unknown): value is StatsSnapshot {
   if (!value || typeof value !== 'object') return false;
   const snapshot = value as StatsSnapshot;
@@ -40,7 +53,9 @@ function storedSnapshots(name: string, target: StorageAccess): StatsSnapshot[] {
 export function getDailyStatsHistory(name: string, now = new Date(), storage?: StorageAccess): StatsSnapshot[] {
   try {
     const daily = new Map<string, StatsSnapshot>();
-    for (const snapshot of storedSnapshots(name, storage ?? globalThis.localStorage).sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
+    let local: StatsSnapshot[] = [];
+    try { local = storedSnapshots(name, storage ?? globalThis.localStorage); } catch { /* Shared history works without local storage. */ }
+    for (const snapshot of [...(sharedHistory.get(name) ?? []), ...local].sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
       if (Date.parse(snapshot.savedAt) <= now.getTime()) daily.set(calendarDay(new Date(snapshot.savedAt)), snapshot);
     }
     return [...daily.values()];
@@ -54,7 +69,7 @@ export function compareDailyStats(name: string, stats: Bf6Stats, now = new Date(
     const target = storage ?? globalThis.localStorage;
     const key = `bf6-stats-history:v2:${encodeURIComponent(name)}`;
     const raw = target.getItem(key);
-    let snapshots = getDailyStatsHistory(name, now, target);
+    let snapshots = storedSnapshots(name, target);
     const today = calendarDay(now);
     const daily = new Map<string, StatsSnapshot>();
     for (const snapshot of snapshots.sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) {
@@ -65,7 +80,7 @@ export function compareDailyStats(name: string, stats: Bf6Stats, now = new Date(
       savedAt: now.toISOString(), values: Object.fromEntries(HISTORY_METRICS.map(key => [key, stats[key]])) as Values
     });
     snapshots = [...daily.values()].sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt));
-    const baseline = snapshots.filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < today).at(-1) ?? null;
+    const baseline = getDailyStatsHistory(name, now, target).filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < today).at(-1) ?? null;
     const serialized = JSON.stringify({ version: 2, snapshots } satisfies History);
     if (serialized !== raw && (snapshots.length || raw)) target.setItem(key, serialized);
     // The bundled fallback can be older than the baseline. Comparing it would
@@ -74,6 +89,8 @@ export function compareDailyStats(name: string, stats: Bf6Stats, now = new Date(
     return { baseline, savedAt: daily.get(today)?.savedAt ?? stats.capturedAt ?? now.toISOString() };
   } catch {
     // Disabled storage or a full quota must not prevent displaying live statistics.
-    return null;
+    if (stats.capturedAt) return null;
+    const baseline = getDailyStatsHistory(name, now, storage).filter(snapshot => calendarDay(new Date(snapshot.savedAt)) < calendarDay(now)).at(-1) ?? null;
+    return baseline ? { baseline, savedAt: now.toISOString() } : null;
   }
 }

@@ -4,7 +4,7 @@ import ts from 'typescript';
 
 const source = await readFile(new URL('../src/app/services/bf6-stats-history.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const { compareDailyStats, getDailyStatsHistory } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
+const { compareDailyStats, getDailyStatsHistory, setSharedStatsHistory } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
 const entries = new Map();
 const storage = { getItem: key => entries.get(key) ?? null, setItem: (key, value) => entries.set(key, value) };
 const initial = { killDeath: 2, hoursPlayed: 10, matchesPlayed: 538, accuracy: 25, shotsFired: 2000 };
@@ -104,3 +104,14 @@ assert.ok(plot.points.every(point => Number.isFinite(point.y) && point.y >= 32 &
 assert.equal(kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: { ...initial, killDeath: null } }]).points.length, 0);
 assert.ok(kdHistoryChart([1, 2].map(day => ({ savedAt: `2026-10-0${day}T10:00:00Z`, values: { ...initial, killDeath: 0 } }))).points.every(point => Number.isFinite(point.y)), 'Constant zero readings have a valid scale');
 console.log('PASS daily updates, complete history, previous-day comparison, migration, demo cleanup, Berlin midnight/DST, player isolation, fallback, storage errors and K/D chart');
+
+const sharedBaseline = { savedAt: '2026-10-01T10:00:00Z', values: initial };
+setSharedStatsHistory({ version: 2, players: { Shared: [sharedBaseline, { savedAt: 'invalid', values: initial }] } });
+assert.deepEqual(getDailyStatsHistory('Shared', new Date('2026-10-02T10:00:00Z'), storage), [sharedBaseline]);
+assert.deepEqual(visit(update, '2026-10-02T10:00:00Z', 'Shared').baseline, sharedBaseline);
+assert.equal(history('Shared').length, 1, 'Shared history is not copied into browser storage');
+const blocked = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); } };
+assert.deepEqual(getDailyStatsHistory('Shared', new Date('2026-10-02T10:00:00Z'), blocked), [sharedBaseline]);
+assert.deepEqual(compareDailyStats('Shared', update, new Date('2026-10-02T10:00:00Z'), blocked).baseline, sharedBaseline);
+setSharedStatsHistory({ version: 2, players: {} });
+console.log('Shared history integration passed.');

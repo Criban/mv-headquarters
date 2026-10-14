@@ -1,11 +1,15 @@
 {
-  "name": "bf6-squad",
+  "name": "mv-headquarters",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node scripts/angular.cjs serve --host 127.0.0.1",
     "build": "node scripts/angular.cjs build",
-    "snapshot:bf6": "node scripts/snapshot-bf6.cjs"
+    "snapshot:bf6": "node scripts/snapshot-bf6.cjs",
+    "history:init": "node scripts/neon-history.cjs init",
+    "history:sync": "node scripts/neon-history.cjs sync",
+    "history:export": "node scripts/neon-history.cjs export",
+    "test:history": "node scripts/check-bf6-history.mjs && node scripts/check-neon-history.mjs"
   },
   "dependencies": {
     "@angular/common": "^21.0.0",
@@ -19,6 +23,7 @@
     "@angular/build": "^21.0.0",
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
+    "@neondatabase/serverless": "^1.2.0",
     "node": "^22.22.0",
     "typescript": "~5.9.2"
   }
