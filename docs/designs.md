@@ -11,6 +11,14 @@ Browserfarbe und Soldatenbeleuchtung. Derzeit ist **Stadteinsatz** aktuell und
 **Urban Night** archiviert. Ein Wechsel verändert weder die Spielerauswahl noch
 die geöffnete Ansicht oder Historie. Soldaten und Animationen bleiben eingebunden.
 
+Im Stadteinsatz steigen transparente Rauchtexturen über den Brandstellen auf,
+ziehen auseinander und blenden aus. Zwei versetzte Schwaden je Quelle halten die
+Bewegung sichtbar. Die Zyklen dauern 42 bzw. 52 Sekunden, passend zur Entfernung;
+die Schwaden sind um etwa 30 Grad nach rechts geneigt und ziehen nach rechts oben.
+Die Quellen sind an derselben Bildebene wie die Kulisse ausgerichtet. Der Effekt
+liegt hinter den Soldaten, fängt keine Eingaben ab und wird im Archivdesign
+entfernt. Bei `prefers-reduced-motion: reduce` bleibt nur das statische Bild.
+
 ## Eine neue Variante ergänzen
 
 1. Neue Hintergrund- und gegebenenfalls Beleuchtungsbilder unter `public/images/`

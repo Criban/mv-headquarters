@@ -5,7 +5,12 @@
     [style.--scene-portrait-light]="lighting().portraitLight" [style.--scene-warmth]="lighting().warmth"
     [style.--scene-sunlight]="lighting().sunlight" [style.--scene-night-tint]="lighting().nightTint">
     <div class="hangar-stage" aria-hidden="true">
-      <div class="hangar-world"></div>
+      <div class="hangar-world">
+        @if (design().id === 'rooftop-daylight') {
+          <span class="city-smoke city-smoke-east"></span>
+          <span class="city-smoke city-smoke-west"></span>
+        }
+      </div>
     </div>
 
     <div class="soldier-buttons" [style.--soldier-count]="players().length">
