@@ -7,8 +7,21 @@ svg.soldier-image g { transform-box:view-box; }
 .criban-rig g { animation-duration:4.6s; animation-delay:-.4s; }
 .arms-weapon { transform-origin:44% 20%; animation:aiming-breath 5.2s ease-in-out -1.3s infinite; }
 .kingcoffee-rig g { animation-duration:6.2s; animation-delay:-3.3s; }
-.kingcoffee-rig .ribcage { transform-origin:50% 46%; }
-.kingcoffee-rig .arms-weapon { transform-origin:50% 32%; }
+.kingcoffee-rig .ribcage { transform-origin:50% 40%; animation-name:coffee-chest-breath; }
+.kingcoffee-rig .head { transform-origin:55% 15%; animation-name:coffee-head-breath; }
+.kingcoffee-rig .coffee-arms { transform-origin:68% 36%; animation:coffee-arm-breath 6.2s ease-in-out -3.3s infinite; }
+@keyframes coffee-chest-breath {
+  0%,100% { transform:translateY(0) scale(1); }
+  45% { transform:translateY(-1px) scale(1.004,1.008); }
+}
+@keyframes coffee-head-breath {
+  0%,100% { transform:translateY(0) rotate(0); }
+  45% { transform:translateY(-3px) rotate(-.15deg); }
+}
+@keyframes coffee-arm-breath {
+  0%,100% { transform:translateY(0); }
+  45% { transform:translateY(-1.2px); }
+}
 .seated-rig g { animation-duration:7.3s; animation-delay:-4.8s; }
 .seated-rig .ribcage { transform-origin:48% 53%; animation-name:seated-chest-breath; }
 .seated-rig .head { transform-origin:45% 32%; animation-name:seated-head-breath; }
@@ -52,4 +65,4 @@ img.kingcoffee-portrait { animation-duration:6.2s; animation-delay:-3.3s; }
   0%,100% { transform:translateY(0) rotate(0); }
   45% { transform:translateY(-7px) rotate(-.25deg); }
 }
-@media(prefers-reduced-motion:reduce) { svg.soldier-image g,img.soldier-image { animation:none; } }
+@media(prefers-reduced-motion:reduce) { svg.soldier-image g[class],img.soldier-image { animation:none; } }
