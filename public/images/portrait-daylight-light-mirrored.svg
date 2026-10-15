@@ -1,12 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
   <defs>
-    <linearGradient id="light" x1="1" y1="0" x2="0" y2="0">
-      <stop offset="0" stop-color="#d3d9cc"/>
-      <stop offset=".28" stop-color="#a9b3a7"/>
-      <stop offset=".55" stop-color="#858b7d"/>
-      <stop offset=".8" stop-color="#b29b77"/>
-      <stop offset="1" stop-color="#d8a36b"/>
-    </linearGradient>
+    <radialGradient id="sky" cx="0" cy="0" r="1" gradientTransform="translate(70 100) scale(850 1250)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b4c9d5" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#b4c9d5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fire" cx="0" cy="0" r="1" gradientTransform="translate(1050 850) scale(700 950)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dba16e" stop-opacity=".85"/>
+      <stop offset="1" stop-color="#dba16e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ground" cx="0" cy="0" r="1" gradientTransform="translate(500 1580) scale(700 440)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b9a68c" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#b9a68c" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <path fill="url(#light)" d="M0 0h1024v1536H0z"/>
+  <g transform="translate(1024 0) scale(-1 1)">
+  <path fill="#808080" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#sky)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#fire)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#ground)" d="M0 0h1024v1536H0z"/>
+  </g>
 </svg>

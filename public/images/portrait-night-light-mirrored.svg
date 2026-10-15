@@ -1,12 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
   <defs>
-    <linearGradient id="light" x1="1" y1="0" x2="0" y2="0">
-      <stop offset="0" stop-color="#388eaa"/>
-      <stop offset=".28" stop-color="#3b647f"/>
-      <stop offset=".55" stop-color="#42485f"/>
-      <stop offset=".8" stop-color="#77445d"/>
-      <stop offset="1" stop-color="#b24a65"/>
-    </linearGradient>
+    <radialGradient id="cool" cx="0" cy="0" r="1" gradientTransform="translate(-100 300) scale(850 1350)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#539ab7" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#539ab7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="0" cy="0" r="1" gradientTransform="translate(1120 620) scale(720 1200)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b6667b" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#b6667b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floor" cx="0" cy="0" r="1" gradientTransform="translate(400 1590) scale(780 450)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#71949f" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#71949f" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <path fill="url(#light)" d="M0 0h1024v1536H0z"/>
+  <g transform="translate(1024 0) scale(-1 1)">
+  <path fill="#787b82" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#cool)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#warm)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#floor)" d="M0 0h1024v1536H0z"/>
+  </g>
 </svg>

@@ -19,20 +19,27 @@
           <span class="soldier-portrait">
             <svg class="soldier-ground-shadow" viewBox="0 0 1024 1536" aria-hidden="true" focusable="false">
               @if (player.image === 'images/54bi44-camping-chair.png') {
-                <ellipse class="cast-shadow" cx="520" cy="1345" rx="420" ry="105" transform="rotate(-7 520 1345)" />
-                <ellipse class="chair-seat-shadow" cx="495" cy="1320" rx="290" ry="78" />
-                <ellipse class="contact-shadow" cx="175" cy="1275" rx="45" ry="17" />
-                <ellipse class="contact-shadow" cx="320" cy="1375" rx="48" ry="18" />
-                <ellipse class="contact-shadow" cx="620" cy="1265" rx="42" ry="16" />
-                <ellipse class="contact-shadow" cx="450" cy="1435" rx="95" ry="22" />
-                <ellipse class="contact-shadow" cx="865" cy="1435" rx="105" ry="22" />
+                <ellipse class="cast-shadow" cx="480" cy="1370" rx="430" ry="88" transform="rotate(-9 480 1370)" />
+                <ellipse class="chair-seat-shadow" cx="495" cy="1340" rx="285" ry="68" />
+                <ellipse class="contact-shadow" cx="175" cy="1265" rx="35" ry="11" />
+                <ellipse class="contact-shadow" cx="320" cy="1365" rx="37" ry="12" />
+                <ellipse class="contact-shadow" cx="620" cy="1255" rx="34" ry="11" />
+                <ellipse class="contact-shadow" cx="450" cy="1435" rx="89" ry="16" />
+                <ellipse class="contact-shadow" cx="865" cy="1435" rx="100" ry="17" />
               } @else if (player.image === 'images/kingcoffee-coffee-break.png') {
-                <ellipse class="cast-shadow" cx="590" cy="1435" rx="400" ry="65" transform="rotate(-7 590 1435)" />
-                <ellipse class="contact-shadow" cx="375" cy="1410" rx="105" ry="24" />
-                <ellipse class="contact-shadow" cx="750" cy="1400" rx="225" ry="28" />
+                <ellipse class="cast-shadow" cx="660" cy="1440" rx="365" ry="56" transform="rotate(8 660 1440)" />
+                <ellipse class="contact-shadow" cx="385" cy="1415" rx="80" ry="16" />
+                <path class="contact-shadow" d="M555 1390 940 1375 990 1405 625 1430Z" />
+              } @else if ($index === 0) {
+                <ellipse class="cast-shadow" cx="230" cy="1500" rx="185" ry="38" transform="rotate(9 230 1500)" />
+                <ellipse class="cast-shadow" cx="810" cy="1500" rx="170" ry="36" transform="rotate(9 810 1500)" />
+                <ellipse class="contact-shadow" cx="150" cy="1480" rx="72" ry="16" />
+                <ellipse class="contact-shadow" cx="790" cy="1485" rx="95" ry="16" />
               } @else {
-                <ellipse class="cast-shadow" cx="430" cy="1460" rx="335" ry="58" transform="rotate(-7 430 1460)" />
-                <ellipse class="contact-shadow" cx="510" cy="1455" rx="225" ry="28" />
+                <ellipse class="cast-shadow" cx="420" cy="1525" rx="170" ry="36" transform="rotate(9 420 1525)" />
+                <ellipse class="cast-shadow" cx="775" cy="1530" rx="185" ry="38" transform="rotate(9 775 1530)" />
+                <ellipse class="contact-shadow" cx="345" cy="1505" rx="70" ry="15" />
+                <ellipse class="contact-shadow" cx="710" cy="1510" rx="102" ry="16" />
               }
             </svg>
             <app-soldier-portrait [src]="player.image" [description]="player.imageAlt" [index]="$index" [inactive]="!!player.inactive" [design]="design()" />

@@ -160,9 +160,11 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 /* Scale the seated pose and its ground shadow together, keeping floor contact. */
 .soldier.seated .soldier-portrait { transform:translateY(2%) scale(-.82,.82); transform-origin:50% 85%; }
 .soldier-ground-shadow { position:absolute; inset:0; z-index:-1; width:100%; height:100%; pointer-events:none; overflow:visible; }
-.cast-shadow { fill:#0005; filter:blur(22px); }
-.chair-seat-shadow { fill:#0004; filter:blur(28px); }
-.contact-shadow { fill:#0008; filter:blur(9px); }
+.soldier-ground-shadow { --cast-shadow-color:#17150f4d; --contact-shadow-color:#0c0b08a6; }
+:root[data-design="urban-night"] .soldier-ground-shadow { --cast-shadow-color:#02071270; --contact-shadow-color:#01040bc2; }
+.cast-shadow { fill:var(--cast-shadow-color); filter:blur(28px); }
+.chair-seat-shadow { fill:var(--cast-shadow-color); filter:blur(36px); }
+.contact-shadow { fill:var(--contact-shadow-color); filter:blur(5px); }
 @media(min-width:761px) {
   .soldier-portrait { flex:1; height:0; min-height:0; aspect-ratio:auto; }
   .soldier-portrait .soldier-image { width:100%; height:100%; }
