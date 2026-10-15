@@ -23,7 +23,6 @@
             </svg>
             <app-soldier-portrait [src]="player.image" [description]="player.imageAlt" [index]="$index" [inactive]="!!player.inactive" [design]="design()" />
           </span>
-          @if (!player.inactive && (!squadActive() || selected() !== $index)) { <span class="selection-marker" aria-hidden="true">+</span> }
           <span class="soldier-label"><span class="slot-number">0{{ $index + 1 }} / MV</span><strong>{{ player.name }}</strong><span class="selection-caption">{{ player.inactive ? 'INAKTIV' : squadActive() && selected() === $index ? 'AUSGEWÄHLT' : 'AUSWÄHLEN' }}</span></span>
         </button>
       }

@@ -78,7 +78,6 @@ h1 { font:700 clamp(42px,4.1vw,70px)/.95 'Barlow Condensed',Impact,sans-serif; m
 .soldier.selected .slot-number,.soldier.selected .selection-caption { color:var(--ink); }
 .soldier.selected .selection-caption { font-weight:700; }
 .soldier:focus-visible { outline-offset:-4px; z-index:2; }
-.selection-marker { position:absolute; top:4%; left:50%; transform:translateX(-50%); color:#ffffff80; font-size:18px; }
 .soldier-label { display:grid; gap:6px; width:100%; padding:16px 12px 18px; border-left:1px solid #dce4d922; }
 .slot-number { color:var(--muted); font-size:9px; letter-spacing:1.5px; }
 .soldier-label strong { font:600 clamp(14px,1.5vw,24px) 'Barlow Condensed',sans-serif; overflow-wrap:anywhere; }
@@ -121,7 +120,6 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 .soldier { display:flex; flex-direction:column; align-items:stretch; background:transparent; overflow:hidden; }
 .soldier-image { display:block; width:100%; height:auto; aspect-ratio:2 / 3; object-fit:contain; }
 .soldier-label { position:relative; min-height:94px; background:var(--label-background); border-left-color:var(--line); }
-.selection-marker { z-index:1; }
 @media(max-width:760px) { .soldier-label { min-height:80px; } }
 
 /* Fit the desktop scene to the available height, independently of its width. */

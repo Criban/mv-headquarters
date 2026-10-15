@@ -4,7 +4,7 @@
 .member-badge { background:var(--accent); color:var(--ink); padding:5px 8px; font-weight:700; }
 h2 { font:600 clamp(28px,2.6vw,40px)/1.1 'Barlow Condensed',sans-serif; margin:12px 0; overflow-wrap:anywhere; }
 .player-description { color:var(--muted); font-size:14px; line-height:1.5; margin:0 0 20px; }
-.stats-panel { min-height:150px; background:var(--surface-glass); }
+.stats-panel { min-height:150px; padding:0 16px 12px; background:var(--surface-glass); }
 .main-stat { display:flex; align-items:center; justify-content:space-between; height:114px; padding:20px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .main-stat > span { font-size:18px; font-weight:600; }
 small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter-spacing:1.5px; }
