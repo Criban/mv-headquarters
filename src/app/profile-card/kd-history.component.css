@@ -1,6 +1,6 @@
 :host { display:contents; }
 dialog { width:min(760px,calc(100vw - 32px)); max-height:calc(100svh - 32px); overflow:auto; padding:28px; border:1px solid var(--line); background:radial-gradient(ellipse at 90% 0%,var(--accent-soft),transparent 65%),var(--surface); color:var(--text); box-shadow:0 24px 100px #0008; }
-dialog::backdrop { background:#040813bb; backdrop-filter:blur(5px); }
+dialog::backdrop { background:var(--backdrop); backdrop-filter:blur(5px); }
 header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
 .eyebrow { color:var(--muted); font-size:10px; letter-spacing:1.5px; margin:0 0 8px; overflow-wrap:anywhere; }
 h2 { font:600 36px/1 'Barlow Condensed',sans-serif; margin:0; }

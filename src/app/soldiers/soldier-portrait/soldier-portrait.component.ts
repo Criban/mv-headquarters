@@ -1,4 +1,6 @@
-﻿import { Component, input, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
+
+import { CURRENT_DESIGN, type DesignPreset } from '../../data/designs';
 
 @Component({
   selector: 'app-soldier-portrait',
@@ -8,6 +10,7 @@
   styleUrl: './soldier-portrait.component.css',
 })
 export class SoldierPortraitComponent {
+  readonly design = input<DesignPreset>(CURRENT_DESIGN);
   readonly src = input.required<string>();
   readonly description = input.required<string>();
   readonly index = input(0);

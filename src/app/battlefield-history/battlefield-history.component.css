@@ -23,7 +23,7 @@ h2 { font:600 clamp(22px,2.5vw,38px)/1.1 'Barlow Condensed',sans-serif; margin:0
   .history-panel { display:none; }
   .history-dialog[open] { display:block; }
   .history-dialog { position:fixed; inset:0; width:calc(100% - 24px); max-width:560px; max-height:calc(100dvh - 24px); margin:auto; padding:0 20px 20px; overflow:auto; overscroll-behavior:contain; color:var(--text); background:var(--surface); border:1px solid var(--line); box-shadow:0 20px 80px #0009; }
-  .history-dialog::backdrop { background:#040813cc; }
+  .history-dialog::backdrop { background:var(--backdrop); }
   .history-dialog-header { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 0; background:var(--surface); }
   .history-dialog-header .eyebrow { margin:0; font-size:9px; }
   .history-dialog-header button { flex-shrink:0; }

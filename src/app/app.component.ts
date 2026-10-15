@@ -1,4 +1,6 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { CURRENT_DESIGN, DESIGNS, type DesignPreset } from './data/designs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY } from 'rxjs';
 import { ProfileCardComponent, type PlayerProfile } from './profile-card/profile-card.component';
@@ -14,6 +16,9 @@ import { VideosComponent } from './videos/videos.component';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+  private readonly document = inject(DOCUMENT);
+  readonly designs = DESIGNS;
+  readonly design = signal<DesignPreset>(this.readDesign());
   readonly view = signal<'squad' | 'clan' | 'videos'>('clan');
   readonly selected = signal(0);
   readonly historyOpen = signal(false);
@@ -33,6 +38,7 @@ export class AppComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.applyDesign();
     removeLegacyStatsHistory();
     for (const player of this.players.filter(player => !player.privateProfile)) {
       this.statsService.getStats(player.name, player.id).pipe(
@@ -41,6 +47,27 @@ export class AppComponent {
         this.recordStats({ playerId: player.id, stats });
       });
     }
+  }
+  private readDesign(): DesignPreset {
+    try {
+      const id = this.document.defaultView?.localStorage.getItem('mv-design');
+      return DESIGNS.find(design => design.id === id) ?? CURRENT_DESIGN;
+    } catch {
+      return CURRENT_DESIGN;
+    }
+  }
+  setDesign(id: string): void {
+    const design = DESIGNS.find(preset => preset.id === id);
+    if (!design) return;
+    this.design.set(design);
+    this.applyDesign();
+    try {
+      this.document.defaultView?.localStorage.setItem('mv-design', id);
+    } catch { /* Design switching works even when browser storage is unavailable. */ }
+  }
+  private applyDesign(): void {
+    this.document.documentElement.dataset['design'] = this.design().id;
+    this.document.querySelector('meta[name="theme-color"]')?.setAttribute('content', this.design().browserColor);
   }
   toggleHistory(): void { this.historyOpen.update(open => !open); }
   closeHistory(): void { this.historyOpen.set(false); }
