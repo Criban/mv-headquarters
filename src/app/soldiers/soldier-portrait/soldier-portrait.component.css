@@ -1,4 +1,4 @@
-.criban-rig g,.blackhawk-rig g { transform-box:view-box; }
+svg.soldier-image g { transform-box:view-box; }
 .ribcage { transform-origin:51% 41%; animation:chest-breath 4.8s ease-in-out infinite; }
 .head { transform-origin:50% 17%; animation:head-breath 4.8s ease-in-out infinite; }
 .arm-left { transform-origin:36% 18%; animation:left-arm-breath 4.8s ease-in-out infinite; }
@@ -6,6 +6,25 @@
 .blackhawk-rig g { animation-duration:5.7s; animation-delay:-2.1s; }
 .criban-rig g { animation-duration:4.6s; animation-delay:-.4s; }
 .arms-weapon { transform-origin:44% 20%; animation:aiming-breath 5.2s ease-in-out -1.3s infinite; }
+.kingcoffee-rig g { animation-duration:6.2s; animation-delay:-3.3s; }
+.kingcoffee-rig .ribcage { transform-origin:50% 46%; }
+.kingcoffee-rig .arms-weapon { transform-origin:50% 32%; }
+.seated-rig g { animation-duration:7.3s; animation-delay:-4.8s; }
+.seated-rig .ribcage { transform-origin:48% 53%; animation-name:seated-chest-breath; }
+.seated-rig .head { transform-origin:45% 32%; animation-name:seated-head-breath; }
+.resting-arms { transform-origin:50% 51%; animation:resting-arm-breath 7.3s ease-in-out -4.8s infinite; }
+@keyframes seated-chest-breath {
+  0%,100% { transform:translateY(0) scale(1); }
+  45% { transform:translateY(-2px) scale(1.012,1.018); }
+}
+@keyframes seated-head-breath {
+  0%,100% { transform:translateY(0) rotate(0); }
+  45% { transform:translateY(-5px) rotate(.12deg); }
+}
+@keyframes resting-arm-breath {
+  0%,100% { transform:translateY(0); }
+  45% { transform:translateY(-1.5px); }
+}
 /* Static portraits breathe gently around their ground contact point. */
 img.soldier-image { transform-origin:50% 95%; animation:portrait-breath 7.3s ease-in-out -4.8s infinite; }
 img.kingcoffee-portrait { animation-duration:6.2s; animation-delay:-3.3s; }
@@ -33,4 +52,4 @@ img.kingcoffee-portrait { animation-duration:6.2s; animation-delay:-3.3s; }
   0%,100% { transform:translateY(0) rotate(0); }
   45% { transform:translateY(-7px) rotate(-.25deg); }
 }
-@media(prefers-reduced-motion:reduce) { .criban-rig g,.blackhawk-rig g,img.soldier-image { animation:none; } }
+@media(prefers-reduced-motion:reduce) { svg.soldier-image g,img.soldier-image { animation:none; } }

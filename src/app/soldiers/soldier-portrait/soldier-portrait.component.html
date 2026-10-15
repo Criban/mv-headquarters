@@ -43,6 +43,34 @@
       <image href="images/criban-rig/head.png" x="245" y="0" width="512" height="768" (error)="failed.set(true)" />
     </g>
   </svg>
+} @else if (index() === 2 && !failed()) {
+  <svg class="soldier-image kingcoffee-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
+    role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
+    <image href="images/kingcoffee-rig/legs.png" width="1024" height="1536" (error)="failed.set(true)" />
+    <g class="ribcage">
+      <image href="images/kingcoffee-rig/torso.png" x="230" y="20" width="552.96" height="921.6" preserveAspectRatio="none" (error)="failed.set(true)" />
+    </g>
+    <g class="head">
+      <image href="images/kingcoffee-rig/head.png" x="280" y="5" width="460.8" height="691.2" (error)="failed.set(true)" />
+    </g>
+    <g class="arms-weapon">
+      <image href="images/kingcoffee-rig/arms-weapon.png" x="210" y="0" width="665.6" height="1090.56" preserveAspectRatio="none" (error)="failed.set(true)" />
+    </g>
+  </svg>
+} @else if (index() === 3 && !failed()) {
+  <svg class="soldier-image seated-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
+    role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
+    <image href="images/54bi44-rig/base.png" x="45" y="115" width="942.08" height="1413.12" (error)="failed.set(true)" />
+    <g class="resting-arms">
+      <image href="images/54bi44-rig/arms.png" x="50" y="20" width="870.4" height="1305.6" (error)="failed.set(true)" />
+    </g>
+    <g class="ribcage">
+      <image href="images/54bi44-rig/torso.png" x="200" y="180" width="583.68" height="875.52" (error)="failed.set(true)" />
+    </g>
+    <g class="head">
+      <image href="images/54bi44-rig/head.png" x="164" y="93" width="624.64" height="936.96" (error)="failed.set(true)" />
+    </g>
+  </svg>
 } @else {
   <img class="soldier-image" [class.kingcoffee-portrait]="index() === 2" [src]="src()" [alt]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" width="1024" height="1536">
 }
