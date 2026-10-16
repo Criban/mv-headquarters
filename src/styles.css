@@ -176,6 +176,9 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   .soldier-portrait { display:block; height:clamp(160px,42vw,280px); overflow:hidden; }
   .soldier-image { width:180%; max-width:none; margin-left:-40%; height:auto; }
   .soldier-ground-shadow { width:180%; height:auto; aspect-ratio:2 / 3; left:-40%; }
+  /* Keep the companion visible beside KingCoffee in the narrow portrait crop. */
+  .soldier-portrait:has(.kingcoffee-rig) .soldier-image { width:150%; margin-left:-4%; }
+  .soldier-portrait:has(.kingcoffee-rig) .soldier-ground-shadow { width:150%; left:-4%; }
   .history-open { min-height:0; }
   .history-open .soldier-buttons { transform:none; }
   .history-open .soldier:not(.selected) { opacity:1; visibility:visible; }

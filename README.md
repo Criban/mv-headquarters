@@ -1,6 +1,6 @@
 # MV / Battlefield
 
-Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. MV-8lackh4wk, MV-Criban, MV-KingCoffee und MV-54bI44 sind per Klick oder Tastatur auswählbar. Die Statistikansicht zeigt die BF6-Werte des ausgewählten Spielers. MV-KingCoffee und MV-54bI44 haben private Profile und lösen keine API-Abfragen aus. MV-KingCoffee lehnt mit einem Kaffeebecher an einer Versorgungskiste und wird aus vier separaten Bildebenen animiert (public/images/kingcoffee-coffee-rig/). MV-54bI44 sitzt während seiner Einsatzpause auf einem Campingstuhl. Sein Porträt liegt in `public/images/54bi44-camping-chair.png`.
+Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. MV-8lackh4wk, MV-Criban, MV-KingCoffee und MV-54bI44 sind per Klick oder Tastatur auswählbar. Die Statistikansicht zeigt die BF6-Werte des ausgewählten Spielers. MV-KingCoffee und MV-54bI44 haben private Profile und lösen keine API-Abfragen aus. MV-KingCoffee lehnt mit einem Kaffeebecher an einer Versorgungskiste und wird aus vier separaten Bildebenen animiert; links leicht hinter ihm steht ein Schäferhund als fünfte Bildebene (public/images/kingcoffee-coffee-rig/). MV-54bI44 sitzt während seiner Einsatzpause auf einem Campingstuhl. Sein Porträt liegt in `public/images/54bi44-camping-chair.png`.
 
 Die Battlefield-Historie lässt sich für öffentliche Profile öffnen.
 
