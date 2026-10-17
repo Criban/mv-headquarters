@@ -8,10 +8,10 @@
       <button type="button" [class.active]="view() === 'videos'" [attr.aria-current]="view() === 'videos' ? 'page' : null" (click)="view.set('videos'); closeHistory()">VIDEOS</button>
     </nav>
     <label class="design-picker">
-      <span>DESIGN</span>
+      <span>EINSATZORT</span>
       <select #designSelect (change)="setDesign(designSelect.value)">
         @for (preset of designs; track preset.id) {
-          <option [value]="preset.id" [selected]="preset.id === design().id">{{ preset.current ? 'Aktuell' : 'Archiv' }} · {{ preset.name }}</option>
+          <option [value]="preset.id" [selected]="preset.id === design().id">{{ preset.name }}</option>
         }
       </select>
     </label>
