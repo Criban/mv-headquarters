@@ -29,6 +29,16 @@
 } @else if (index() === 1 && !failed()) {
   <svg class="soldier-image criban-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
     role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient [attr.id]="'criban-ground-shadow-' + index()">
+        <stop offset="0" stop-color="#080b0c" stop-opacity=".78" />
+        <stop offset=".45" stop-color="#080b0c" stop-opacity=".48" />
+        <stop offset="1" stop-color="#080b0c" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    <!-- Fixed sole contact shadows stay on the floor while the upper body breathes. -->
+    <ellipse cx="359" cy="1486" rx="126" ry="28" [attr.fill]="'url(#criban-ground-shadow-' + index() + ')'" />
+    <ellipse cx="721" cy="1508" rx="106" ry="26" [attr.fill]="'url(#criban-ground-shadow-' + index() + ')'" />
     <image href="images/criban-black-rig/legs.png" x="130" y="450" width="768" height="1152" (error)="failed.set(true)" />
     <g class="arm-right">
       <image href="images/criban-black-rig/arm-right.png" x="310" y="210" width="512" height="768" (error)="failed.set(true)" />

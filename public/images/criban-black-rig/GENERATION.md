@@ -18,6 +18,8 @@ Edit target: the new whole portrait. Preserve exact skin, materials, lighting an
 
 Torso, head and both arms retain separate breathing animations. The arm/rifle layer renders in front of the torso. Scene lighting, reduced-motion support and whole-portrait fallback apply to the updated skin.
 
+Two fixed SVG radial contact shadows sit directly beneath the soles at (359, 1486) and (721, 1508) in the assembled portrait. They anchor the boots to the scene floor and remain stationary with the leg layer throughout the breathing cycle.
+
 ## Duplicate-arm correction
 
 The initial torso extraction retained short upper sleeves and shoulder caps, producing a second arm contour behind the independent arm layers. A built-in `image_gen` edit removes both complete sleeves and outer shoulder caps from the torso while preserving the central collar, vest, harness, pouches, textures, lighting and transparent canvas. Small cloth shoulder sockets remain for overlap; the separate arm layers supply the complete arms and shoulder armor.
