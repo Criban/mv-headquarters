@@ -4,7 +4,7 @@ Created with the built-in image_gen tool from the approved coffee-break portrait
 
 Base (legs and crate) stays fixed. Torso with slung rifle, head, and arms with mug breathe on a shared 6.2-second cycle. Arms move only 1.2 source pixels to maintain contact with the crate. Scene lighting applies to the assembled portrait. Layer loading failures fall back to the approved whole portrait; reduced motion disables animation.
 
-The fifth layer, `dog.png`, is a transparent 1024 x 1536 German shepherd asset created with the built-in image_gen tool from the approved companion sketch. It is placed behind the existing character layers at x=-20, y=560, width=560, height=840. Its paws sit slightly behind the soldier's ground contact, with separate ground shadows. The dog receives the same scene lighting as the soldier. The mobile crop includes the dog beside KingCoffee.
+The unused `dog.png` is a transparent 1024 x 1536 German shepherd asset created with the built-in image_gen tool from the approved companion sketch. The companion, its ground shadows, and its mobile crop adjustment have been removed from the portrait.
 
 Dog generation prompt: Create only the German shepherd from the approved sketch, complete and unoccluded on a transparent background. Preserve upright ears, calm alert face looking left, black and tan coat, standing pose, and dark olive-black tactical harness. Reconstruct the body and all four legs where covered. Three-quarter front view, hindquarters receding right, tail down. Convert the sketch into a realistic military-game 3D character render with detailed fur and fabric, soft neutral daylight and restrained colors. Full body centered with transparent margins. No soldier, weapons, crate, floor, shadows, text, or background.
 

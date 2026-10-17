@@ -46,7 +46,6 @@
 } @else if (index() === 2 && !failed()) {
   <svg class="soldier-image kingcoffee-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
     role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
-    <image href="images/kingcoffee-coffee-rig/dog.png" x="-20" y="560" width="560" height="840" />
     <image href="images/kingcoffee-coffee-rig/base.png" y="25" width="1024" height="1536" (error)="failed.set(true)" />
     <g class="ribcage">
       <image href="images/kingcoffee-coffee-rig/torso.png" x="190" y="135" width="614.4" height="921.6" (error)="failed.set(true)" />
