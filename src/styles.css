@@ -81,18 +81,18 @@ h1 { font:700 clamp(42px,4.1vw,70px)/.95 'Barlow Condensed',Impact,sans-serif; m
 .soldier.selected::after { content:''; position:absolute; inset:0; border:2px solid var(--accent); pointer-events:none; z-index:1; }
 /* Surface lighting is clipped to portrait alpha, preserving the animated rigs.
    Match diffuse daylight and dusty warm bounce light without silhouette outlines. */
-.soldier { --portrait-brightness:.96; --portrait-selected-brightness:.96; --portrait-saturation:.85; }
+.soldier { --portrait-brightness:.96; --portrait-selected-brightness:.96; --portrait-saturation:.85; --portrait-contrast:.96; }
 .soldier:nth-child(1) { --portrait-brightness:.98; --portrait-selected-brightness:.98; }
 .soldier:nth-child(2) { --portrait-brightness:.93; --portrait-selected-brightness:.93; }
 .soldier:nth-child(3) { --portrait-brightness:.95; --portrait-selected-brightness:.95; }
 /* Keep the seated portrait's olive fabric subdued while retaining its material color. */
 .soldier.seated { --portrait-brightness:.89; --portrait-selected-brightness:.89; --portrait-saturation:.50; }
-:root[data-design="urban-night"] .soldier { --portrait-brightness:.83; --portrait-selected-brightness:.83; }
+:root[data-design="urban-night"] .soldier { --portrait-brightness:.83; --portrait-selected-brightness:.83; --portrait-contrast:1.02; }
 :root[data-design="urban-night"] .soldier:nth-child(1) { --portrait-brightness:.85; --portrait-selected-brightness:.85; }
 :root[data-design="urban-night"] .soldier:nth-child(2) { --portrait-brightness:.80; --portrait-selected-brightness:.80; }
 :root[data-design="urban-night"] .soldier:nth-child(3) { --portrait-brightness:.82; --portrait-selected-brightness:.82; }
 :root[data-design="urban-night"] .soldier.seated { --portrait-brightness:.76; --portrait-selected-brightness:.76; }
-.soldier .soldier-image { filter:saturate(var(--portrait-saturation)) var(--portrait-light-filter) contrast(1.02) brightness(calc(var(--portrait-brightness) * (.94 + var(--scene-portrait-light,1) * .08))); transition:filter 3s ease; }
+.soldier .soldier-image { filter:saturate(var(--portrait-saturation)) var(--portrait-light-filter) contrast(var(--portrait-contrast)) brightness(calc(var(--portrait-brightness) * (.94 + var(--scene-portrait-light,1) * .08))); transition:filter 3s ease; }
 .soldier.selected .soldier-image { --portrait-brightness:var(--portrait-selected-brightness); }
 .soldier.selected .soldier-label { background:var(--accent); color:var(--ink); }
 .soldier.selected .slot-number,.soldier.selected .selection-caption { color:var(--ink); }
