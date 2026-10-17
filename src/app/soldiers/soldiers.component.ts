@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, DestroyRef, inject, input, model, NgZone, output, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, model, NgZone, output, PLATFORM_ID, signal } from '@angular/core';
 import { BattlefieldHistoryComponent } from '../battlefield-history/battlefield-history.component';
 import type { PlayerProfile } from '../profile-card/profile-card.component';
 import type { Bf6Stats } from '../services/bf6-stats.service';
@@ -24,6 +24,24 @@ export class SoldiersComponent {
   readonly stats = input<Bf6Stats | null>(null);
   readonly historyOpen = model(false);
   readonly soldierSelected = output<number>();
+  readonly showOnBreak = signal(false);
+  readonly onBreakCount = computed(() => this.players().filter(player => player.onBreak).length);
+  readonly visiblePlayers = computed(() => this.players()
+    .map((player, index) => ({ player, index }))
+    .filter(({ player }) => this.showOnBreak() || !player.onBreak));
+  // The history panel occupies the right two thirds of the scene.
+  readonly sceneColumns = computed(() => this.squadActive() && this.historyOpen()
+    ? Math.max(3, this.visiblePlayers().length) : this.visiblePlayers().length);
+  readonly selectedColumn = computed(() => this.visiblePlayers().findIndex(({ index }) => index === this.selected()));
+
+  toggleOnBreak(): void {
+    if (this.showOnBreak() && this.players()[this.selected()]?.onBreak) {
+      const firstActive = this.players().findIndex(player => !player.onBreak && !player.inactive);
+      this.historyOpen.set(false);
+      if (firstActive >= 0) this.soldierSelected.emit(firstActive);
+    }
+    this.showOnBreak.update(show => !show);
+  }
 
   constructor() {
     const destroyRef = inject(DestroyRef);

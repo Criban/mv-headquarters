@@ -48,6 +48,12 @@ h1 { font:700 clamp(42px,4.1vw,70px)/.95 'Barlow Condensed',Impact,sans-serif; m
 .intro { font-size:15px; color:var(--muted); line-height:1.6; margin:0 0 28px; }
 .data-note { margin:25px 0 0; color:var(--muted); font-size:9px; letter-spacing:1px; line-height:1.8; }
 .soldiers { min-width:0; }
+.soldier-stage { position:relative; min-height:0; }
+.soldier-stage.has-break-toggle { padding-right:40px; }
+.break-toggle { position:absolute; inset:0 0 0 auto; width:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:12px 0; border:1px solid var(--line); background:var(--surface-glass); color:var(--accent); cursor:pointer; }
+.break-toggle:hover { background:var(--accent-hover); }
+.break-toggle:focus-visible { outline-offset:-4px; }
+.break-toggle-label { writing-mode:vertical-rl; font-size:10px; font-weight:600; letter-spacing:1.5px; }
 .scene-top,.scene-bottom { display:flex; justify-content:space-between; align-items:center; gap:15px; color:var(--muted); font-size:9px; letter-spacing:1.5px; padding:16px 5px; }
 .scene-top { border-bottom:1px solid var(--line); }
 .soldier-scene { position:relative; aspect-ratio:3 / 2; }

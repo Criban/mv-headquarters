@@ -16,6 +16,7 @@ export interface PlayerProfile {
   imageAlt: string;
   privateProfile?: boolean;
   inactive?: boolean;
+  onBreak?: boolean;
 }
 
 @Component({
