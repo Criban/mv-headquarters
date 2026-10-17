@@ -21,7 +21,9 @@ Die Profile samt Tracker-Links stehen im typisierten `players`-Array in `src/mai
 
 Die Porträts werden in `players[].image` in `src/app/app.component.ts` festgelegt. Blackhawk trägt den Kapuzen-Skin mit M16 ohne Vordergriff und rundem Thermalvisier und schaut und zielt nach vorne in den Vordergrund statt seitlich auf Criban (`public/images/8lackh4wk-forward-m16.png`); seine vier Animationsebenen und Bildprompts liegen in `public/images/blackhawk-forward-rig/`. Die Ebenen werden in `src/app/soldiers/soldier-portrait/soldier-portrait.component.html` ausgerichtet. Auf Mobilgeräten steht die Auswahl oberhalb der Statistiken.
 
-Die generierten Soldatenbilder liegen in `public/images/criban.png` und `public/images/8lackh4wk.png`. Prompts und Herkunft sind in `public/images/GENERATION.md` dokumentiert. Angular kopiert `public/` in den Build. Schriften werden von Google Fonts geladen; ohne Netzwerk greifen lokale Ersatzschriften.
+Criban trägt eine schwarze Vollgesichtsmaske und einen Helm mit hochgeklapptem Nachtsichtgerät. Er hält sein Gewehr einhändig schräg vor dem Körper, mit dem Lauf nach unten (`public/images/criban-black-armor-low-ready.png`). Seine fünf Animationsebenen und die Bildprompts liegen in `public/images/criban-black-rig/`.
+
+Weitere Bildprompts und Herkunft sind in `public/images/GENERATION.md` dokumentiert. Angular kopiert `public/` in den Build. Schriften werden von Google Fonts geladen; ohne Netzwerk greifen lokale Ersatzschriften.
 
 `Bf6StatsService` lädt K/D, Matches und Spielzeit über `/bf6/stats/`. Die Stunden werden aus `secondsPlayed / 3600` berechnet (numerische Entsprechung zu `timePlayed`). Der Rang kommt separat aus `/bf6/profile/`, Feld `playerProfiles[0].playerCard.rank`. Schlägt nur die Profilabfrage fehl, bleiben die anderen Werte sichtbar; der Rang wird als nicht verfügbar markiert. Die Karten zeigen Lade- und Fehlerzustände mit Wiederholen-Button. Die API kann Daten zwischenspeichern; die Werte sind keine Echtzeit-Spielstände.
 

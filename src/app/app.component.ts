@@ -30,7 +30,7 @@ export class AppComponent {
   }
   readonly players: PlayerProfile[] = [
     { id: '1811857213', image: 'images/8lackh4wk-forward-m16.png', imageAlt: 'Soldat mit grauer Kapuze, dunkler Schutzbrille und Gesichtsmaske schaut nach vorne und zielt mit einer M16 ohne Vordergriff und mit rundem Thermalvisier in den Vordergrund', name: 'MV-8lackh4wk', description: 'Born to Rush, built to destroy.' },
-    { id: '353727533', image: 'images/criban-gasmask-soldier.png', imageAlt: 'Soldat mit Gasmaske, Helm und dunkler taktischer Ausrüstung', name: 'MV-Criban', description: 'Wir geben unser Bestes – meistens reicht\'s.' },
+    { id: '353727533', image: 'images/criban-black-armor-low-ready.png', imageAlt: 'Soldat mit schwarzer Vollgesichtsmaske, Helm mit hochgeklapptem Nachtsichtgerät und dunkler Rüstung hält sein Gewehr einhändig schräg vor dem Körper mit dem Lauf nach unten', name: 'MV-Criban', description: 'Wir geben unser Bestes – meistens reicht\'s.' },
     { id: 'unknown', image: 'images/kingcoffee-coffee-break.png', imageAlt: 'Soldat mit Helm und Sonnenbrille lehnt entspannt mit einem Kaffeebecher an einer Versorgungskiste.', name: 'MV-KingCoffee', description: 'Noch einen Kaffee. Dann vielleicht.', privateProfile: true, onBreak: true },
     { id: '1008896742053', image: 'images/54bi44-camping-chair.png', imageAlt: 'Soldat mit Kapuze und Schutzbrille sitzt entspannt auf einem Campingstuhl', name: 'MV-54bI44', description: 'Kurze Einsatzpause.', onBreak: true },
   ];
