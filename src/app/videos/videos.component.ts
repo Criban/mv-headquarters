@@ -10,8 +10,8 @@ import { SQUAD_VIDEOS } from '../data/videos';
 })
 export class VideosComponent {
   private readonly sanitizer = inject(DomSanitizer);
-  readonly videos = SQUAD_VIDEOS;
-  readonly selected = signal(this.videos[0]);
+  readonly videos = [...SQUAD_VIDEOS].reverse();
+  readonly selected = signal(this.videos[Math.floor(Math.random() * this.videos.length)]);
   readonly playerUrl = computed(() => this.sanitizer.bypassSecurityTrustResourceUrl(
     `https://www.youtube-nocookie.com/embed/${this.selected().id}?playsinline=1&rel=0`,
   ));

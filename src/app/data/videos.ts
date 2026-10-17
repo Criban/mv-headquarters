@@ -3,7 +3,7 @@ export interface SquadVideo {
   title: string;
 }
 
-// Neue Shorts hier ergänzen. Die Reihenfolge entspricht der Video-Auswahl.
+// Neue Shorts unten ergänzen. Die Video-Auswahl zeigt die neuesten zuerst.
 export const SQUAD_VIDEOS: readonly SquadVideo[] = [
   { id: 'S_lo5pVSCRg', title: 'Ehrenmate in letzter Sekunde' },
   { id: 'Gg72FdawYWs', title: 'Thanks for Standing Still' },
@@ -17,4 +17,5 @@ export const SQUAD_VIDEOS: readonly SquadVideo[] = [
   { id: 'Z7blPZ9gbVw', title: 'Wenn das ganze Team da steht' },
   { id: 'inbxlK1G8hQ', title: 'Was passiert hier denn?' },
   { id: 'ode9q5VBj78', title: 'Wenn ich es schaffe...' },
+  { id: '41IbFY5jXh0', title: '1v1 oder Tanzkurs?'},
 ];
