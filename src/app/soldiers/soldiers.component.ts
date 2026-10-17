@@ -6,7 +6,7 @@ import type { Bf6Stats } from '../services/bf6-stats.service';
 import { SoldierPortraitComponent } from './soldier-portrait/soldier-portrait.component';
 import { getBerlinLighting } from './hangar-lighting';
 
-import { CURRENT_DESIGN, type DesignPreset } from '../data/designs';
+import { CURRENT_DESIGN, DESIGNS, type DesignPreset } from '../data/designs';
 
 @Component({
   selector: 'app-soldiers',
@@ -16,6 +16,7 @@ import { CURRENT_DESIGN, type DesignPreset } from '../data/designs';
   templateUrl: './soldiers.component.html',
 })
 export class SoldiersComponent {
+  readonly designs = DESIGNS;
   readonly design = input<DesignPreset>(CURRENT_DESIGN);
   readonly lighting = signal(getBerlinLighting());
   readonly players = input.required<PlayerProfile[]>();

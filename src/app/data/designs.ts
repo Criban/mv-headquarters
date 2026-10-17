@@ -1,6 +1,8 @@
 export interface DesignPreset {
   id: string;
   name: string;
+  preview: string;
+  description: string;
   current: boolean;
   browserColor: string;
   portraitMatrix: string;
@@ -13,12 +15,14 @@ export interface DesignPreset {
 export const DESIGNS: readonly DesignPreset[] = [
   {
     id: 'rooftop-daylight', name: 'Stadteinsatz', current: true,
+    preview: 'images/rooftop-city-daylight.png', description: 'Über den Dächern · Tageslicht',
     browserColor: '#191e1c',
     portraitMatrix: '1.03 0 0 0 0  0 1.01 0 0 0  0 0 .96 0 0  0 0 0 1 0',
     portraitLightMap: 'portrait-daylight-light', portraitLightStrength: .55,
   },
   {
     id: 'urban-night', name: 'Urban Night', current: false,
+    preview: 'images/hangar-urban-night.png', description: 'Im Hangar · Nachtbeleuchtung',
     browserColor: '#090e1b',
     portraitMatrix: '.92 0 0 0 0  0 .98 0 0 0  0 0 1.08 0 0  0 0 0 1 0',
     portraitLightMap: 'portrait-night-light', portraitLightStrength: .68,

@@ -7,14 +7,22 @@
       <button type="button" [class.active]="view() === 'squad'" [attr.aria-current]="view() === 'squad' ? 'page' : null" (click)="view.set('squad')">SQUAD</button>
       <button type="button" [class.active]="view() === 'videos'" [attr.aria-current]="view() === 'videos' ? 'page' : null" (click)="view.set('videos'); closeHistory()">VIDEOS</button>
     </nav>
-    <label class="design-picker">
-      <span>EINSATZORT</span>
-      <select #designSelect (change)="setDesign(designSelect.value)">
+    <div class="design-picker" (keydown.escape)="closeLocationPicker(locationTrigger); $event.stopPropagation()" (focusout)="!$any($event.currentTarget).contains($event.relatedTarget) && locationPickerOpen.set(false)">
+      <span id="location-label">EINSATZORT</span>
+      <button #locationTrigger class="location-trigger" type="button" aria-controls="location-options" [attr.aria-expanded]="locationPickerOpen()" aria-labelledby="location-label location-name" (click)="locationPickerOpen.set(!locationPickerOpen())">
+        <span id="location-name">{{ design().name }}</span><span class="location-chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div id="location-options" class="location-options" [hidden]="!locationPickerOpen()" role="group" aria-label="Einsatzort auswählen">
+        <p class="location-heading">EINSATZORT WÄHLEN</p>
         @for (preset of designs; track preset.id) {
-          <option [value]="preset.id" [selected]="preset.id === design().id">{{ preset.name }}</option>
+          <button type="button" class="location-option" [class.is-selected]="preset.id === design().id" [attr.aria-pressed]="preset.id === design().id" (click)="setDesign(preset.id); closeLocationPicker(locationTrigger)">
+            <img [src]="preset.preview" alt="" width="240" height="160">
+            <span class="location-option-copy"><strong>{{ preset.name }}</strong><small>{{ preset.description }}</small></span>
+            <span class="location-check" aria-hidden="true">{{ preset.id === design().id ? '✓' : '↗' }}</span>
+          </button>
         }
-      </select>
-    </label>
+      </div>
+    </div>
   </header>
   <main id="main" [class.lobby]="view() !== 'videos'" [class.video-page]="view() === 'videos'">
     @if (view() === 'videos') {

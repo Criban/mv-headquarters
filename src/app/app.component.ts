@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, HostListener, inject, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CURRENT_DESIGN, DESIGNS, type DesignPreset } from './data/designs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -19,6 +19,19 @@ export class AppComponent {
   private readonly document = inject(DOCUMENT);
   readonly designs = DESIGNS;
   readonly design = signal<DesignPreset>(this.readDesign());
+  readonly locationPickerOpen = signal(false);
+
+  @HostListener('document:click', ['$event'])
+  closeLocationPickerOutside(event: MouseEvent): void {
+    if (!(event.target instanceof Element) || !event.target.closest('.design-picker')) {
+      this.locationPickerOpen.set(false);
+    }
+  }
+
+  closeLocationPicker(trigger: HTMLButtonElement): void {
+    this.locationPickerOpen.set(false);
+    trigger.focus();
+  }
   readonly view = signal<'squad' | 'clan' | 'videos'>('clan');
   readonly selected = signal(0);
   readonly historyOpen = signal(false);

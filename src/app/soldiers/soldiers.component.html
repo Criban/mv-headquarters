@@ -6,12 +6,14 @@
     [style.--scene-portrait-light]="lighting().portraitLight" [style.--scene-warmth]="lighting().warmth"
     [style.--scene-sunlight]="lighting().sunlight" [style.--scene-night-tint]="lighting().nightTint">
     <div class="hangar-stage" aria-hidden="true">
-      <div class="hangar-world">
-        @if (design().id === 'rooftop-daylight') {
+      @for (preset of designs; track preset.id) {
+      <div class="hangar-world" [class.scene-visible]="preset.id === design().id" [attr.data-scene]="preset.id" [style.background-image]="'url(' + preset.preview + ')'">
+        @if (preset.id === 'rooftop-daylight') {
           <span class="city-smoke city-smoke-east"></span>
           <span class="city-smoke city-smoke-west"></span>
         }
       </div>
+      }
     </div>
 
     <div class="soldier-buttons" id="soldier-roster">
