@@ -15,15 +15,15 @@
 @if (index() === 0 && !failed()) {
   <svg class="soldier-image blackhawk-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
     role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
-    <image href="images/blackhawk-hood-rig/legs.png" x="40" y="310" width="839.68" height="1259.52" (error)="failed.set(true)" />
+    <image href="images/blackhawk-forward-rig/legs.png" x="75" y="375" width="880.64" height="1232" preserveAspectRatio="none" (error)="failed.set(true)" />
     <g class="ribcage">
-      <image href="images/blackhawk-hood-rig/torso.png" x="140" y="80" width="512" height="768" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/torso.png" x="180" y="78" width="665.6" height="998.4" (error)="failed.set(true)" />
     </g>
     <g class="head">
-      <image href="images/blackhawk-hood-rig/head.png" x="128" y="10" width="634.88" height="952.32" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/head.png" x="309" y="14" width="368.64" height="552.96" (error)="failed.set(true)" />
     </g>
     <g class="arms-weapon">
-      <image href="images/blackhawk-hood-rig/arms-weapon.png" x="130" y="-100" width="880.64" height="1320.96" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/arms-weapon.png" x="219" y="-20" width="542.72" height="814.08" (error)="failed.set(true)" />
     </g>
   </svg>
 } @else if (index() === 1 && !failed()) {

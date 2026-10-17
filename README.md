@@ -19,7 +19,7 @@ Die passende Node-22-Laufzeit wird als lokale Entwicklungsabhängigkeit installi
 
 Die Profile samt Tracker-Links stehen im typisierten `players`-Array in `src/main.ts`. Das Menü und die Soldatenauswahl stehen in `src/app/app.component.html`. Die wiederverwendbare `ProfileCardComponent` in `src/app/profile-card/` zeigt die Statistikansicht des ausgewählten Spielers. Globale Farben und Layout stehen in `src/styles.css`.
 
-Die Porträts werden in `players[].image` in `src/app/app.component.ts` festgelegt. Blackhawk trägt den Kapuzen-Skin mit M16 ohne Vordergriff und rundem Thermalvisier (`public/images/8lackh4wk-hooded-m16.png`); seine vier Animationsebenen und Bildprompts liegen in `public/images/blackhawk-hood-rig/`. Die Ebenen werden in `src/app/soldiers/soldier-portrait/soldier-portrait.component.html` ausgerichtet. Auf Mobilgeräten steht die Auswahl oberhalb der Statistiken.
+Die Porträts werden in `players[].image` in `src/app/app.component.ts` festgelegt. Blackhawk trägt den Kapuzen-Skin mit M16 ohne Vordergriff und rundem Thermalvisier und schaut und zielt nach vorne in den Vordergrund statt seitlich auf Criban (`public/images/8lackh4wk-forward-m16.png`); seine vier Animationsebenen und Bildprompts liegen in `public/images/blackhawk-forward-rig/`. Die Ebenen werden in `src/app/soldiers/soldier-portrait/soldier-portrait.component.html` ausgerichtet. Auf Mobilgeräten steht die Auswahl oberhalb der Statistiken.
 
 Die generierten Soldatenbilder liegen in `public/images/criban.png` und `public/images/8lackh4wk.png`. Prompts und Herkunft sind in `public/images/GENERATION.md` dokumentiert. Angular kopiert `public/` in den Build. Schriften werden von Google Fonts geladen; ohne Netzwerk greifen lokale Ersatzschriften.
 
