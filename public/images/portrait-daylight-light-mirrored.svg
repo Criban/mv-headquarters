@@ -1,20 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
   <defs>
-    <radialGradient id="sky" cx="0" cy="0" r="1" gradientTransform="translate(520 -140) scale(1000 1200)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#bdcbd0" stop-opacity=".3"/>
-      <stop offset="1" stop-color="#bdcbd0" stop-opacity="0"/>
+    <radialGradient id="sky" cx="0" cy="0" r="1" gradientTransform="translate(820 -180) scale(850 1100)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a5b9cf" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#a5b9cf" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="sun" cx="0" cy="0" r="1" gradientTransform="translate(-160 360) scale(1100 1500)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#efc799" stop-opacity=".8"/>
-      <stop offset="1" stop-color="#efc799" stop-opacity="0"/>
+    <radialGradient id="sun" cx="0" cy="0" r="1" gradientTransform="translate(-240 320) scale(1140 1560)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd095" stop-opacity=".94"/>
+      <stop offset="1" stop-color="#ffd095" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="ground" cx="0" cy="0" r="1" gradientTransform="translate(500 1580) scale(700 440)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#b9a68c" stop-opacity=".45"/>
-      <stop offset="1" stop-color="#b9a68c" stop-opacity="0"/>
+    <radialGradient id="ground" cx="0" cy="0" r="1" gradientTransform="translate(460 1570) scale(900 640)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d8b383" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#d8b383" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <g transform="translate(1024 0) scale(-1 1)">
-  <path fill="#808080" d="M0 0h1024v1536H0z"/>
+  <path fill="#717986" d="M0 0h1024v1536H0z"/>
   <path fill="url(#sky)" d="M0 0h1024v1536H0z"/>
   <path fill="url(#sun)" d="M0 0h1024v1536H0z"/>
   <path fill="url(#ground)" d="M0 0h1024v1536H0z"/>

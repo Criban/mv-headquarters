@@ -14,11 +14,11 @@ export interface DesignPreset {
 // Keep exactly one current design; archived designs remain selectable by ID.
 export const DESIGNS: readonly DesignPreset[] = [
   {
-    id: 'rooftop-daylight', name: 'Stadteinsatz', current: true,
-    preview: 'images/rooftop-city-daylight.png', description: 'Über den Dächern · Tageslicht',
+    id: 'rooftop-daylight', name: 'Vegas Strip', current: true,
+    preview: 'images/rooftop-vegas-strip-terrace.png', description: 'Vegas Strip · Über den Dächern',
     browserColor: '#191e1c',
-    portraitMatrix: '.98 0 0 0 .018  0 .97 0 0 .016  0 0 .94 0 .014  0 0 0 1 0',
-    portraitLightMap: 'portrait-daylight-light', portraitLightStrength: .48,
+    portraitMatrix: '.99 0 0 0 .022  0 .96 0 0 .012  0 0 .91 0 .004  0 0 0 1 0',
+    portraitLightMap: 'portrait-daylight-light', portraitLightStrength: .72,
   },
   {
     id: 'urban-night', name: 'Urban Night', current: false,
