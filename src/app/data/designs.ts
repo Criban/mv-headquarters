@@ -21,11 +21,11 @@ export const DESIGNS: readonly DesignPreset[] = [
     portraitLightMap: 'portrait-daylight-light', portraitLightStrength: .72,
   },
   {
-    id: 'urban-night', name: 'Urban Night', current: false,
-    preview: 'images/hangar-urban-night.png', description: 'Im Hangar · Nachtbeleuchtung',
-    browserColor: '#090e1b',
-    portraitMatrix: '.92 0 0 0 0  0 .98 0 0 0  0 0 1.08 0 0  0 0 0 1 0',
-    portraitLightMap: 'portrait-night-light', portraitLightStrength: .68,
+    id: 'tsuru-reef', name: 'Tsuru-Riff', current: false,
+    preview: 'images/tsuru-reef-landing.png', description: 'Am Bootsanleger · Tropisches Tageslicht',
+    browserColor: '#1b211f',
+    portraitMatrix: '.98 0 0 0 .016  0 .99 0 0 .018  0 0 1 0 .02  0 0 0 1 0',
+    portraitLightMap: 'portrait-tsuru-light', portraitLightStrength: .62,
   },
 ];
 

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
+  <defs>
+    <radialGradient id="sun" cx="0" cy="0" r="1" gradientTransform="translate(-200 120) scale(1150 1500)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f4e2be" stop-opacity=".85"/><stop offset="1" stop-color="#f4e2be" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sky" cx="0" cy="0" r="1" gradientTransform="translate(1100 260) scale(850 1350)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a2c7dc" stop-opacity=".35"/><stop offset="1" stop-color="#a2c7dc" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floor" cx="0" cy="0" r="1" gradientTransform="translate(500 1580) scale(850 580)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#cfc6aa" stop-opacity=".55"/><stop offset="1" stop-color="#cfc6aa" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path fill="#737e85" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#sun)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#sky)" d="M0 0h1024v1536H0z"/>
+  <path fill="url(#floor)" d="M0 0h1024v1536H0z"/>
+</svg>
