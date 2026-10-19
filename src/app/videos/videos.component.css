@@ -16,7 +16,11 @@ h2 { margin:6px 0 0; font:600 25px 'Barlow Condensed',sans-serif; }
 .library-heading h2 { margin:0; font-size:18px; letter-spacing:1px; }
 .clip-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 .clip { min-width:0; padding:0; border:1px solid var(--line); background:var(--surface-glass); color:var(--text); cursor:pointer; text-align:left; }
-.clip:hover { border-color:var(--accent); }
+.clip:hover:not(:disabled) { border-color:var(--accent); }
+.clip:disabled { cursor:default; }
+.clip:disabled .thumbnail img { opacity:.45; }
+.coming-soon { position:absolute; inset:0; display:grid; place-items:center; color:var(--text); font:600 24px 'Barlow Condensed',sans-serif; text-shadow:0 2px 8px #000; }
+.empty-player { margin:0; padding:32px 12px; text-align:center; color:var(--muted); }
 .clip.selected { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
 .thumbnail { position:relative; display:block; aspect-ratio:16 / 9; overflow:hidden; background:var(--surface); }
 .thumbnail img { display:block; width:100%; height:100%; object-fit:cover; }
