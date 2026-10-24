@@ -51,7 +51,7 @@ assert.deepEqual(getDailyStatsHistory('A', now), []);
 
 const chartSource = await readFile(new URL('../src/app/profile-card/kd-history-chart.ts', import.meta.url), 'utf8');
 const chartCompiled = ts.transpileModule(chartSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const { kdHistoryChart, kdHistoryReadings, historyDateKey } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
+const { kdHistoryChart, kdHistoryReadings, historyDateKey, combatHistoryReadings, combatHistoryChart } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
 assert.deepEqual(kdHistoryChart([]).points, []);
 const single = kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: initial }]);
 assert.equal(single.points[0].x, 360, 'One reading is centered');
@@ -85,3 +85,60 @@ assert.deepEqual(kdHistoryReadings([], 'year', null, periodNow), []);
 const yearReadings = Array.from({ length: 24 }, (_, i) => snapshot(new Date(Date.UTC(2025, i, 15, 12)).toISOString()));
 assert.equal(kdHistoryReadings(yearReadings, 'year', null, new Date('2026-12-31T12:00:00Z')).length, 12);
 console.log('PASS shared daily history, comparisons, fallback, Berlin midnight/DST, selective legacy cleanup, K/D chart and period aggregation.');
+
+const counts = (savedAt, kills, deaths) => snapshot(savedAt, { ...initial, kills, deaths });
+const combatSource = [
+  counts('2026-09-30T21:00:00Z', 100, 50),
+  counts('2026-10-01T21:00:00Z', 120, 60),
+  counts('2026-10-02T21:00:00Z', 125, 60),
+  counts('2026-10-03T21:00:00Z', 125, 60),
+  counts('2026-10-05T21:00:00Z', 145, 70),
+  counts('2026-10-06T21:00:00Z', 150, 80),
+  counts('2026-10-07T21:00:00Z', 10, 5),
+  counts('2026-10-08T21:00:00Z', 20, 10),
+  counts('2026-10-09T21:00:00Z', undefined, 15),
+  counts('2026-10-10T21:00:00Z', 30, 20)
+];
+const combatNow = new Date('2026-10-11T12:00:00Z');
+const days = combatHistoryReadings(combatSource, '30', null, combatNow);
+assert.deepEqual(days.map(r => r.kills), [null, 20, 5, 0, null, 5, null, 10, null, null]);
+assert.deepEqual(days.map(r => r.value), Array(10).fill(2), 'The line uses the stored overall K/D, never the daily ratio');
+assert.equal(days[2].state, 'value', 'Kills without new deaths retain the stored overall ratio');
+assert.equal(days[3].state, 'inactive', 'Zero activity is distinct from zero K/D');
+assert.equal(days[4].state, 'missing', 'Gaps cannot become misleading daily spikes');
+assert.equal(days[6].state, 'missing', 'Counter resets are not negative daily values');
+const monthlyCombat = combatHistoryReadings(combatSource, 'year', null, combatNow);
+assert.equal(monthlyCombat[1].kills, 40);
+assert.equal(monthlyCombat[1].deaths, 25);
+assert.equal(monthlyCombat[1].value, 2, 'Monthly line uses the last overall K/D, not a monthly or daily ratio');
+assert.equal(monthlyCombat[1].validDays, 5);
+assert.equal(monthlyCombat[1].recordedDays, 9);
+assert.equal(combatHistoryReadings(combatSource, 'all', '2026-10', combatNow)[0].kills, 20, 'Month detail uses a baseline outside the month');
+const windowReadings = [counts('2026-09-14T12:00:00Z', 100, 50), counts('2026-09-15T12:00:00Z', 110, 55)];
+assert.equal(combatHistoryReadings(windowReadings, '30', null, periodNow)[0].kills, 10, 'The first visible day uses its baseline outside the 30-day window');
+const dstDays = combatHistoryReadings([counts('2026-10-24T21:30:00Z', 10, 5), counts('2026-10-25T22:30:00Z', 20, 10)], '30', null, new Date('2026-10-26T12:00:00Z'));
+assert.equal(dstDays[1].kills, 10, '25-hour DST days are consecutive calendar days');
+const duplicateDays = combatHistoryReadings([combatSource[0], combatSource[1], counts('2026-10-01T21:30:00Z', 130, 65)], '30', null, combatNow);
+assert.equal(duplicateDays.length, 2);
+assert.equal(duplicateDays[1].kills, 30, 'Newest same-day reading supplies the daily difference');
+const combatPlot = combatHistoryChart(days);
+assert.equal(combatPlot.lines.length, 1, 'Missing daily counters do not remove recorded overall K/D values');
+assert.ok(combatPlot.points.filter(p => p.value !== null).every(p => Number.isFinite(p.y) && p.y >= 32 && p.y <= 244));
+assert.ok(combatPlot.points.filter(p => p.kills !== null).every(p => p.killsY >= 32 && p.killsY <= 244));
+assert.deepEqual(combatHistoryChart([]).points, []);
+assert.equal(combatHistoryChart([days[1]]).points[0].x, 360);
+assert.equal(combatHistoryReadings([snapshot('2026-10-01T12:00:00Z'), snapshot('2026-10-02T12:00:00Z')], '30', null, combatNow).every(r => r.kills === null), true, 'Legacy K/D never invents historical kills');
+setSharedStatsHistory({ version: 2, players: { A: [counts('2026-10-01T12:00:00Z', 100, 50), counts('2026-10-02T12:00:00Z', -1, 60)] } });
+assert.equal(getDailyStatsHistory('A', now).length, 1, 'Invalid counters cannot enter the shared chart');
+assert.equal(combatHistoryReadings([counts('2026-10-01T12:00:00Z', 100, 50), snapshot('2026-10-02T12:00:00Z', { ...initial, killDeath: 2.34, kills: 150, deaths: 60 })], '30', null, combatNow)[1].value, 2.34, 'A daily ratio of 5 cannot replace the overall K/D of 2.34');
+console.log('PASS daily combat counts with overall K/D, monthly sums, baselines, gaps, resets, zero deaths, inactivity, deduplication and DST.');
+
+const smallChanges = combatHistoryChart([2, 2.01, 1.99, 2.02].map((value, i) => ({ ...days[i], value })));
+const lineYs = smallChanges.points.map(p => p.y);
+assert.ok(Math.max(...lineYs) - Math.min(...lineYs) > 60, 'Small overall K/D changes use a visible part of the plot');
+assert.ok(smallChanges.ticks.at(-1).value > 0, 'K/D axis zooms into the observed range');
+assert.equal(smallChanges.ticks.at(-1).count, 0, 'Count axis keeps its zero baseline');
+assert.ok(smallChanges.points.every((p, i) => p.killsY === combatPlot.points[i].killsY), 'Zooming K/D does not change the count scale');
+assert.ok(combatHistoryChart([0, 0].map((value, i) => ({ ...days[i], value }))).points.every(p => Number.isFinite(p.y) && p.y >= 32 && p.y <= 244));
+assert.ok(combatHistoryChart([days[1]]).points.every(p => Number.isFinite(p.y) && p.y > 32 && p.y < 244), 'A constant K/D retains padding');
+console.log('PASS adaptive K/D axis, visible small changes, independent count baseline and constant/zero ratios.');

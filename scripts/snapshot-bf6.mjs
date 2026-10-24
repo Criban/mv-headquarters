@@ -40,7 +40,7 @@ for (const { name, playerid } of identities) {
   });
   players[name] = {
     capturedAt: new Date().toISOString(),
-    response: Object.fromEntries(['infantryKillDeath', 'deaths', 'accuracy', 'secondsPlayed', 'gameModeGroups', 'weaponGroups', 'weapons'].map(key => [key, stats[key]])),
+    response: { ...Object.fromEntries(['infantryKillDeath', 'kills', 'deaths', 'accuracy', 'secondsPlayed', 'gameModeGroups', 'weaponGroups', 'weapons'].map(key => [key, stats[key]])), dividedKills: { human: stats.dividedKills?.human } },
     profile: { playerProfiles: [{ playerCard: { rank }, rankName: profile.playerProfiles?.[0]?.rankName }] }
   };
   console.log(`${name}: snapshot captured (${players[name].capturedAt})`);

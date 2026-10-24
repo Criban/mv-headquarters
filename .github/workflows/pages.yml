@@ -11,15 +11,6 @@ on:
     - cron: '30 23 * * *'
       timezone: 'Europe/Berlin'
   workflow_dispatch:
-    inputs:
-      initialize_history:
-        description: Create the Neon history table before capturing
-        type: boolean
-        default: false
-      import_browser_history:
-        description: Import the supplied browser history (existing database days stay unchanged)
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -32,6 +23,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,40 +32,20 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Initialize Neon history
-        if: github.event_name == 'workflow_dispatch' && inputs.initialize_history
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run history:init
-      - name: Import and export browser history
-        if: github.event_name == 'workflow_dispatch' && inputs.import_browser_history
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run history:import
       - name: Capture and export shared history
-        if: github.event_name != 'workflow_dispatch' || !inputs.import_browser_history
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          if [ -n "$DATABASE_URL" ]; then
-            for attempt in 1 2 3; do
-              if npm run history:sync; then
-                break
-              fi
-              if [ "$attempt" -eq 3 ]; then
-                echo "History capture failed after three attempts; keeping the previous publication."
-                exit 1
-              fi
-              delay=$((attempt * 30))
-              echo "History capture failed on attempt $attempt; retrying in $delay seconds."
-              sleep "$delay"
-            done
-          elif [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "DATABASE_URL is required for scheduled history capture."
-            exit 1
-          else
-            echo "Neon is not configured yet; publishing the bundled data."
-          fi
+          for attempt in 1 2 3; do
+            if npm run history:sync; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "History capture failed after three attempts; keeping the previous publication."
+              exit 1
+            fi
+            delay=$((attempt * 30))
+            echo "History capture failed on attempt $attempt; retrying in $delay seconds."
+            sleep "$delay"
+          done
       - name: Check history
         run: npm run test:history
       - name: Configure Pages
@@ -82,6 +55,16 @@ jobs:
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: npm run build -- --base-href "${BASE_PATH}/"
+      - name: Persist daily history
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update BF6 daily history"
+            git push origin HEAD:main
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/bf6-squad/browser

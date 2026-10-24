@@ -7,12 +7,22 @@ h2 { font:600 36px/1 'Barlow Condensed',sans-serif; margin:0; }
 .close-button { background:transparent; color:var(--text); border:1px solid var(--line); width:44px; height:44px; flex-shrink:0; cursor:pointer; }
 .close-button:hover { background:var(--accent-soft); }
 .periods { display:flex; gap:8px; margin-top:26px; }
+.chart-legend { display:flex; flex-wrap:wrap; gap:16px; margin:18px 0 14px; color:var(--muted); font-size:10px; letter-spacing:1px; }
+.chart-legend span { display:flex; align-items:center; gap:7px; }
+.chart-legend i { display:inline-block; width:12px; height:8px; }
+.kills-key, .kills-bar { background:#8cdb96; fill:#8cdb96; }
+.deaths-key, .deaths-bar { background:#ff9990; fill:#ff9990; }
+.kills-bar, .deaths-bar { opacity:.5; }
+.active-bar { opacity:.9; }
+.chart-legend .ratio-key { background:var(--accent); width:18px; height:2px; }
+.axis-title { font-size:11px; letter-spacing:1px; }
 .periods button, .detail-button { padding:10px 16px; border:1px solid var(--line); background:transparent; color:var(--muted); font:600 12px 'Barlow',sans-serif; cursor:pointer; }
 .periods button[aria-pressed=true] { background:var(--accent); border-color:var(--accent); color:var(--surface); }
 .detail-button { margin-top:10px; color:var(--accent); }
 .periods button:focus-visible, .detail-button:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .reading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:28px 0 12px; font-variant-numeric:tabular-nums; }
 .reading strong { font:600 48px/1 'Barlow Condensed',sans-serif; color:var(--accent); }
+.reading strong small { display:block; margin-top:8px; letter-spacing:1px; font-size:10px; }
 .reading small { font:500 12px 'Barlow',sans-serif; color:var(--muted); }
 .reading > span { color:var(--muted); font-size:13px; text-align:right; }
 .reading > span small { display:block; margin-top:7px; font-size:11px; }
@@ -33,4 +43,4 @@ input:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .empty-state { padding:44px 0; }
 .empty-state h3 { color:var(--accent); font:600 24px 'Barlow Condensed',sans-serif; margin:0 0 12px; }
 .empty-state p { color:var(--muted); font-size:14px; line-height:1.6; }
-@media(max-width:480px) { dialog { padding:20px 16px; } h2 { font-size:30px; } .reading strong { font-size:40px; } .axis-label { font-size:16px; } .periods button { flex:1; } }
+@media(max-width:480px) { dialog { padding:20px 16px; } h2 { font-size:30px; } .reading strong { font-size:40px; } .periods button { flex:1; } }

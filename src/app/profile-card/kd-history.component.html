@@ -1,43 +1,53 @@
 <dialog #dialog aria-labelledby="kd-history-title" aria-describedby="kd-history-note" (close)="closed.emit()" (click)="dismissBackdrop($event)">
   <header>
-    <div><p class="eyebrow">BATTLEFIELD 6 / {{ name() }}</p><h2 id="kd-history-title">K/D-VERLAUF</h2></div>
-    <button class="close-button" type="button" autofocus aria-label="K/D-Verlauf schließen" (click)="close()">✕</button>
+    <div><p class="eyebrow">BATTLEFIELD 6 / {{ name() }}</p><h2 id="kd-history-title">KAMPFSTATISTIK</h2></div>
+    <button class="close-button" type="button" autofocus aria-label="Kampfstatistik schließen" (click)="close()">✕</button>
   </header>
-  <nav class="periods" aria-label="Zeitraum des K/D-Verlaufs">
+  <nav class="periods" aria-label="Zeitraum der Kampfstatistik">
     @for (option of periods; track option.value) {
       <button type="button" [attr.aria-pressed]="period() === option.value" (click)="selectPeriod(option.value)">{{ option.label }}</button>
     }
   </nav>
-  @if (month()) {
-    <button class="detail-button" type="button" (click)="backToOverview()">← Zurück zur Übersicht</button>
-  }
+  @if (month()) { <button class="detail-button" type="button" (click)="backToOverview()">← Zurück zur Übersicht</button> }
   @if (selected(); as point) {
-    <div class="reading" aria-live="polite" aria-atomic="true"><strong>{{ formatValue(point.value) }} <small>K/D</small></strong><span>{{ formatDate(point.savedAt) }} @if (monthly() || month()) { <small>{{ formatMonth(point.savedAt) }}</small> }</span></div>
-    <svg viewBox="0 0 720 280" role="img" aria-label="K/D-Verlauf. Einzelne Werte können mit dem Regler darunter ausgewählt werden." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
+    <div class="reading" aria-live="polite" aria-atomic="true">
+      <strong>{{ selectedValue() }} <small>GESAMT-K/D</small></strong>
+      <span>{{ monthly() ? formatMonth(point.savedAt) : formatDate(point.savedAt) }}
+        <small>{{ formatCount(point.kills) }} Kills · {{ formatCount(point.deaths) }} Deaths {{ monthly() ? 'im Monat' : 'am Tag' }}</small>
+      </span>
+    </div>
+    <div class="chart-legend" aria-label="Datenreihen"><span><i class="kills-key"></i>KILLS (SPIELER)</span><span><i class="deaths-key"></i>DEATHS</span><span><i class="ratio-key"></i>GESAMT-K/D</span></div>
+    <svg [attr.viewBox]="'0 0 ' + chartWidth() + ' 300'" role="img" aria-label="Kills und Deaths pro Tag als Balken, Gesamt-K/D als Linie. Werte mit dem Regler auswählen." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
+      <text class="axis-label axis-title" x="64" y="16">ANZAHL</text><text class="axis-label axis-title" [attr.x]="chartWidth() - 64" y="16" text-anchor="end">K/D · ZOOM</text>
       @for (tick of chart().ticks; track $index) {
-        <line class="grid-line" x1="64" x2="656" [attr.y1]="tick.y" [attr.y2]="tick.y" />
-        <text class="axis-label" x="50" [attr.y]="tick.y + 5" text-anchor="end">{{ formatValue(tick.value) }}</text>
+        <line class="grid-line" x1="64" [attr.x2]="chartWidth() - 64" [attr.y1]="tick.y" [attr.y2]="tick.y" />
+        <text class="axis-label" x="50" [attr.y]="tick.y + 5" text-anchor="end">{{ formatCount(tick.count) }}</text>
+        <text class="axis-label" [attr.x]="chartWidth() - 50" [attr.y]="tick.y + 5">{{ formatValue(tick.value) }}</text>
       }
-      <polyline class="history-line" [attr.points]="chart().line" />
       @for (reading of chart().points; track reading.savedAt) {
-        <circle class="history-point" [attr.cx]="reading.x" [attr.cy]="reading.y" r="3"><title>{{ formatDate(reading.savedAt) }}: {{ formatValue(reading.value) }} K/D</title></circle>
+        @if (reading.killsY !== null) { <rect class="kills-bar" [class.active-bar]="reading.savedAt === point.savedAt" [attr.x]="reading.x - chart().barWidth - 1" [attr.y]="reading.killsY" [attr.width]="chart().barWidth" [attr.height]="244 - reading.killsY" /> }
+        @if (reading.deathsY !== null) { <rect class="deaths-bar" [class.active-bar]="reading.savedAt === point.savedAt" [attr.x]="reading.x + 1" [attr.y]="reading.deathsY" [attr.width]="chart().barWidth" [attr.height]="244 - reading.deathsY" /> }
+      }
+      @for (line of chart().lines; track $index) { <polyline class="history-line" [attr.points]="line" /> }
+      @for (reading of chart().points; track reading.savedAt) {
+        @if (reading.y !== null) { <circle class="history-point" [attr.cx]="reading.x" [attr.cy]="reading.y" r="3"><title>{{ formatDate(reading.savedAt) }}: {{ formatValue(reading.value) }} K/D</title></circle> }
       }
       <line class="selected-line" [attr.x1]="point.x" [attr.x2]="point.x" y1="32" y2="244" />
-      <circle class="selected-point" [attr.cx]="point.x" [attr.cy]="point.y" r="6" />
-      @for (label of axisLabels(); track label.x) {
-        <text class="axis-label" [attr.x]="label.x" y="273" text-anchor="middle">{{ label.label }}</text>
-      }
+      @if (point.y !== null) { <circle class="selected-point" [attr.cx]="point.x" [attr.cy]="point.y" r="6" /> }
+      @for (label of axisLabels(); track label.x) { <text class="axis-label" [attr.x]="label.x" y="273" text-anchor="middle">{{ label.label }}</text> }
+      <text class="axis-label axis-title" [attr.x]="chartWidth() / 2" y="297" text-anchor="middle">{{ monthly() ? 'MONAT' : 'TAG' }}</text>
     </svg>
-    <p class="aggregation">{{ chart().points.length }} {{ monthly() ? 'Monatswerte · letzter gespeicherter Stand je Monat' : 'gespeicherte Tageswerte' }}</p>
-    @if (monthly()) {
-      <button class="detail-button" type="button" (click)="openMonth()">{{ formatMonth(point.savedAt) }}: Tageswerte ansehen →</button>
-    }
+      @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler an zwei aufeinanderfolgenden Tagen gespeichert sind.</p> }
+      @else if (point.state === 'missing') { <p class="aggregation">Für diesen Zeitraum fehlen vollständige Zähler oder der vorherige Tagesstand. Es wird kein Balkenwert geschätzt.</p> }
+      @else if (point.state === 'inactive') { <p class="aggregation">Keine neuen Kills oder Deaths in diesem Zeitraum. Die Linie zeigt weiterhin das Gesamt-K/D.</p> }
+      @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} gespeicherten Tagesständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
+    @if (monthly()) { <button class="detail-button" type="button" (click)="openMonth()">{{ formatMonth(point.savedAt) }}: Tageswerte ansehen →</button> }
     @if (chart().points.length > 1) {
-      <label class="slider-label" for="kd-history-day">{{ monthly() ? 'MONAT AUSWÄHLEN' : 'TAG AUSWÄHLEN' }} <span>{{ chart().points.length }} {{ monthly() ? 'Monatswerte' : 'Tageswerte' }}</span></label>
-      <input id="kd-history-day" type="range" min="0" [max]="chart().points.length - 1" step="1" [value]="index()" [attr.aria-valuetext]="formatDate(point.savedAt) + ': ' + formatValue(point.value) + ' K/D'" (input)="selectSlider($event)" />
-    } @else { <p class="empty-note">In dieser Ansicht ist ein Wert vorhanden. Mit weiteren Werten entsteht hier dein Verlauf.</p> }
+      <label class="slider-label" for="kd-history-day">{{ monthly() ? 'MONAT AUSWÄHLEN' : 'TAG AUSWÄHLEN' }} <span>{{ chart().points.length }} {{ monthly() ? 'Monatswerte' : 'Tagesstände' }}</span></label>
+      <input id="kd-history-day" type="range" min="0" [max]="chart().points.length - 1" step="1" [value]="index()" [attr.aria-valuetext]="formatDate(point.savedAt) + ': Gesamt-K/D ' + selectedValue() + ', ' + formatCount(point.kills) + ' Kills, ' + formatCount(point.deaths) + ' Deaths'" (input)="selectSlider($event)" />
+    } @else { <p class="empty-note">In dieser Ansicht ist ein Stand vorhanden. Mit weiteren Ständen entsteht hier dein Verlauf.</p> }
   } @else {
     <div class="empty-state"><h3>Keine Werte in diesem Zeitraum</h3><p>Wähle einen anderen Zeitraum oder warte auf die nächste automatische Erfassung.</p></div>
   }
-  <p id="kd-history-note" class="history-note">Ein Wert pro Tag und Spieler aus der gemeinsamen Historie. Die Monatsansicht zeigt den letzten gespeicherten Stand je Monat. Tage ohne erfolgreiche Erfassung haben keinen eigenen Wert.</p>
+  <p id="kd-history-note" class="history-note">Balken: Kills gegen menschliche Spieler und Deaths zwischen Ständen aufeinanderfolgender Berliner Kalendertage. Linie: gespeichertes Gesamt-K/D (bisheriges Infanterie-K/D). Lücken und zurückgesetzte Zähler erzeugen keine Tagesbalken. Monate summieren auswertbare Tageswerte und zeigen den letzten Gesamt-K/D-Stand.</p>
 </dialog>

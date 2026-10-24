@@ -31,7 +31,7 @@ Nach Änderungen an `angular.json` den Entwicklungsserver neu starten (`Strg+C`,
 
 ## BF6-Statistik-Abzug
 
-Beim Seitenaufruf werden die BF6-Statistiken aller öffentlichen Profile geladen. Die K/D-Historie und der Vergleich mit dem jüngsten Tag vor heute verwenden ausschließlich die veröffentlichte gemeinsame Historie aus public/data/bf6-stats-history.json. Live-Abrufe im Browser erzeugen keine Tagesstände. API-Ersatzdaten zeigen keinen Vergleich, damit ein älterer Abzug keine irreführenden Rückgänge auslöst. Die automatische Erfassung übernimmt die Tagesstände; Einrichtung und Rhythmus stehen in [Neon](docs/neon.md).
+Beim Seitenaufruf werden die BF6-Statistiken aller öffentlichen Profile geladen. Die Kampfstatistik und der Vergleich mit dem jüngsten Tag vor heute verwenden ausschließlich die gemeinsame Historie aus public/data/bf6-stats-history.json. Die automatische Erfassung speichert diese Datei im Repository; eine Datenbank ist nicht erforderlich. Live-Abrufe im Browser erzeugen keine Tagesstände. API-Ersatzdaten zeigen keinen Vergleich, damit ein älterer Abzug keine irreführenden Rückgänge auslöst. Rhythmus und Verhalten stehen unter [Dateibasierte Historie](docs/history.md).
 
 Die alten Local-Storage-Schlüssel bf6-stats-history:v1: und bf6-stats-history:v2: werden beim nächsten Seitenaufruf entfernt. Andere Browserdaten bleiben erhalten. Die vom Betreiber gelieferten Historien wurden vorher in die gemeinsame Historie importiert und liegen zusätzlich im Repository. npm run test:history prüft die gemeinsame Historie und die gezielte Bereinigung.
 
@@ -43,7 +43,7 @@ Die BF6-Ansicht zeigt auch die abgefeuerten Schüsse (`shotsFired`). Die Histori
 
 Der Abzug wird mit der Seite ausgeliefert. Bei API-Fehlern, ungültiger K/D oder Zeitüberschreitungen lädt die Statistikansicht automatisch diese Datei. Sie kennzeichnet die gespeicherten Werte und zeigt Datum und Uhrzeit des Abzugs in der Zeitzone Europe/Berlin. „Live-Daten erneut laden“ versucht erneut die API. Bei erfolgreichen API-Abfragen werden weiterhin Live-Daten angezeigt. Zum Aktualisieren den Befehl erneut ausführen und die Seite mit der aktualisierten Datei veröffentlichen.
 
-Inoffizielles Fanprojekt, nicht mit EA oder DICE verbunden. Die gemeinsame Tageshistorie wird durch GitHub Actions in Neon gespeichert; das Frontend bleibt statisch.
+Inoffizielles Fanprojekt, nicht mit EA oder DICE verbunden. Die gemeinsame Tageshistorie wird durch GitHub Actions als JSON im Repository gespeichert; das Frontend bleibt statisch.
 
 
 ## GitHub Pages
@@ -52,4 +52,4 @@ Der Workflow `.github/workflows/pages.yml` baut und veröffentlicht die Seite na
 
 ## Gemeinsame Statistik-Historie
 
-Einrichtung, GitHub-Secret und erster Workflow-Lauf: [Neon-Anleitung](docs/neon.md). Der Pages-Workflow erfasst täglich um 12:00, 21:45 und 23:30 Uhr Berliner Zeit validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten.
+Dateien, automatische Speicherung und Diagramm: [Historie](docs/history.md). Der Pages-Workflow erfasst täglich um 12:00, 21:45 und 23:30 Uhr Berliner Zeit validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten. Eine Datenbank oder ein Datenbank-Secret ist nicht erforderlich.

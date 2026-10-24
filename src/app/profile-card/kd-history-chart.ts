@@ -52,3 +52,86 @@ export function kdHistoryChart(snapshots: StatsSnapshot[]) {
     ticks: [max, (min + max) / 2, min].map((value, index) => ({ value, y: 32 + index * 106 }))
   };
 }
+
+export type CombatReading = {
+  savedAt: string; kills: number | null; deaths: number | null; value: number | null;
+  state: 'value' | 'inactive' | 'missing'; validDays: number; recordedDays: number;
+};
+const calendarTime = (savedAt: string) => Date.parse(historyDateKey(savedAt) + 'T12:00:00Z');
+const validCounter = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+
+/** Differences are calculated before filtering so the first visible day can use its preceding day. */
+export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHistoryPeriod, month: string | null = null, now = new Date()): CombatReading[] {
+  const days = new Map<string, StatsSnapshot>();
+  for (const snapshot of [...snapshots].filter(s => Number.isFinite(Date.parse(s.savedAt)) && Date.parse(s.savedAt) <= now.getTime()
+    && typeof s.values.killDeath === 'number' && Number.isFinite(s.values.killDeath) && s.values.killDeath >= 0)
+    .sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) days.set(historyDateKey(snapshot.savedAt), snapshot);
+  const source = [...days.values()];
+  const selected = kdHistoryReadings(source, period, month, now);
+  const monthly = period !== '30' && !month;
+  const keys = new Set(selected.map(s => historyDateKey(s.savedAt).slice(0, monthly ? 7 : 10)));
+  const daily = source.map((snapshot, index): CombatReading => {
+    const previous = source[index - 1];
+    const consecutive = previous && calendarTime(snapshot.savedAt) - calendarTime(previous.savedAt) === 86400000;
+    const current = snapshot.values;
+    const before = previous?.values;
+    const valid = consecutive && validCounter(current.kills) && validCounter(current.deaths)
+      && validCounter(before?.kills) && validCounter(before?.deaths)
+      && current.kills >= before.kills && current.deaths >= before.deaths;
+    const kills = valid ? current.kills! - before!.kills! : null;
+    const deaths = valid ? current.deaths! - before!.deaths! : null;
+    return {
+      savedAt: snapshot.savedAt, kills, deaths, value: snapshot.values.killDeath,
+      state: !valid ? 'missing' : kills === 0 && deaths === 0 ? 'inactive' : 'value',
+      validDays: valid ? 1 : 0, recordedDays: 1
+    };
+  }).filter(s => keys.has(historyDateKey(s.savedAt).slice(0, monthly ? 7 : 10)));
+  if (!monthly) return daily;
+  const groups = new Map<string, CombatReading[]>();
+  for (const reading of daily) {
+    const key = historyDateKey(reading.savedAt).slice(0, 7);
+    groups.set(key, [...(groups.get(key) ?? []), reading]);
+  }
+  return [...groups.values()].map((readings): CombatReading => {
+    const known = readings.filter(r => r.validDays);
+    const kills = known.length ? known.reduce((sum, r) => sum + r.kills!, 0) : null;
+    const deaths = known.length ? known.reduce((sum, r) => sum + r.deaths!, 0) : null;
+    return {
+      savedAt: readings.at(-1)!.savedAt, kills, deaths, value: readings.at(-1)!.value,
+      state: !known.length ? 'missing' : kills === 0 && deaths === 0 ? 'inactive' : 'value',
+      validDays: known.length, recordedDays: readings.length
+    };
+  });
+}
+
+export function combatHistoryChart(readings: CombatReading[], width = 720) {
+  const maxCount = Math.max(4, ...readings.flatMap(r => [r.kills ?? 0, r.deaths ?? 0]));
+  const countMagnitude = 10 ** Math.floor(Math.log10(maxCount * 1.1 / 4));
+  const countMax = Math.ceil(maxCount * 1.1 / 4 / countMagnitude) * countMagnitude * 4;
+  const ratios = readings.flatMap(r => r.value === null ? [] : [r.value]);
+  const ratioLow = ratios.length ? Math.min(...ratios) : 0;
+  const ratioHigh = ratios.length ? Math.max(...ratios) : 0;
+  // Zoom only the line axis; count bars always retain their zero baseline.
+  // At least .02 padding keeps constant values and rounded API readings stable.
+  const ratioPadding = Math.max((ratioHigh - ratioLow) * .2, .02);
+  const ratioMin = Math.max(0, Math.floor((ratioLow - ratioPadding) * 100) / 100);
+  const ratioMax = Math.ceil((ratioHigh + ratioPadding) * 100) / 100;
+  const first = readings.length ? calendarTime(readings[0].savedAt) : 0;
+  const last = readings.length ? calendarTime(readings.at(-1)!.savedAt) : 0;
+  const points = readings.map(reading => ({ ...reading,
+    x: last === first ? width / 2 : 80 + (calendarTime(reading.savedAt) - first) / (last - first) * (width - 160),
+    y: reading.value === null ? null : 244 - (reading.value - ratioMin) / (ratioMax - ratioMin) * 212,
+    killsY: reading.kills === null ? null : 244 - reading.kills / countMax * 212,
+    deathsY: reading.deaths === null ? null : 244 - reading.deaths / countMax * 212
+  }));
+  const segments: string[] = [];
+  let segment: string[] = [];
+  for (const point of points) {
+    if (point.y === null) { if (segment.length) segments.push(segment.join(' ')); segment = []; }
+    else segment.push(`${point.x},${point.y}`);
+  }
+  if (segment.length) segments.push(segment.join(' '));
+  const spacing = points.length > 1 ? Math.min(...points.slice(1).map((p, i) => p.x - points[i].x)) : 40;
+  return { points, lines: segments, barWidth: Math.min(14, spacing * .3),
+    ticks: Array.from({ length: 5 }, (_, i) => ({ value: ratioMax - (ratioMax - ratioMin) * i / 4, count: countMax * (1 - i / 4), y: 32 + i * 53 })) };
+}
