@@ -109,7 +109,7 @@ export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHist
       savedAt: snapshot.savedAt, kills, deaths, value: snapshot.values.killDeath,
       state: !valid ? 'missing' : kills === 0 && deaths === 0 ? 'inactive' : 'value',
       validDays: valid ? 1 : 0, recordedDays: 1,
-      impact: consecutive ? kdImpact(snapshot, previous) : unknownImpact()
+      impact: kdImpact(snapshot, previous)
     };
   }).filter(s => keys.has(historyDateKey(s.savedAt).slice(0, monthly ? 7 : 10)));
   if (!monthly) return daily;

@@ -152,23 +152,29 @@ const impactSource = [
   counts('2026-10-06T12:00:00Z', 10, 5)
 ];
 const impacts = combatHistoryReadings(impactSource, '30', null, combatNow);
-assert.deepEqual(impacts.map(r => r.impact.direction), ['unknown', 'up', 'down', 'flat', 'unknown', 'unknown']);
+assert.deepEqual(impacts.map(r => r.impact.direction), ['unknown', 'up', 'down', 'flat', 'flat', 'unknown']);
 assert.ok(impacts[1].impact.delta > 0 && impacts[1].impact.delta < .001, 'Exact counters reveal an improvement hidden by two-digit K/D rounding');
 assert.equal(impacts[1].impact.exact, true);
 assert.equal(impacts[1].value, 2, 'Impact precision does not replace the stored overall line value');
 assert.ok(formatKdImpact(impacts[1].impact).startsWith('↑ +0,0010'));
 assert.ok(formatKdImpact(impacts[2].impact).startsWith('↓ −'));
 assert.equal(formatKdImpact(impacts[3].impact), '→ Unverändert');
-assert.equal(formatKdImpact(impacts[4].impact), '', 'No daily attribution across an unrecorded day');
+assert.equal(formatKdImpact(impacts[4].impact), '→ Unverändert', 'Line direction compares saved overall ratios even across an unrecorded day');
+assert.equal(impacts[4].kills, null, 'A line comparison across a gap cannot create a daily bar');
 assert.equal(formatKdImpact(impacts[5].impact), '', 'No attribution after counter resets');
 assert.ok(formatKdImpact({ direction: 'up', delta: .000001, exact: true }).includes('< 0,0001'), 'Tiny changes never display as positive zero');
 const legacyImpact = combatHistoryReadings([snapshot('2026-10-01T12:00:00Z'), snapshot('2026-10-02T12:00:00Z', update)], '30', null, combatNow)[1].impact;
 assert.equal(legacyImpact.direction, 'down');
 assert.equal(legacyImpact.exact, false, 'Legacy comparisons are explicitly based on rounded saved K/D');
 const colored = combatHistoryChart(impacts).coloredSegments;
-assert.deepEqual(colored.map(s => s.direction), ['up', 'down', 'flat', 'unknown', 'unknown']);
+assert.deepEqual(colored.map(s => s.direction), ['up', 'down', 'flat', 'flat', 'unknown']);
 const monthImpact = combatHistoryReadings(impactSource.slice(0, 4), 'year', null, combatNow)[1].impact;
 assert.equal(monthImpact.direction, 'flat', 'Monthly direction compares month-end cumulative ratios, not the last daily impact');
 const boundaryImpact = combatHistoryReadings(impactSource, 'all', '2026-10', combatNow)[0].impact;
 assert.equal(boundaryImpact.direction, 'up', 'A month detail uses the actual preceding day outside its filter');
 console.log('PASS subtle line directions, precise cumulative impacts, rounded legacy comparisons, monthly baselines, gaps and resets.');
+
+const gapReadings = combatHistoryReadings([19, 21, 23, 25].map((day, index) => snapshot(`2026-10-${day}T12:00:00Z`, { ...initial, killDeath: [2.01, 2, 2.02, 2.02][index] })), '30', null, new Date('2026-10-26T12:00:00Z'));
+assert.deepEqual(combatHistoryChart(gapReadings).coloredSegments.map(s => s.direction), ['down', 'up', 'flat'], 'Criban 19–21 October decline is red despite the missing 20 October reading');
+assert.ok(gapReadings.every(r => r.kills === null && r.deaths === null), 'Missing days still leave the daily bars empty');
+console.log('PASS red, green and neutral line segments across gaps without fabricated daily counts.');

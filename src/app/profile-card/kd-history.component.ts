@@ -81,7 +81,7 @@ export class KdHistoryComponent implements AfterViewInit, OnDestroy {
   selectedValue(): string { return this.formatValue(this.selected()?.value ?? null); }
   impactText(reading: CombatReading): string {
     const text = formatKdImpact(reading.impact);
-    return text ? `${text} ${this.monthly() ? 'zum vorherigen Monatsstand' : 'zum Vortag'}${reading.impact.exact ? '' : ' (gerundet)'}` : '';
+    return text ? `${text} ${this.monthly() ? 'zum vorherigen Monatsstand' : 'zum vorherigen gespeicherten Stand'}${reading.impact.exact ? '' : ' (gerundet)'}` : '';
   }
   formatDate(value: string): string { return this.dateFormat.format(new Date(value)); }
   shortDate(value: string): string { return this.shortDateFormat.format(new Date(value)); }
