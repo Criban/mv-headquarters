@@ -38,7 +38,6 @@
       <text class="axis-label axis-title" [attr.x]="chartWidth() / 2" y="297" text-anchor="middle">{{ monthly() ? 'MONAT' : 'TAG' }}</text>
     </svg>
       @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler an zwei aufeinanderfolgenden Tagen gespeichert sind.</p> }
-      @else if (point.state === 'missing') { <p class="aggregation">Für diesen Zeitraum fehlen vollständige Zähler oder der vorherige Tagesstand. Es wird kein Balkenwert geschätzt.</p> }
       @else if (point.state === 'inactive') { <p class="aggregation">Keine neuen Kills oder Deaths in diesem Zeitraum. Die Linie zeigt weiterhin das Gesamt-K/D.</p> }
       @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} gespeicherten Tagesständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
     @if (monthly()) { <button class="detail-button" type="button" (click)="openMonth()">{{ formatMonth(point.savedAt) }}: Tageswerte ansehen →</button> }
