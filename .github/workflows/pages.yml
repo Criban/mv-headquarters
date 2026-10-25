@@ -27,6 +27,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -46,6 +48,36 @@ jobs:
             echo "History capture failed on attempt $attempt; retrying in $delay seconds."
             sleep "$delay"
           done
+      - name: Persist daily history
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          capture_path="$RUNNER_TEMP/bf6-capture.json"
+          cp public/data/bf6-stats-snapshot.json "$capture_path"
+          for attempt in 1 2 3; do
+            # Discard only regenerated files, then advance to the latest source and history.
+            git restore --source=HEAD --staged --worktree -- public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
+            git pull --ff-only origin main
+            node scripts/file-history.mjs --merge-snapshot "$capture_path"
+            npm ci
+            npm run test:history
+            git add public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
+            if git diff --cached --quiet; then
+              break
+            fi
+            git commit -m "Update BF6 daily history"
+            if git push origin HEAD:main; then
+              break
+            fi
+            # Undo only the bot commit just created; the capture remains saved outside Git.
+            git reset --soft HEAD^
+            if [ "$attempt" -eq 3 ]; then
+              echo "Unable to persist history after three attempts; keeping the previous publication."
+              exit 1
+            fi
+            echo "Push rejected; merging the capture into the latest main before retrying."
+          done
       - name: Check history
         run: npm run test:history
       - name: Configure Pages
@@ -55,16 +87,6 @@ jobs:
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: npm run build -- --base-href "${BASE_PATH}/"
-      - name: Persist daily history
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update BF6 daily history"
-            git push origin HEAD:main
-          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/bf6-squad/browser

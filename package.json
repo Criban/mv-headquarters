@@ -7,7 +7,7 @@
     "build": "node scripts/angular.cjs build",
     "snapshot:bf6": "node scripts/snapshot-bf6.cjs",
     "history:sync": "node scripts/file-history.cjs",
-    "test:history": "node scripts/check-bf6-history.mjs && node scripts/check-file-history.mjs"
+    "test:history": "node scripts/check-bf6-history.mjs && node scripts/check-file-history.mjs && node scripts/check-history-push.mjs"
   },
   "dependencies": {
     "@angular/common": "^21.0.0",

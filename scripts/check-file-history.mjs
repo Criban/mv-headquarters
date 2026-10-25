@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { normalizeReading, validateReading, mergeHistory } from './file-history.mjs';
+import { normalizeReading, validateReading, mergeHistory, mergeSnapshots } from './file-history.mjs';
 
 const bundled = JSON.parse(await readFile(new URL('../public/data/bf6-stats-snapshot.json', import.meta.url), 'utf8'));
 const fixture = Object.values(bundled.players)[0];
@@ -44,3 +44,20 @@ for (const [name, readings] of Object.entries(history.players)) {
   assert.ok(readings.length >= 21, 'All 21 published days per player are preserved');
 }
 console.log('PASS JSON history validation, human kill counters, same-day replacement, player isolation, Berlin midnight/DST and existing history preservation.');
+
+const captured = { players: { A: late, C: early } };
+const remote = { players: { A: newer, B: early } };
+const combined = mergeSnapshots(remote, captured);
+assert.deepEqual(combined.players.A, newer, 'A stale capture cannot overwrite a newer remote snapshot');
+assert.deepEqual(combined.players.B, early, 'Remote players absent from a capture remain available');
+assert.deepEqual(combined.players.C, early, 'Captured players absent from the remote are retained');
+const concurrentHistory = mergeHistory(replaced, combined, new Date('2026-10-03'));
+assert.equal(concurrentHistory.players.A[1].values.kills, 160);
+assert.equal(concurrentHistory.players.A.length, 2, 'Merging again after a concurrent push retains all existing days');
+assert.throws(() => mergeSnapshots(remote, { players: { A: make('invalid') } }));
+const thirdDay = make('2026-10-03T10:00:00Z');
+const remoteWithGap = mergeHistory(first, { players: { A: thirdDay } }, new Date('2026-10-04'));
+const delayedCapture = { players: { A: late } };
+assert.equal(mergeHistory(remoteWithGap, delayedCapture, new Date('2026-10-04')).players.A.length, 3, 'An older capture can still fill its actual day without replacing a newer day');
+assert.deepEqual(mergeSnapshots({ players: { A: thirdDay } }, delayedCapture).players.A, thirdDay, 'Filling an older day does not roll back the fallback');
+console.log('PASS concurrent capture merging preserves newer snapshots, existing days and player identities.');

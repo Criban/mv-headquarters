@@ -69,13 +69,29 @@ async function main() {
   const destination = new URL('../public/data/bf6-stats-history.json', import.meta.url);
   // Fail on missing/corrupt history instead of discarding existing days.
   const history = JSON.parse(await readFile(destination, 'utf8'));
-  const snapshot = await captureSnapshots();
-  const next = mergeHistory(history, snapshot);
+  const snapshotPath = process.argv[2] === '--merge-snapshot' ? process.argv[3] : null;
+  if (process.argv.length > 2 && !snapshotPath) throw new Error('Usage: file-history.mjs [--merge-snapshot path]');
+  const captured = snapshotPath ? JSON.parse(await readFile(snapshotPath, 'utf8')) : await captureSnapshots();
+  const snapshot = mergeSnapshots(JSON.parse(await readFile(new URL('../public/data/bf6-stats-snapshot.json', import.meta.url), 'utf8')), captured);
+  const next = mergeHistory(history, captured);
   await writeSnapshot(snapshot);
   const temporary = new URL(destination.href + '.tmp');
   await writeFile(temporary, JSON.stringify(next) + '\n');
   await rename(temporary, destination);
   console.log('Saved shared daily history to public/data/bf6-stats-history.json');
+}
+
+/** An older concurrent capture must never replace a newer fallback response. */
+export function mergeSnapshots(previous, captured) {
+  const players = Object.create(null);
+  for (const snapshot of [previous, captured]) {
+    if (!snapshot?.players || typeof snapshot.players !== 'object' || Array.isArray(snapshot.players)) throw new Error('Invalid snapshot');
+    for (const [name, player] of Object.entries(snapshot.players)) {
+      normalizeReading(player);
+      if (!players[name] || Date.parse(player.capturedAt) > Date.parse(players[name].capturedAt)) players[name] = player;
+    }
+  }
+  return { players };
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
