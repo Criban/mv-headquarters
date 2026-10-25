@@ -22,6 +22,8 @@ Die Linie erhält die bisherige Historie einschließlich alter Stände ohne Kill
 
 Die rechte Achse „K/D · ZOOM“ passt sich mit etwas Rand an die Gesamt-K/D-Werte des gewählten Zeitraums an. Dadurch sind auch kleine Änderungen sichtbar. Die linke Anzahlachse beginnt für die Balken weiterhin bei null.
 
+Linienabschnitte erhalten dezente grüne oder rote Akzente, wenn das Gesamt-K/D gegenüber dem Vortag steigt oder fällt; unveränderte oder nicht vergleichbare Abschnitte bleiben in der Design-Akzentfarbe. Der ausgewählte Punkt wird entsprechend stärker eingefärbt. Unter dem Gesamt-K/D und im Punkttitel steht die Änderung mit Richtungspfeil. Wo vollständige kumulative Zähler vorliegen, werden deren ungerundete Verhältnisse verglichen, sodass auch Änderungen unterhalb der sichtbaren K/D-Rundung erkennbar sind. Alte Stände verwenden die gespeicherte K/D und kennzeichnen die Änderung als gerundet. Über Tageslücken oder zurückgesetzte Zähler wird keine Tageswirkung behauptet. Die Monatsübersicht vergleicht die letzten Gesamtstände der gespeicherten Monate.
+
 ## Lokal
 
 `npm run history:sync` ruft die API ab und aktualisiert beide JSON-Dateien. `npm run test:history` prüft Speicherung und Diagrammberechnungen ohne Netzwerk oder Datenbank; `npm run build` prüft das Frontend. Die bestehenden Zeitpläne können durch GitHub verzögert werden oder ausfallen. Erfassungslücken werden nicht erfunden.

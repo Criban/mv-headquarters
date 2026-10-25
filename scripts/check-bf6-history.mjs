@@ -51,7 +51,7 @@ assert.deepEqual(getDailyStatsHistory('A', now), []);
 
 const chartSource = await readFile(new URL('../src/app/profile-card/kd-history-chart.ts', import.meta.url), 'utf8');
 const chartCompiled = ts.transpileModule(chartSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const { kdHistoryChart, kdHistoryReadings, historyDateKey, combatHistoryReadings, combatHistoryChart } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
+const { kdHistoryChart, kdHistoryReadings, historyDateKey, combatHistoryReadings, combatHistoryChart, formatKdImpact } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
 assert.deepEqual(kdHistoryChart([]).points, []);
 const single = kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: initial }]);
 assert.equal(single.points[0].x, 360, 'One reading is centered');
@@ -142,3 +142,33 @@ assert.ok(smallChanges.points.every((p, i) => p.killsY === combatPlot.points[i].
 assert.ok(combatHistoryChart([0, 0].map((value, i) => ({ ...days[i], value }))).points.every(p => Number.isFinite(p.y) && p.y >= 32 && p.y <= 244));
 assert.ok(combatHistoryChart([days[1]]).points.every(p => Number.isFinite(p.y) && p.y > 32 && p.y < 244), 'A constant K/D retains padding');
 console.log('PASS adaptive K/D axis, visible small changes, independent count baseline and constant/zero ratios.');
+
+const impactSource = [
+  counts('2026-09-30T12:00:00Z', 2000, 1000),
+  counts('2026-10-01T12:00:00Z', 2101, 1050),
+  counts('2026-10-02T12:00:00Z', 2200, 1100),
+  counts('2026-10-03T12:00:00Z', 2300, 1150),
+  counts('2026-10-05T12:00:00Z', 2400, 1200),
+  counts('2026-10-06T12:00:00Z', 10, 5)
+];
+const impacts = combatHistoryReadings(impactSource, '30', null, combatNow);
+assert.deepEqual(impacts.map(r => r.impact.direction), ['unknown', 'up', 'down', 'flat', 'unknown', 'unknown']);
+assert.ok(impacts[1].impact.delta > 0 && impacts[1].impact.delta < .001, 'Exact counters reveal an improvement hidden by two-digit K/D rounding');
+assert.equal(impacts[1].impact.exact, true);
+assert.equal(impacts[1].value, 2, 'Impact precision does not replace the stored overall line value');
+assert.ok(formatKdImpact(impacts[1].impact).startsWith('↑ +0,0010'));
+assert.ok(formatKdImpact(impacts[2].impact).startsWith('↓ −'));
+assert.equal(formatKdImpact(impacts[3].impact), '→ Unverändert');
+assert.equal(formatKdImpact(impacts[4].impact), '', 'No daily attribution across an unrecorded day');
+assert.equal(formatKdImpact(impacts[5].impact), '', 'No attribution after counter resets');
+assert.ok(formatKdImpact({ direction: 'up', delta: .000001, exact: true }).includes('< 0,0001'), 'Tiny changes never display as positive zero');
+const legacyImpact = combatHistoryReadings([snapshot('2026-10-01T12:00:00Z'), snapshot('2026-10-02T12:00:00Z', update)], '30', null, combatNow)[1].impact;
+assert.equal(legacyImpact.direction, 'down');
+assert.equal(legacyImpact.exact, false, 'Legacy comparisons are explicitly based on rounded saved K/D');
+const colored = combatHistoryChart(impacts).coloredSegments;
+assert.deepEqual(colored.map(s => s.direction), ['up', 'down', 'flat', 'unknown', 'unknown']);
+const monthImpact = combatHistoryReadings(impactSource.slice(0, 4), 'year', null, combatNow)[1].impact;
+assert.equal(monthImpact.direction, 'flat', 'Monthly direction compares month-end cumulative ratios, not the last daily impact');
+const boundaryImpact = combatHistoryReadings(impactSource, 'all', '2026-10', combatNow)[0].impact;
+assert.equal(boundaryImpact.direction, 'up', 'A month detail uses the actual preceding day outside its filter');
+console.log('PASS subtle line directions, precise cumulative impacts, rounded legacy comparisons, monthly baselines, gaps and resets.');

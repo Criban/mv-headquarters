@@ -53,12 +53,37 @@ export function kdHistoryChart(snapshots: StatsSnapshot[]) {
   };
 }
 
+export type KdImpact = { direction: 'up' | 'down' | 'flat' | 'unknown'; delta: number | null; exact: boolean };
 export type CombatReading = {
   savedAt: string; kills: number | null; deaths: number | null; value: number | null;
   state: 'value' | 'inactive' | 'missing'; validDays: number; recordedDays: number;
+  impact: KdImpact;
 };
 const calendarTime = (savedAt: string) => Date.parse(historyDateKey(savedAt) + 'T12:00:00Z');
 const validCounter = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+const unknownImpact = (): KdImpact => ({ direction: 'unknown', delta: null, exact: false });
+
+/** Compare cumulative ratios, never daily K/D against a rounded overall ratio. */
+function kdImpact(current: StatsSnapshot, previous?: StatsSnapshot): KdImpact {
+  if (!previous) return unknownImpact();
+  const a = current.values, b = previous.values;
+  const counters = validCounter(a.kills) && validCounter(a.deaths) && validCounter(b.kills) && validCounter(b.deaths);
+  if (counters && (a.kills! < b.kills! || a.deaths! < b.deaths!)) return unknownImpact();
+  const exact = counters && a.deaths! > 0 && b.deaths! > 0;
+  const delta = exact ? a.kills! / a.deaths! - b.kills! / b.deaths! : a.killDeath! - b.killDeath!;
+  if (Math.abs(delta) < 1e-12) return { direction: 'flat', delta: 0, exact };
+  return { direction: delta > 0 ? 'up' : 'down', delta, exact };
+}
+
+export function formatKdImpact(impact: KdImpact): string {
+  if (impact.delta === null) return '';
+  if (impact.direction === 'flat') return '→ Unverändert';
+  const arrow = impact.direction === 'up' ? '↑' : '↓';
+  const sign = impact.direction === 'up' ? '+' : '−';
+  const digits = impact.exact ? 4 : 2;
+  if (Math.abs(impact.delta) < 10 ** -digits) return `${arrow} ${impact.direction === 'up' ? 'Verbessert' : 'Gesenkt'} (< ${(10 ** -digits).toLocaleString('de-DE', { maximumFractionDigits: digits })})`;
+  return `${arrow} ${sign}${Math.abs(impact.delta).toLocaleString('de-DE', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+}
 
 /** Differences are calculated before filtering so the first visible day can use its preceding day. */
 export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHistoryPeriod, month: string | null = null, now = new Date()): CombatReading[] {
@@ -83,7 +108,8 @@ export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHist
     return {
       savedAt: snapshot.savedAt, kills, deaths, value: snapshot.values.killDeath,
       state: !valid ? 'missing' : kills === 0 && deaths === 0 ? 'inactive' : 'value',
-      validDays: valid ? 1 : 0, recordedDays: 1
+      validDays: valid ? 1 : 0, recordedDays: 1,
+      impact: consecutive ? kdImpact(snapshot, previous) : unknownImpact()
     };
   }).filter(s => keys.has(historyDateKey(s.savedAt).slice(0, monthly ? 7 : 10)));
   if (!monthly) return daily;
@@ -92,14 +118,20 @@ export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHist
     const key = historyDateKey(reading.savedAt).slice(0, 7);
     groups.set(key, [...(groups.get(key) ?? []), reading]);
   }
+  const monthEnds = new Map<string, StatsSnapshot>();
+  for (const snapshot of source) monthEnds.set(historyDateKey(snapshot.savedAt).slice(0, 7), snapshot);
+  const allMonthEnds = [...monthEnds.values()];
   return [...groups.values()].map((readings): CombatReading => {
     const known = readings.filter(r => r.validDays);
     const kills = known.length ? known.reduce((sum, r) => sum + r.kills!, 0) : null;
     const deaths = known.length ? known.reduce((sum, r) => sum + r.deaths!, 0) : null;
+    const monthEnd = monthEnds.get(historyDateKey(readings.at(-1)!.savedAt).slice(0, 7))!;
+    const previousMonth = allMonthEnds[allMonthEnds.indexOf(monthEnd) - 1];
     return {
       savedAt: readings.at(-1)!.savedAt, kills, deaths, value: readings.at(-1)!.value,
       state: !known.length ? 'missing' : kills === 0 && deaths === 0 ? 'inactive' : 'value',
-      validDays: known.length, recordedDays: readings.length
+      validDays: known.length, recordedDays: readings.length,
+      impact: kdImpact(monthEnd, previousMonth)
     };
   });
 }
@@ -131,7 +163,12 @@ export function combatHistoryChart(readings: CombatReading[], width = 720) {
     else segment.push(`${point.x},${point.y}`);
   }
   if (segment.length) segments.push(segment.join(' '));
+  const coloredSegments = points.slice(1).flatMap((point, index) => {
+    const previous = points[index];
+    if (previous.y === null || point.y === null) return [];
+    return [{ points: `${previous.x},${previous.y} ${point.x},${point.y}`, direction: point.impact.direction, reading: point }];
+  });
   const spacing = points.length > 1 ? Math.min(...points.slice(1).map((p, i) => p.x - points[i].x)) : 40;
-  return { points, lines: segments, barWidth: Math.min(14, spacing * .3),
+  return { points, lines: segments, coloredSegments, barWidth: Math.min(14, spacing * .3),
     ticks: Array.from({ length: 5 }, (_, i) => ({ value: ratioMax - (ratioMax - ratioMin) * i / 4, count: countMax * (1 - i / 4), y: 32 + i * 53 })) };
 }

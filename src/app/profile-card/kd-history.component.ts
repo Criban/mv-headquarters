@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, computed, ElementRef, input, OnDestroy, output, signal, viewChild } from '@angular/core';
 import type { StatsSnapshot } from '../services/bf6-stats-history';
-import { combatHistoryChart, combatHistoryReadings, historyDateKey, type KdHistoryPeriod } from './kd-history-chart';
+import { combatHistoryChart, combatHistoryReadings, formatKdImpact, historyDateKey, type CombatReading, type KdHistoryPeriod } from './kd-history-chart';
 
 @Component({
   selector: 'app-kd-history',
@@ -79,6 +79,10 @@ export class KdHistoryComponent implements AfterViewInit, OnDestroy {
   formatValue(value: number | null): string { return value === null ? '—' : this.numberFormat.format(value); }
   formatCount(value: number | null): string { return value === null ? '—' : new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 }).format(value); }
   selectedValue(): string { return this.formatValue(this.selected()?.value ?? null); }
+  impactText(reading: CombatReading): string {
+    const text = formatKdImpact(reading.impact);
+    return text ? `${text} ${this.monthly() ? 'zum vorherigen Monatsstand' : 'zum Vortag'}${reading.impact.exact ? '' : ' (gerundet)'}` : '';
+  }
   formatDate(value: string): string { return this.dateFormat.format(new Date(value)); }
   shortDate(value: string): string { return this.shortDateFormat.format(new Date(value)); }
   formatMonth(value: string): string { return this.monthFormat.format(new Date(value)); }
