@@ -40,7 +40,6 @@ svg { display:block; width:100%; overflow:visible; }
 .history-point.impact-down { fill:var(--kd-down); }
 .selected-point.impact-up { fill:#8cdb96; }
 .selected-point.impact-down { fill:#ff9990; }
-.kd-impact { margin:0 0 16px; color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
 .impact-legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin:14px 0; color:var(--muted); font-size:11px; }
 .impact-legend span { display:flex; align-items:center; gap:6px; }
 .impact-legend i { display:inline-block; width:15px; height:2px; }

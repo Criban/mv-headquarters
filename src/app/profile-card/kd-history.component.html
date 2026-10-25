@@ -16,7 +16,6 @@
         <small>{{ formatCount(point.kills) }} Kills · {{ formatCount(point.deaths) }} Deaths {{ monthly() ? 'im Monat' : 'am Tag' }}</small>
       </span>
     </div>
-    @if (point.impact.delta !== null) { <p class="kd-impact" aria-live="polite" aria-atomic="true">{{ impactText(point) }}</p> }
     <div class="chart-legend" aria-label="Datenreihen"><span><i class="kills-key"></i>KILLS (SPIELER)</span><span><i class="deaths-key"></i>DEATHS</span><span><i class="ratio-key"></i>GESAMT-K/D</span></div>
     <svg [attr.viewBox]="'0 0 ' + chartWidth() + ' 300'" role="img" aria-label="Kills und Deaths pro Tag als Balken, Gesamt-K/D als Linie: grün verbessert, rot gesenkt, Akzentfarbe unverändert oder ohne Vergleich. Werte und Änderung mit dem Regler auswählen." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
       <text class="axis-label axis-title" x="64" y="16">ANZAHL</text><text class="axis-label axis-title" [attr.x]="chartWidth() - 64" y="16" text-anchor="end">K/D · ZOOM</text>
