@@ -40,7 +40,6 @@
     </svg>
     <div class="impact-legend" aria-label="Einfluss auf Gesamt-K/D"><span><i class="up-key"></i>↑ Verbessert</span><span><i class="down-key"></i>↓ Gesenkt</span><span><i class="flat-key"></i>→ Unverändert</span><span><i class="unknown-key"></i>Kein Vergleich</span></div>
       @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler an zwei aufeinanderfolgenden Tagen gespeichert sind.</p> }
-      @else if (point.state === 'inactive') { <p class="aggregation">Keine neuen Kills oder Deaths in diesem Zeitraum. Die Linie zeigt weiterhin das Gesamt-K/D.</p> }
       @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} gespeicherten Tagesständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
     @if (monthly()) { <button class="detail-button" type="button" (click)="openMonth()">{{ formatMonth(point.savedAt) }}: Tageswerte ansehen →</button> }
     @if (chart().points.length > 1) {
