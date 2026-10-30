@@ -27,6 +27,13 @@ export const DESIGNS: readonly DesignPreset[] = [
     portraitMatrix: '.98 0 0 0 .016  0 .99 0 0 .018  0 0 1 0 .02  0 0 0 1 0',
     portraitLightMap: 'portrait-tsuru-light', portraitLightStrength: .62,
   },
+  {
+    id: 'siege-of-cairo', name: 'Siege of Cairo', current: false,
+    preview: 'images/siege-of-cairo-squad.png', description: 'Kairo · Zerstörte Innenstadt',
+    browserColor: '#211d1c',
+    portraitMatrix: '.99 0 0 0 .022  .01 .95 0 0 .012  .01 0 .9 0 .008  0 0 0 1 0',
+    portraitLightMap: 'portrait-daylight-light', portraitLightStrength: .68,
+  },
 ];
 
 export const CURRENT_DESIGN = DESIGNS.find(design => design.current)!;
