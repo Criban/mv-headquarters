@@ -19,6 +19,7 @@ export class AppComponent {
   private readonly document = inject(DOCUMENT);
   readonly designs = DESIGNS;
   readonly design = signal<DesignPreset>(DESIGNS[Math.floor(Math.random() * DESIGNS.length)]);
+  readonly loaderVisible = signal(true);
   readonly locationPickerOpen = signal(false);
 
   @HostListener('document:click', ['$event'])
@@ -51,6 +52,8 @@ export class AppComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    const loaderTimeout = setTimeout(() => this.loaderVisible.set(false), 2000);
+    this.destroyRef.onDestroy(() => clearTimeout(loaderTimeout));
     this.applyDesign();
     removeLegacyStatsHistory();
     for (const player of this.players.filter(player => !player.privateProfile)) {

@@ -1,4 +1,17 @@
 <a class="skip-link" href="#main">Zum Inhalt</a>
+@if (loaderVisible()) {
+  <div class="site-loader" role="status" aria-live="polite" aria-label="Seite wird geladen">
+    <span class="loader-corner loader-corner-top-left" aria-hidden="true"></span>
+    <span class="loader-corner loader-corner-top-right" aria-hidden="true"></span>
+    <span class="loader-corner loader-corner-bottom-left" aria-hidden="true"></span>
+    <span class="loader-corner loader-corner-bottom-right" aria-hidden="true"></span>
+    <div class="loader-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p class="loader-title">MV / MOST VALUABLE</p>
+    <p class="loader-status">EINSATZGEBIET WIRD VORBEREITET</p>
+    <div class="loader-track" aria-hidden="true"><span></span></div>
+    <div class="loader-meta" aria-hidden="true"><span>VERBINDUNG WIRD HERGESTELLT</span><span>BITTE WARTEN</span></div>
+  </div>
+}
 <div class="game-shell">
   <header class="topbar">
     <a class="brand" href="./">BATTLEFIELD<span>MV / MOST VALUABLE</span></a>
