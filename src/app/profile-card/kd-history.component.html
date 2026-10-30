@@ -17,7 +17,7 @@
       </span>
     </div>
     <div class="chart-legend" aria-label="Datenreihen"><span><i class="kills-key"></i>KILLS (SPIELER)</span><span><i class="deaths-key"></i>DEATHS</span><span><i class="ratio-key"></i>GESAMT-K/D</span></div>
-    <svg [attr.viewBox]="'0 0 ' + chartWidth() + ' 300'" role="img" aria-label="Kills und Deaths pro Tag als Balken, Gesamt-K/D als Linie: grün verbessert, rot gesenkt, Akzentfarbe unverändert oder ohne Vergleich. Werte und Änderung mit dem Regler auswählen." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
+    <svg [attr.viewBox]="'0 0 ' + chartWidth() + ' 300'" role="img" aria-label="Kills und Deaths pro Tag als Balken, Gesamt-K/D als Linie: grün verbessert, rot gesenkt, grau gestrichelt unverändert, grau gepunktet ohne Vergleich. Werte und Änderung mit dem Regler auswählen." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
       <text class="axis-label axis-title" x="64" y="16">ANZAHL</text><text class="axis-label axis-title" [attr.x]="chartWidth() - 64" y="16" text-anchor="end">K/D · ZOOM</text>
       @for (tick of chart().ticks; track $index) {
         <line class="grid-line" x1="64" [attr.x2]="chartWidth() - 64" [attr.y1]="tick.y" [attr.y2]="tick.y" />
@@ -28,7 +28,8 @@
         @if (reading.killsY !== null) { <rect class="kills-bar" [class.active-bar]="reading.savedAt === point.savedAt" [attr.x]="reading.x - chart().barWidth - 1" [attr.y]="reading.killsY" [attr.width]="chart().barWidth" [attr.height]="244 - reading.killsY" /> }
         @if (reading.deathsY !== null) { <rect class="deaths-bar" [class.active-bar]="reading.savedAt === point.savedAt" [attr.x]="reading.x + 1" [attr.y]="reading.deathsY" [attr.width]="chart().barWidth" [attr.height]="244 - reading.deathsY" /> }
       }
-      @for (segment of chart().coloredSegments; track $index) { <polyline [class]="'history-line impact-' + segment.direction" [attr.points]="segment.points"><title>{{ formatDate(segment.reading.savedAt) }}: {{ formatValue(segment.reading.value) }} Gesamt-K/D {{ segment.reading.impact.delta !== null ? ' · ' + impactText(segment.reading) : '' }}</title></polyline> }
+      @for (segment of chart().coloredSegments; track $index) { <polyline class="history-line-outline" [attr.points]="segment.points" aria-hidden="true" /> }
+      @for (segment of chart().coloredSegments; track $index) { <polyline [class]="'history-line impact-' + segment.direction" [attr.points]="segment.points"><title>{{ formatDate(segment.reading.savedAt) }}: {{ formatValue(segment.reading.value) }} Gesamt-K/D {{ segment.reading.impact.delta !== null ? ' · ' + impactText(segment.reading) : ' · Kein Vergleich' }}</title></polyline> }
       @for (reading of chart().points; track reading.savedAt) {
         @if (reading.y !== null) { <circle [class]="'history-point impact-' + reading.impact.direction" [attr.cx]="reading.x" [attr.cy]="reading.y" r="3"><title>{{ formatDate(reading.savedAt) }}: {{ formatValue(reading.value) }} Gesamt-K/D · {{ formatCount(reading.kills) }} Kills · {{ formatCount(reading.deaths) }} Deaths {{ reading.impact.delta !== null ? ' · ' + impactText(reading) : '' }}</title></circle> }
       }
@@ -37,7 +38,7 @@
       @for (label of axisLabels(); track label.x) { <text class="axis-label" [attr.x]="label.x" y="273" text-anchor="middle">{{ label.label }}</text> }
       <text class="axis-label axis-title" [attr.x]="chartWidth() / 2" y="297" text-anchor="middle">{{ monthly() ? 'MONAT' : 'TAG' }}</text>
     </svg>
-    <div class="impact-legend" aria-label="Einfluss auf Gesamt-K/D"><span><i class="up-key"></i>↑ Verbessert</span><span><i class="down-key"></i>↓ Gesenkt</span><span><i class="flat-key"></i>→ Unverändert</span></div>
+    <div class="impact-legend" aria-label="Einfluss auf Gesamt-K/D"><span><i class="up-key"></i>↑ Verbessert</span><span><i class="down-key"></i>↓ Gesenkt</span><span><i class="flat-key"></i>→ Unverändert</span><span><i class="unknown-key"></i>Kein Vergleich</span></div>
       @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler an zwei aufeinanderfolgenden Tagen gespeichert sind.</p> }
       @else if (point.state === 'inactive') { <p class="aggregation">Keine neuen Kills oder Deaths in diesem Zeitraum. Die Linie zeigt weiterhin das Gesamt-K/D.</p> }
       @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} gespeicherten Tagesständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
