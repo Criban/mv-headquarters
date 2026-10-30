@@ -6,26 +6,14 @@
     [style.--scene-portrait-light]="lighting().portraitLight" [style.--scene-warmth]="lighting().warmth"
     [style.--scene-sunlight]="lighting().sunlight" [style.--scene-night-tint]="lighting().nightTint">
     <div class="hangar-stage" aria-hidden="true">
+      @if (sceneTransition().outgoing) {
+        <div class="scene-transition-fx"><span class="scene-scan"></span><span class="scene-reticle"></span></div>
+      }
       @for (preset of designs; track preset.id) {
-      <div class="hangar-world" [class.scene-visible]="preset.id === design().id" [attr.data-scene]="preset.id" [style.background-image]="'url(' + preset.preview + ')'">
+      <div class="hangar-world" [class.scene-visible]="preset.id === sceneTransition().outgoing || (preset.id === design().id && (!sceneTransition().outgoing || preset.id === sceneTransition().entering))" [class.scene-exiting]="preset.id === sceneTransition().outgoing" [class.scene-entering]="preset.id === sceneTransition().entering" [attr.data-scene]="preset.id" [style.background-image]="'url(' + preset.preview + ')'">
         @if (preset.id === 'rooftop-daylight') {
           <span class="city-smoke city-smoke-east"></span>
           <span class="city-smoke city-smoke-west"></span>
-        }
-        @if (preset.id === 'tsuru-reef') {
-          <span class="reef-water">
-            <svg class="reef-water-surface" viewBox="0 0 1536 1024" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-              <defs>
-                <filter id="reef-water-waves" x="0" y="330" width="1536" height="300" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                  <feTurbulence type="fractalNoise" baseFrequency=".012 .095" numOctaves="1" seed="7" result="ripples">
-                    <animate attributeName="baseFrequency" values=".012 .095;.014 .105;.012 .095" dur="16s" repeatCount="indefinite" />
-                  </feTurbulence>
-                  <feDisplacementMap in="SourceGraphic" in2="ripples" scale="4" xChannelSelector="R" yChannelSelector="G" />
-                </filter>
-              </defs>
-              <image [attr.href]="preset.preview" width="1536" height="1024" preserveAspectRatio="none" filter="url(#reef-water-waves)" />
-            </svg>
-          </span>
         }
       </div>
       }

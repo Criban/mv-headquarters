@@ -19,6 +19,7 @@ export class AppComponent {
   private readonly document = inject(DOCUMENT);
   readonly designs = DESIGNS;
   readonly design = signal<DesignPreset>(DESIGNS[Math.floor(Math.random() * DESIGNS.length)]);
+  readonly sceneTransition = signal<{ outgoing: string | null; entering: string | null }>({ outgoing: null, entering: null });
   readonly loaderVisible = signal(true);
   readonly locationPickerOpen = signal(false);
 
@@ -50,6 +51,7 @@ export class AppComponent {
   ];
   private readonly statsService = inject(Bf6StatsService);
   private readonly destroyRef = inject(DestroyRef);
+  private sceneTransitionTimers: ReturnType<typeof setTimeout>[] = [];
 
   ngOnInit(): void {
     const loaderTimeout = setTimeout(() => this.loaderVisible.set(false), 2000);
@@ -66,9 +68,18 @@ export class AppComponent {
   }
   setDesign(id: string): void {
     const design = DESIGNS.find(preset => preset.id === id);
-    if (!design) return;
+    if (!design || design.id === this.design().id) return;
+    this.sceneTransitionTimers.forEach(clearTimeout);
+    this.sceneTransitionTimers = [];
+    const outgoing = this.design().id;
+    this.sceneTransition.set({ outgoing, entering: null });
     this.design.set(design);
     this.applyDesign();
+    this.sceneTransitionTimers.push(setTimeout(() => this.sceneTransition.set({ outgoing, entering: design.id }), 900));
+    this.sceneTransitionTimers.push(setTimeout(() => this.sceneTransition.set({ outgoing: null, entering: null }), 1550));
+  }
+  ngOnDestroy(): void {
+    this.sceneTransitionTimers.forEach(clearTimeout);
   }
   private applyDesign(): void {
     this.document.documentElement.dataset['design'] = this.design().id;

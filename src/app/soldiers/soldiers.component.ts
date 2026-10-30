@@ -18,6 +18,7 @@ import { CURRENT_DESIGN, DESIGNS, type DesignPreset } from '../data/designs';
 export class SoldiersComponent {
   readonly designs = DESIGNS;
   readonly design = input<DesignPreset>(CURRENT_DESIGN);
+  readonly sceneTransition = input<{ outgoing: string | null; entering: string | null }>({ outgoing: null, entering: null });
   readonly lighting = signal(getBerlinLighting());
   readonly players = input.required<PlayerProfile[]>();
   readonly selected = input.required<number>();
