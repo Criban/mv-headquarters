@@ -4,7 +4,7 @@ import { catchError, defer, finalize, forkJoin, map, Observable, of, shareReplay
 import { topWeapons, type WeaponStats } from './weapon-stats';
 import { parseAccuracy } from './accuracy';
 import { setSharedStatsHistory } from './bf6-stats-history';
-export interface Bf6Stats { killDeath: number; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; }
+export interface Bf6Stats { killDeath: number; kills: number | null; deaths: number | null; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; }
 type ProfileResponse = { playerProfiles?: { playerCard?: { rank?: unknown }; rankName?: unknown; stats?: { name?: string; value?: unknown }[] }[] };
 type Snapshot = { players: Record<string, { capturedAt: string; response: Record<string, unknown>; profile: ProfileResponse }> };
 @Injectable({ providedIn: 'root' })
@@ -82,6 +82,7 @@ export class Bf6StatsService {
       const shotsFired = number(allWeapons?.shotsFired);
       const playerProfile = profile?.playerProfiles?.[0];
       const rankName = typeof playerProfile?.rankName === 'string' ? playerProfile.rankName.trim() || null : null;
-      return { killDeath, accuracy: parseAccuracy(response['accuracy']), rank: number(playerProfile?.playerCard?.rank), rankName, hoursPlayed: seconds === null ? null : seconds / 3600, matchesPlayed, shotsFired, weapons: topWeapons(response['weapons']) };
+      const dividedKills = response['dividedKills'] as { human?: unknown } | undefined;
+      return { killDeath, kills: number(dividedKills?.human), deaths: number(response['deaths']), accuracy: parseAccuracy(response['accuracy']), rank: number(playerProfile?.playerCard?.rank), rankName, hoursPlayed: seconds === null ? null : seconds / 3600, matchesPlayed, shotsFired, weapons: topWeapons(response['weapons']) };
   }
 }

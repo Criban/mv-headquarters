@@ -6,7 +6,7 @@ import { compareDailyStats, getDailyStatsHistory, HISTORY_METRICS, type HistoryM
 import { KdHistoryComponent } from './kd-history.component';
 
 type StatChange = { text: string; direction: 'positive' | 'negative' };
-type StatsState = { status: 'private' } | { status: 'loading' } | { status: 'error' } | { status: 'ready'; killDeath: string; accuracy: string; rank: string; rankName: string | null; hours: string; matches: string; shots: string; capturedAt?: string; changes: Record<HistoryMetric, StatChange | null>; comparisonNote: string | null; weapons: { weaponName: string; kills: string }[] };
+type StatsState = { status: 'private' } | { status: 'loading' } | { status: 'error' } | { status: 'ready'; killDeath: string; accuracy: string; rank: string; rankName: string | null; hours: string; matches: string; shots: string; capturedAt?: string; liveSnapshot?: StatsSnapshot; changes: Record<HistoryMetric, StatChange | null>; comparisonNote: string | null; weapons: { weaponName: string; kills: string }[] };
 
 export interface PlayerProfile {
   id: string;
@@ -38,7 +38,17 @@ export class ProfileCardComponent {
     effect(() => { this.player(); this.kdHistory.set(null); });
   }
 
-  openKdHistory(): void { this.kdHistory.set(getDailyStatsHistory(this.player().name)); }
+  openKdHistory(): void {
+    const snapshots = getDailyStatsHistory(this.player().name);
+    const state = this.stats();
+    if (state.status === 'ready' && state.liveSnapshot) {
+      const day = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(state.liveSnapshot.savedAt));
+      const existing = snapshots.findIndex(snapshot => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(snapshot.savedAt)) === day);
+      if (existing >= 0) snapshots.splice(existing, 1);
+      snapshots.push(state.liveSnapshot);
+    }
+    this.kdHistory.set(snapshots);
+  }
 
   readonly stats = toSignal(combineLatest([
     toObservable(this.player).pipe(distinctUntilChanged((a, b) => a.name === b.name && a.id === b.id && a.privateProfile === b.privateProfile)),
@@ -46,7 +56,7 @@ export class ProfileCardComponent {
   ]).pipe(
     switchMap(([player]) => player.privateProfile ? of<StatsState>({ status: 'private' }) : this.statsService.getStats(player.name, player.id).pipe(
       tap(stats => this.statsLoaded.emit({ playerId: player.id, stats })),
-      map((stats): StatsState => ({ status: 'ready', killDeath: this.formatter.format(stats.killDeath), accuracy: stats.accuracy === null ? '—' : this.formatValue(stats.accuracy, 1) + ' %', rank: this.formatValue(stats.rank), rankName: stats.rankName, hours: this.formatValue(stats.hoursPlayed, 1), matches: this.formatValue(stats.matchesPlayed), shots: this.formatValue(stats.shotsFired), capturedAt: stats.capturedAt ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(stats.capturedAt)) : undefined, ...this.compareStats(player.name, stats), weapons: stats.weapons.map(weapon => ({ weaponName: weapon.weaponName, kills: this.formatValue(weapon.kills) })) })),
+    map((stats): StatsState => ({ status: 'ready', killDeath: this.formatter.format(stats.killDeath), accuracy: stats.accuracy === null ? '—' : this.formatValue(stats.accuracy, 1) + ' %', rank: this.formatValue(stats.rank), rankName: stats.rankName, hours: this.formatValue(stats.hoursPlayed, 1), matches: this.formatValue(stats.matchesPlayed), shots: this.formatValue(stats.shotsFired), capturedAt: stats.capturedAt ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin' }).format(new Date(stats.capturedAt)) : undefined, liveSnapshot: stats.capturedAt || stats.kills === null || stats.deaths === null ? undefined : { savedAt: new Date().toISOString(), values: { killDeath: stats.killDeath, hoursPlayed: stats.hoursPlayed, matchesPlayed: stats.matchesPlayed, accuracy: stats.accuracy, shotsFired: stats.shotsFired, kills: stats.kills, deaths: stats.deaths } }, ...this.compareStats(player.name, stats), weapons: stats.weapons.map(weapon => ({ weaponName: weapon.weaponName, kills: this.formatValue(weapon.kills) })) })),
       catchError(() => of<StatsState>({ status: 'error' })),
       startWith<StatsState>({ status: 'loading' })
     ))
