@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, HostListener, inject, signal } from '@angular/core';
+import { afterNextRender, Component, computed, DestroyRef, HostListener, inject, Injector, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DESIGNS, type DesignPreset } from './data/designs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -9,6 +9,8 @@ import { Bf6StatsService, type Bf6Stats } from './services/bf6-stats.service';
 import { removeLegacyStatsHistory } from './services/bf6-stats-history';
 import { VideosComponent } from './videos/videos.component';
 
+const LAST_SOLDIER_KEY = 'mv-last-soldier';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,6 +19,7 @@ import { VideosComponent } from './videos/videos.component';
 })
 export class AppComponent {
   private readonly document = inject(DOCUMENT);
+  private readonly injector = inject(Injector);
   readonly designs = DESIGNS;
   readonly design = signal<DesignPreset>(DESIGNS[Math.floor(Math.random() * DESIGNS.length)]);
   readonly sceneTransition = signal<{ outgoing: string | null; entering: string | null }>({ outgoing: null, entering: null });
@@ -36,6 +39,7 @@ export class AppComponent {
   }
   readonly view = signal<'squad' | 'clan' | 'videos'>('clan');
   readonly selected = signal(0);
+  readonly visibleSoldier = signal(0);
   readonly historyOpen = signal(false);
   readonly hasHistoryStats = computed(() => !this.players[this.selected()].privateProfile);
   readonly playerStats = signal<Partial<Record<string, Bf6Stats>>>({});
@@ -57,6 +61,14 @@ export class AppComponent {
     const loaderTimeout = setTimeout(() => this.loaderVisible.set(false), 2000);
     this.destroyRef.onDestroy(() => clearTimeout(loaderTimeout));
     this.applyDesign();
+    try {
+      const savedName = this.document.defaultView?.localStorage.getItem(LAST_SOLDIER_KEY);
+      const savedIndex = this.players.findIndex(player => player.name === savedName && !player.inactive);
+      if (savedIndex >= 0) {
+        this.selected.set(savedIndex);
+        this.view.set('squad');
+      }
+    } catch { /* Keep the default when browser storage is unavailable. */ }
     removeLegacyStatsHistory();
     for (const player of this.players.filter(player => !player.privateProfile)) {
       this.statsService.getStats(player.name, player.id).pipe(
@@ -87,8 +99,21 @@ export class AppComponent {
   }
   toggleHistory(): void { this.historyOpen.update(open => !open); }
   closeHistory(): void { this.historyOpen.set(false); }
-  selectSoldier(index: number): void {
+  selectSoldier(index: number, scrollToDetails = false, rememberSelection = scrollToDetails): void {
     if (!this.players[index] || this.players[index].inactive) return;
     this.closeHistory(); this.selected.set(index); this.view.set('squad');
+    if (rememberSelection) {
+      try { this.document.defaultView?.localStorage.setItem(LAST_SOLDIER_KEY, this.players[index].name); }
+      catch { /* Selection still works when storage is unavailable. */ }
+    }
+    const window = this.document.defaultView;
+    if (scrollToDetails && window?.matchMedia('(max-width: 760px)').matches) {
+      afterNextRender(() => {
+        this.document.getElementById('squad-details')?.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+          block: 'start',
+        });
+      }, { injector: this.injector });
+    }
   }
 }

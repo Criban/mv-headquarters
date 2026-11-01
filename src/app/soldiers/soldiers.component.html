@@ -19,11 +19,12 @@
       }
     </div>
 
-    <div class="soldier-buttons" id="soldier-roster">
+    <div #roster class="soldier-buttons" id="soldier-roster" (pointerdown)="beginBrowsing()" (scroll)="updateRosterPosition(roster)">
       @for (entry of visiblePlayers(); track entry.player.id) {
         @let player = entry.player;
         @let playerIndex = entry.index;
-        <button class="soldier" type="button" [disabled]="!!player.inactive" [class.inactive]="player.inactive" [class.seated]="player.image === 'images/54bi44-camping-chair.png'" [attr.inert]="historyOpen() && squadActive() && selected() !== playerIndex ? '' : null" [class.selected]="squadActive() && selected() === playerIndex" [attr.aria-pressed]="squadActive() && selected() === playerIndex" [attr.aria-label]="player.name + (player.inactive ? ': Inaktiv' : player.privateProfile ? ': Privates Profil anzeigen' : ': Statistiken anzeigen')" (click)="soldierSelected.emit(playerIndex)">
+        <div class="soldier-slide">
+        <button class="soldier" type="button" [disabled]="!!player.inactive" [class.inactive]="player.inactive" [class.seated]="player.image === 'images/54bi44-camping-chair.png'" [attr.inert]="historyOpen() && squadActive() && selected() !== playerIndex ? '' : null" [class.selected]="squadActive() && selected() === playerIndex" [attr.aria-pressed]="squadActive() && selected() === playerIndex" [attr.aria-label]="player.name + (player.inactive ? ': Inaktiv' : player.privateProfile ? ': Privates Profil anzeigen' : ': Statistiken anzeigen')" (click)="activateSoldier(roster, playerIndex)">
           <span class="soldier-portrait">
             <svg class="soldier-ground-shadow" viewBox="0 0 1024 1536" aria-hidden="true" focusable="false"
               [style.--shadow-soft-filter]="'url(#ground-soft-' + playerIndex + ')'"
@@ -121,6 +122,8 @@
           </span>
           <span class="soldier-label"><span class="slot-number">0{{ playerIndex + 1 }} / MV</span><strong>{{ player.name }}</strong><span class="selection-caption">{{ player.inactive ? 'INAKTIV' : squadActive() && selected() === playerIndex ? 'AUSGEWÄHLT' : 'AUSWÄHLEN' }}</span></span>
         </button>
+        <app-soldier-kd-preview [player]="player" />
+        </div>
       }
     </div>
     <app-battlefield-history [player]="players()[selected()]" [stats]="stats()" [(open)]="historyOpen" />
@@ -132,5 +135,5 @@
     </button>
   }
   </div>
-  <div class="scene-bottom"><span>↵ SOLDAT AUSWÄHLEN</span></div>
+  <div class="scene-bottom"><span class="desktop-roster-hint">↵ SOLDAT AUSWÄHLEN</span><div class="mobile-roster-controls" aria-label="Soldaten durchblättern"><button type="button" aria-label="Vorheriger Soldat" [disabled]="rosterPosition() === 0" (click)="scrollRoster(roster, -1)">←</button><div class="roster-progress"><span>← WISCHEN →</span><span class="roster-dots" [attr.aria-label]="'Soldat ' + (rosterPosition() + 1) + ' von ' + visiblePlayers().length">@for (entry of visiblePlayers(); track entry.player.id; let i = $index) { <span class="roster-dot" [class.current]="i === rosterPosition()" aria-hidden="true"></span> }</span></div><button type="button" aria-label="Nächster Soldat" [disabled]="rosterPosition() === visiblePlayers().length - 1" (click)="scrollRoster(roster, 1)">→</button></div></div>
 </section>

@@ -61,3 +61,5 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
   .weapon-stats li { padding:3px 0; }
 }
 .private-profile { border-top:1px solid var(--line); padding:20px 0; background:var(--surface-glass); } .private-profile h3 { color:var(--accent); font-size:12px; letter-spacing:1px; margin:0 0 12px; } .private-profile p { color:var(--muted); font-size:14px; line-height:1.6; margin:0; }
+
+@media(max-width:760px) { .main-stat { display:none; } }

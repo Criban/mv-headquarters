@@ -9,8 +9,8 @@
     </section>
   } @else {
   <div class="stats-panel" [attr.aria-busy]="state.status === 'loading'">
-    <div class="main-stat">
-      <span>K/D <small>KILLS / TODE</small></span>
+    <div class="main-stat" [class.saved]="state.status === 'ready' && !!state.capturedAt">
+      <span>K/D <small>KILLS / TODE</small>@if (state.status === 'ready' && state.capturedAt) { <small class="kd-saved">GESPEICHERT</small> }</span>
       @if (state.status === 'loading') { <span class="skeleton skeleton-kd" aria-hidden="true"></span> }
       @else {
         <div class="main-stat-value">

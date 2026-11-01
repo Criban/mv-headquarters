@@ -97,15 +97,15 @@ h1 { font:700 clamp(42px,4.1vw,70px)/.95 'Barlow Condensed',Impact,sans-serif; m
 /* Surface lighting is clipped to portrait alpha, preserving the animated rigs.
    Match diffuse daylight and dusty warm bounce light without silhouette outlines. */
 .soldier { --portrait-brightness:.96; --portrait-selected-brightness:.96; --portrait-saturation:.85; --portrait-contrast:.96; }
-.soldier:nth-child(1) { --portrait-brightness:.98; --portrait-selected-brightness:.98; }
-.soldier:nth-child(2) { --portrait-brightness:.93; --portrait-selected-brightness:.93; }
-.soldier:nth-child(3) { --portrait-brightness:.95; --portrait-selected-brightness:.95; }
+.soldier-slide:nth-child(1) .soldier { --portrait-brightness:.98; --portrait-selected-brightness:.98; }
+.soldier-slide:nth-child(2) .soldier { --portrait-brightness:.93; --portrait-selected-brightness:.93; }
+.soldier-slide:nth-child(3) .soldier { --portrait-brightness:.95; --portrait-selected-brightness:.95; }
 /* Keep the seated portrait's olive fabric subdued while retaining its material color. */
 .soldier.seated { --portrait-brightness:.89; --portrait-selected-brightness:.89; --portrait-saturation:.50; }
 :root[data-design="tsuru-reef"] .soldier { --portrait-brightness:.98; --portrait-selected-brightness:.98; --portrait-contrast:1.0; }
-:root[data-design="tsuru-reef"] .soldier:nth-child(1) { --portrait-brightness:1; --portrait-selected-brightness:1; }
-:root[data-design="tsuru-reef"] .soldier:nth-child(2) { --portrait-brightness:.95; --portrait-selected-brightness:.95; }
-:root[data-design="tsuru-reef"] .soldier:nth-child(3) { --portrait-brightness:.97; --portrait-selected-brightness:.97; }
+:root[data-design="tsuru-reef"] .soldier-slide:nth-child(1) .soldier { --portrait-brightness:1; --portrait-selected-brightness:1; }
+:root[data-design="tsuru-reef"] .soldier-slide:nth-child(2) .soldier { --portrait-brightness:.95; --portrait-selected-brightness:.95; }
+:root[data-design="tsuru-reef"] .soldier-slide:nth-child(3) .soldier { --portrait-brightness:.97; --portrait-selected-brightness:.97; }
 :root[data-design="tsuru-reef"] .soldier.seated { --portrait-brightness:.92; --portrait-selected-brightness:.92; }
 .soldier .soldier-image { filter:saturate(var(--portrait-saturation)) var(--portrait-light-filter) contrast(var(--portrait-contrast)) brightness(calc(var(--portrait-brightness) * (.94 + var(--scene-portrait-light,1) * .08))); transition:filter 3s ease; }
 .soldier.selected .soldier-image { --portrait-brightness:var(--portrait-selected-brightness); }
@@ -255,4 +255,54 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   .history-open .soldier-buttons { transform:none; }
   .history-open .soldier:not(.selected) { opacity:1; visibility:visible; }
   body:has(.history-dialog[open]) { overflow:hidden; }
+}
+
+/* Mobile roster: one soldier per screen, with native touch scrolling. */
+.mobile-roster-controls { display:none; }
+@media(max-width:760px) {
+  .lobby { padding:0 20px 20px; }
+  .soldiers { margin:0 -20px; }
+  .scene-top { padding:10px 20px; }
+  .soldier-stage.has-break-toggle { padding-right:0; }
+  .soldier-buttons { display:flex; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scrollbar-width:none; touch-action:pan-x pan-y; gap:8px; padding-inline:7vw; }
+  .soldier-buttons::-webkit-scrollbar { display:none; }
+  .soldier-slide { flex:0 0 86vw; scroll-snap-align:center; height:clamp(360px, calc(100svh - 245px), 680px); }
+  .soldier { width:100%; height:100%; border-inline:1px solid var(--line); }
+  .soldier-portrait { flex:1; min-height:0; height:auto; width:100%; overflow:hidden; }
+  .soldier-image { width:100%; height:100%; max-width:none; margin:0; object-fit:contain; }
+  .soldier-ground-shadow { width:100%; height:100%; left:0; }
+  .soldier-label { flex:0 0 90px; min-height:0; padding:10px 155px 10px 16px; gap:3px; align-content:center; }
+  .soldier-label strong { font-size:22px; }
+  .break-toggle { position:relative; inset:auto; width:100%; min-height:44px; flex-direction:row; padding:8px 20px; }
+  .break-toggle-label { writing-mode:horizontal-tb; }
+  .scene-bottom { padding:4px 20px; }
+  .desktop-roster-hint { display:none; }
+  .mobile-roster-controls { display:flex; width:100%; align-items:center; justify-content:space-between; color:var(--muted); font-size:9px; letter-spacing:1px; }
+  .mobile-roster-controls button { min-width:44px; min-height:44px; border:0; background:transparent; color:var(--accent); font-size:22px; cursor:pointer; }
+}
+
+@media(max-width:760px) {
+  .roster-progress { display:grid; justify-items:center; gap:6px; color:var(--text); font-weight:600; }
+  .roster-dots { display:flex; gap:7px; align-items:center; }
+  .roster-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); opacity:.55; }
+  .roster-dot.current { width:18px; border-radius:4px; background:var(--accent); opacity:1; }
+  .mobile-roster-controls button:disabled { opacity:.3; cursor:default; }
+}
+
+@media(max-width:760px) {
+  .lobby { position:relative; }
+  .lobby .details { position:static; }
+}
+
+.soldier-slide { position:relative; min-width:0; }
+@media(min-width:761px) { .soldier-slide { height:100%; min-height:0; } }
+
+.soldier-slide > .soldier { width:100%; }
+
+@media(max-width:760px) {
+  .soldier.selected { border-bottom-color:transparent; background:transparent; }
+  .soldier.selected::after { display:none; }
+  .soldier.selected .soldier-label { background:var(--label-background); color:var(--text); }
+  .soldier.selected .slot-number { color:var(--muted); }
+  .selection-caption { display:none; }
 }

@@ -37,11 +37,11 @@
       </div>
     </div>
   </header>
-  <main id="main" [class.lobby]="view() !== 'videos'" [class.video-page]="view() === 'videos'">
+  <main id="main" [class.lobby]="view() !== 'videos'" [class.video-page]="view() === 'videos'" [class.mobile-kd-visible]="view() === 'squad' && selected() === visibleSoldier()">
     @if (view() === 'videos') {
       <app-videos />
     } @else {
-    <section class="details" aria-label="Squad-Informationen">
+    <section id="squad-details" class="details" aria-label="Squad-Informationen">
       @if (view() === 'clan') {
         <p class="eyebrow">BATTLEFIELD / CLAN MV</p><h1>MOST<br>VALUABLE<span>.</span></h1>
         <p class="intro">Gemeinsam rein. Gemeinsam raus.</p>
@@ -65,6 +65,9 @@
       [stats]="selectedStats()"
       [(historyOpen)]="historyOpen"
       (soldierSelected)="selectSoldier($event)"
+      (soldierActivated)="selectSoldier($event, true)"
+      (soldierBrowsed)="selectSoldier($event, false, true)"
+      (visibleSoldier)="visibleSoldier.set($event)"
     />
     }
   </main>
