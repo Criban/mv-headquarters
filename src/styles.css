@@ -132,7 +132,7 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 .soldier-scene { aspect-ratio:auto; isolation:isolate; }
 /* Keep the background on one image-sized plane, including on narrow screens. */
 .hangar-stage { position:absolute; inset:0; z-index:-1; container-type:size; perspective:1000px; pointer-events:none; }
-.hangar-world { position:absolute; left:50%; top:50%; width:max(100cqw,150cqh); aspect-ratio:3 / 2; transform:translate(-50%,-50%); opacity:0; filter:brightness(calc(var(--scene-exposure-base) + var(--hall-brightness,1) * var(--scene-exposure-factor))) saturate(calc(var(--scene-saturation-base) + var(--hall-saturation,1) * var(--scene-saturation-factor))); transition:opacity .8s ease,filter 3s ease; background:var(--scene-image) center / 100% 100% no-repeat; }
+.hangar-world { position:absolute; left:50%; top:50%; width:max(100cqw,150cqh); aspect-ratio:3 / 2; transform:translate(-50%,-50%); opacity:0; filter:brightness(calc(var(--scene-exposure-base) + var(--hall-brightness,1) * var(--scene-exposure-factor))) saturate(calc(var(--scene-saturation-base) + var(--hall-saturation,1) * var(--scene-saturation-factor))); transition:opacity .8s ease,filter 3s ease; background-position:center; background-size:100% 100%; background-repeat:no-repeat; }
 .hangar-world.scene-visible { opacity:1; }
 .hangar-world.scene-exiting { animation:scene-fly-out .68s cubic-bezier(.55,.05,.85,.4) both; }
 .hangar-world.scene-entering { animation:scene-fly-in .62s cubic-bezier(.16,.72,.25,1) both; }
@@ -168,7 +168,7 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   60% { opacity:.60; }
   100% { transform:translate(24%,-24%) rotate(32deg) scale(1.08,1.1); opacity:0; }
 }
-@media(prefers-reduced-motion:reduce) { .city-smoke { display:none; }.city-smoke::before,.city-smoke::after { animation:none; } }
+@media(max-width:760px), (prefers-reduced-motion:reduce) { .city-smoke { display:none; }.city-smoke::before,.city-smoke::after { animation:none; } }
 .soldier-buttons { position:relative; grid-template-columns:repeat(var(--soldier-count,3),minmax(0,1fr)); }
 .soldier { display:flex; flex-direction:column; align-items:stretch; background:transparent; overflow:hidden; }
 .soldier-image { display:block; width:100%; height:auto; aspect-ratio:2 / 3; object-fit:contain; }
@@ -305,4 +305,9 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   .soldier.selected .soldier-label { background:var(--label-background); color:var(--text); }
   .soldier.selected .slot-number { color:var(--muted); }
   .selection-caption { display:none; }
+}
+
+@media(max-width:760px) {
+  .soldier .mobile-portrait { filter:saturate(var(--portrait-saturation)) contrast(var(--portrait-contrast)) brightness(calc(var(--portrait-brightness) * (.94 + var(--scene-portrait-light,1) * .08))); }
+  .soldier-portrait::before { content:''; position:absolute; z-index:-1; left:16%; right:16%; bottom:3%; height:9%; background:radial-gradient(ellipse, #090b0ab8 0%, #090b0a65 35%, transparent 72%); pointer-events:none; }
 }

@@ -21,6 +21,7 @@ export class SoldiersComponent {
   readonly design = input<DesignPreset>(CURRENT_DESIGN);
   readonly sceneTransition = input<{ outgoing: string | null; entering: string | null }>({ outgoing: null, entering: null });
   readonly lighting = signal(getBerlinLighting());
+  readonly mobile = signal(false);
   readonly players = input.required<PlayerProfile[]>();
   readonly selected = input.required<number>();
   readonly squadActive = input(false);
@@ -98,6 +99,11 @@ export class SoldiersComponent {
     const destroyRef = inject(DestroyRef);
     const zone = inject(NgZone);
     if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+    const mobileQuery = window.matchMedia('(max-width: 760px)');
+    this.mobile.set(mobileQuery.matches);
+    const onViewportChange = (event: MediaQueryListEvent) => this.mobile.set(event.matches);
+    mobileQuery.addEventListener('change', onViewportChange);
+    destroyRef.onDestroy(() => mobileQuery.removeEventListener('change', onViewportChange));
     afterNextRender(() => {
       const roster = this.roster()?.nativeElement;
       if (!roster || !window.matchMedia('(max-width: 760px)').matches) return;

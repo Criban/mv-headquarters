@@ -65,4 +65,4 @@ img.kingcoffee-portrait { animation-duration:6.2s; animation-delay:-3.3s; }
   0%,100% { transform:translateY(0) rotate(0); }
   45% { transform:translateY(-7px) rotate(-.25deg); }
 }
-@media(prefers-reduced-motion:reduce) { svg.soldier-image g[class],img.soldier-image { animation:none; } }
+@media(max-width:760px), (prefers-reduced-motion:reduce) { svg.soldier-image g[class],img.soldier-image { animation:none; } }

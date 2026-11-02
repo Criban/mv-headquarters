@@ -1,3 +1,6 @@
+@if (mobile()) {
+  <img class="soldier-image mobile-portrait" [src]="mobileFailed() ? src() : 'images/mobile/' + mobileImages[index()] + '.webp'" [alt]="description()" width="768" height="1152" (error)="mobileFailed.set(true)">
+} @else {
 <!-- Apply directional ambient light to the complete portrait, including animated layers. -->
 <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -15,32 +18,32 @@
 @if (index() === 0 && !failed()) {
   <svg class="soldier-image blackhawk-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
     role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
-    <image href="images/blackhawk-forward-rig/legs.png" x="75" y="375" width="880.64" height="1232" preserveAspectRatio="none" (error)="failed.set(true)" />
+    <image href="images/blackhawk-forward-rig/legs.webp" x="75" y="375" width="880.64" height="1232" preserveAspectRatio="none" (error)="failed.set(true)" />
     <g class="ribcage">
-      <image href="images/blackhawk-forward-rig/torso.png" x="180" y="78" width="665.6" height="998.4" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/torso.webp" x="180" y="78" width="665.6" height="998.4" (error)="failed.set(true)" />
     </g>
     <g class="head">
-      <image href="images/blackhawk-forward-rig/head.png" x="309" y="14" width="368.64" height="552.96" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/head.webp" x="309" y="14" width="368.64" height="552.96" (error)="failed.set(true)" />
     </g>
     <g class="arms-weapon">
-      <image href="images/blackhawk-forward-rig/arms-weapon.png" x="219" y="-20" width="542.72" height="814.08" (error)="failed.set(true)" />
+      <image href="images/blackhawk-forward-rig/arms-weapon.webp" x="219" y="-20" width="542.72" height="814.08" (error)="failed.set(true)" />
     </g>
   </svg>
 } @else if (index() === 1 && !failed()) {
   <svg class="soldier-image criban-rig" viewBox="0 0 1024 1536" width="1024" height="1536"
     role="img" [attr.aria-label]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" xmlns="http://www.w3.org/2000/svg">
-    <image href="images/criban-black-rig/legs.png" x="130" y="450" width="768" height="1152" (error)="failed.set(true)" />
+    <image href="images/criban-black-rig/legs.webp" x="130" y="450" width="768" height="1152" (error)="failed.set(true)" />
     <g class="arm-right">
-      <image href="images/criban-black-rig/arm-right.png" x="310" y="210" width="512" height="768" (error)="failed.set(true)" />
+      <image href="images/criban-black-rig/arm-right.webp" x="310" y="210" width="512" height="768" (error)="failed.set(true)" />
     </g>
     <g class="ribcage">
-      <image href="images/criban-black-rig/torso.png" x="284" y="126" width="435.2" height="652.8" (error)="failed.set(true)" />
+      <image href="images/criban-black-rig/torso.webp" x="284" y="126" width="435.2" height="652.8" (error)="failed.set(true)" />
     </g>
     <g class="arm-left">
-      <image href="images/criban-black-rig/arm-left.png" x="190" y="181" width="614.4" height="921.6" (error)="failed.set(true)" />
+      <image href="images/criban-black-rig/arm-left.webp" x="190" y="181" width="614.4" height="921.6" (error)="failed.set(true)" />
     </g>
     <g class="head">
-      <image href="images/criban-black-rig/head.png" x="361" y="0" width="296.96" height="445.44" (error)="failed.set(true)" />
+      <image href="images/criban-black-rig/head.webp" x="361" y="0" width="296.96" height="445.44" (error)="failed.set(true)" />
     </g>
   </svg>
 } @else if (index() === 2 && !failed()) {
@@ -73,4 +76,6 @@
   </svg>
 } @else {
   <img class="soldier-image" [class.kingcoffee-portrait]="index() === 2" [src]="src()" [alt]="description()" [style.--portrait-light-filter]="'url(#portrait-daylight-' + index() + ')'" width="1024" height="1536">
+}
+
 }

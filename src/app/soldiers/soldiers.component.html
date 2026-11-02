@@ -10,7 +10,7 @@
         <div class="scene-transition-fx"><span class="scene-scan"></span><span class="scene-reticle"></span></div>
       }
       @for (preset of designs; track preset.id) {
-      <div class="hangar-world" [class.scene-visible]="preset.id === sceneTransition().outgoing || (preset.id === design().id && (!sceneTransition().outgoing || preset.id === sceneTransition().entering))" [class.scene-exiting]="preset.id === sceneTransition().outgoing" [class.scene-entering]="preset.id === sceneTransition().entering" [attr.data-scene]="preset.id" [style.background-image]="'url(' + preset.preview + ')'">
+      <div class="hangar-world" [class.scene-visible]="preset.id === sceneTransition().outgoing || (preset.id === design().id && (!sceneTransition().outgoing || preset.id === sceneTransition().entering))" [class.scene-exiting]="preset.id === sceneTransition().outgoing" [class.scene-entering]="preset.id === sceneTransition().entering" [attr.data-scene]="preset.id" [style.background-image]="preset.id === sceneTransition().outgoing || preset.id === design().id ? 'url(' + preset.preview + ')' : null">
         @if (preset.id === 'rooftop-daylight') {
           <span class="city-smoke city-smoke-east"></span>
           <span class="city-smoke city-smoke-west"></span>
@@ -26,6 +26,7 @@
         <div class="soldier-slide">
         <button class="soldier" type="button" [disabled]="!!player.inactive" [class.inactive]="player.inactive" [class.seated]="player.image === 'images/54bi44-camping-chair.png'" [attr.inert]="historyOpen() && squadActive() && selected() !== playerIndex ? '' : null" [class.selected]="squadActive() && selected() === playerIndex" [attr.aria-pressed]="squadActive() && selected() === playerIndex" [attr.aria-label]="player.name + (player.inactive ? ': Inaktiv' : player.privateProfile ? ': Privates Profil anzeigen' : ': Statistiken anzeigen')" (click)="activateSoldier(roster, playerIndex)">
           <span class="soldier-portrait">
+            @if (!mobile()) {
             <svg class="soldier-ground-shadow" viewBox="0 0 1024 1536" aria-hidden="true" focusable="false"
               [style.--shadow-soft-filter]="'url(#ground-soft-' + playerIndex + ')'"
               [style.--shadow-body-filter]="'url(#ground-body-' + playerIndex + ')'"
@@ -118,7 +119,8 @@
                 <path class="contact-shadow" d="M696 1504 Q714 1515 738 1512 L788 1505 L790 1512 Q742 1524 715 1519 Q701 1517 695 1511Z" />
               }
             </svg>
-            <app-soldier-portrait [src]="player.image" [description]="player.imageAlt" [index]="playerIndex" [inactive]="!!player.inactive" [design]="design()" />
+            }
+            <app-soldier-portrait [mobile]="mobile()" [src]="player.image" [description]="player.imageAlt" [index]="playerIndex" [inactive]="!!player.inactive" [design]="design()" />
           </span>
           <span class="soldier-label"><span class="slot-number">0{{ playerIndex + 1 }} / MV</span><strong>{{ player.name }}</strong><span class="selection-caption">{{ player.inactive ? 'INAKTIV' : squadActive() && selected() === playerIndex ? 'AUSGEWÄHLT' : 'AUSWÄHLEN' }}</span></span>
         </button>

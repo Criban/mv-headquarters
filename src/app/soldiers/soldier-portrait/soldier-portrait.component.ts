@@ -14,6 +14,9 @@ export class SoldierPortraitComponent {
   readonly src = input.required<string>();
   readonly description = input.required<string>();
   readonly index = input(0);
+  readonly mobile = input(false);
+  readonly mobileFailed = signal(false);
+  readonly mobileImages = ['blackhawk', 'criban', 'kingcoffee', '54bi44'];
   readonly inactive = input(false);
   readonly failed = signal(false);
 }

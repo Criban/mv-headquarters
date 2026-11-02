@@ -29,7 +29,7 @@
         <p class="location-heading">EINSATZORT WÄHLEN</p>
         @for (preset of designs; track preset.id) {
           <button type="button" class="location-option" [class.is-selected]="preset.id === design().id" [attr.aria-pressed]="preset.id === design().id" (click)="setDesign(preset.id); closeLocationPicker(locationTrigger)">
-            <img [src]="preset.preview" alt="" width="240" height="160">
+            <img [attr.src]="locationPickerOpen() ? preset.preview : null" alt="" width="240" height="160">
             <span class="location-option-copy"><strong>{{ preset.name }}</strong><small>{{ preset.description }}</small></span>
             <span class="location-check" aria-hidden="true">{{ preset.id === design().id ? '✓' : '↗' }}</span>
           </button>
