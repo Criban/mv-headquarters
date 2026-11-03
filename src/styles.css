@@ -311,3 +311,9 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   .soldier .mobile-portrait { filter:saturate(var(--portrait-saturation)) contrast(var(--portrait-contrast)) brightness(calc(var(--portrait-brightness) * (.94 + var(--scene-portrait-light,1) * .08))); }
   .soldier-portrait::before { content:''; position:absolute; z-index:-1; left:16%; right:16%; bottom:3%; height:9%; background:radial-gradient(ellipse, #090b0ab8 0%, #090b0a65 35%, transparent 72%); pointer-events:none; }
 }
+
+@media(max-width:760px) {
+  .soldier-buttons.mouse-dragging { cursor:grabbing; scroll-snap-type:none; user-select:none; }
+  .soldier-buttons.mouse-dragging .soldier { cursor:grabbing; }
+}
+@media(max-width:760px) and (pointer:fine) { .soldier-buttons { cursor:grab; } }

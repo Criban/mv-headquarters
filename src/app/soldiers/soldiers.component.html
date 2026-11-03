@@ -19,7 +19,7 @@
       }
     </div>
 
-    <div #roster class="soldier-buttons" id="soldier-roster" (pointerdown)="beginBrowsing()" (scroll)="updateRosterPosition(roster)">
+    <div #roster class="soldier-buttons" id="soldier-roster" [class.mouse-dragging]="mouseDragging()" (pointerdown)="beginBrowsing($event, roster)" (pointermove)="moveMouseDrag($event, roster)" (pointerup)="endMouseDrag($event, roster)" (pointercancel)="endMouseDrag($event, roster)" (dragstart)="$event.preventDefault()" (scroll)="updateRosterPosition(roster)">
       @for (entry of visiblePlayers(); track entry.player.id) {
         @let player = entry.player;
         @let playerIndex = entry.index;

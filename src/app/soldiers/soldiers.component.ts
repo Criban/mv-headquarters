@@ -31,6 +31,9 @@ export class SoldiersComponent {
   readonly soldierActivated = output<number>();
   readonly soldierBrowsed = output<number>();
   private browsingRoster = false;
+  readonly mouseDragging = signal(false);
+  private mouseDrag: { pointerId: number; startX: number; scrollLeft: number } | null = null;
+  private suppressDragClick = false;
   readonly visibleSoldier = output<number>();
   readonly showOnBreak = signal(false);
   readonly rosterPosition = signal(0);
@@ -50,9 +53,43 @@ export class SoldiersComponent {
     this.scrollToRosterPosition(roster, next);
   }
 
-  beginBrowsing(): void { this.browsingRoster = true; }
+  beginBrowsing(event: PointerEvent, roster: HTMLElement): void {
+    this.browsingRoster = true;
+    this.suppressDragClick = false;
+    if (!this.mobile() || event.pointerType !== 'mouse' || event.button !== 0 || !(event.target instanceof Element) || !event.target.closest('.soldier')) return;
+    this.mouseDrag = { pointerId: event.pointerId, startX: event.clientX, scrollLeft: roster.scrollLeft };
+  }
+
+  moveMouseDrag(event: PointerEvent, roster: HTMLElement): void {
+    const drag = this.mouseDrag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const distance = event.clientX - drag.startX;
+    if (!this.mouseDragging() && Math.abs(distance) > 6) {
+      this.mouseDragging.set(true);
+      this.suppressDragClick = true;
+      roster.setPointerCapture(event.pointerId);
+    }
+    if (this.mouseDragging()) {
+      event.preventDefault();
+      roster.scrollLeft = drag.scrollLeft - distance;
+    }
+  }
+
+  endMouseDrag(event: PointerEvent, roster: HTMLElement): void {
+    if (!this.mouseDrag || event.pointerId !== this.mouseDrag.pointerId) return;
+    const dragged = this.mouseDragging();
+    this.mouseDrag = null;
+    this.mouseDragging.set(false);
+    if (roster.hasPointerCapture(event.pointerId)) roster.releasePointerCapture(event.pointerId);
+    if (dragged) {
+      this.updateRosterPosition(roster);
+      this.scrollToRosterPosition(roster, this.rosterPosition());
+      setTimeout(() => { this.suppressDragClick = false; }, 0);
+    }
+  }
 
   activateSoldier(roster: HTMLElement, playerIndex: number): void {
+    if (this.suppressDragClick) return;
     if (window.matchMedia('(max-width: 760px)').matches) {
       const position = this.visiblePlayers().findIndex(entry => entry.index === playerIndex);
       if (position >= 0) this.scrollToRosterPosition(roster, position, 'instant');
