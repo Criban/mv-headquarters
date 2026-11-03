@@ -14,7 +14,7 @@ export class VideosComponent implements OnDestroy {
   private midnightTimer?: ReturnType<typeof setTimeout>;
   readonly videos = [...SQUAD_VIDEOS].reverse();
   private readonly availableVideos = computed(() => this.videos.filter(video => this.isAvailable(video)));
-  private readonly selection = signal<SquadVideo | undefined>(this.randomAvailableVideo());
+  private readonly selection = signal<SquadVideo | undefined>(undefined);
   readonly selected = computed<SquadVideo | undefined>(() => this.selection() ?? this.availableVideos()[0]);
   readonly playerUrl = computed(() => {
     const video = this.selected();
@@ -37,11 +37,6 @@ export class VideosComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.midnightTimer);
-  }
-
-  private randomAvailableVideo(): SquadVideo | undefined {
-    const videos = this.availableVideos();
-    return videos[Math.floor(Math.random() * videos.length)];
   }
 
   private localDate(): string {
