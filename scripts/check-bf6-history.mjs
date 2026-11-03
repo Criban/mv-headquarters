@@ -51,7 +51,7 @@ assert.deepEqual(getDailyStatsHistory('A', now), []);
 
 const chartSource = await readFile(new URL('../src/app/profile-card/kd-history-chart.ts', import.meta.url), 'utf8');
 const chartCompiled = ts.transpileModule(chartSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
-const { kdHistoryChart, kdHistoryReadings, historyDateKey, combatHistoryReadings, combatHistoryChart, formatKdImpact } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
+const { kdHistoryChart, kdHistoryReadings, historyDateKey, combatHistoryReadings, combatHistoryChart, formatKdImpact, liveKdTrend } = await import(`data:text/javascript;base64,${Buffer.from(chartCompiled).toString('base64')}`);
 assert.deepEqual(kdHistoryChart([]).points, []);
 const single = kdHistoryChart([{ savedAt: '2026-10-01T10:00:00Z', values: initial }]);
 assert.equal(single.points[0].x, 360, 'One reading is centered');
@@ -173,6 +173,19 @@ assert.equal(monthImpact.direction, 'flat', 'Monthly direction compares month-en
 const boundaryImpact = combatHistoryReadings(impactSource, 'all', '2026-10', combatNow)[0].impact;
 assert.equal(boundaryImpact.direction, 'up', 'A month detail uses the actual preceding day outside its filter');
 console.log('PASS subtle line directions, precise cumulative impacts, rounded legacy comparisons, monthly baselines, gaps and resets.');
+const trendNow = new Date('2026-10-11T12:00:00Z');
+const trendBaseline = [counts('2026-10-10T12:00:00Z', 2000, 1000)];
+const trendStats = { killDeath: 2, kills: 2101, deaths: 1050, hoursPlayed: 1, matchesPlayed: 1, accuracy: null, shotsFired: null };
+assert.equal(liveKdTrend(trendBaseline, trendStats, trendNow), 'up', 'Unrounded counters show the same small increase as the chart');
+assert.equal(liveKdTrend(trendBaseline, { ...trendStats, kills: 2099 }, trendNow), 'down');
+assert.equal(liveKdTrend(trendBaseline, { ...trendStats, kills: 2100 }, trendNow), null, 'Unchanged ratios have no arrow');
+assert.equal(liveKdTrend(trendBaseline, { ...trendStats, capturedAt: '2026-10-09T12:00:00Z' }, trendNow), null, 'Fallbacks must not be compared with history');
+assert.equal(liveKdTrend(trendBaseline, { ...trendStats, kills: null }, trendNow), null);
+assert.equal(liveKdTrend(trendBaseline, { ...trendStats, kills: 10, deaths: 5 }, trendNow), null, 'Counter resets have no direction');
+assert.equal(liveKdTrend([], trendStats, trendNow), null, 'No arrow without a preceding point');
+assert.equal(liveKdTrend([counts('2026-08-01T12:00:00Z', 2000, 1000)], trendStats, trendNow), null, 'No arrow without a visible chart segment');
+assert.equal(liveKdTrend([...trendBaseline, counts('2026-10-11T08:00:00Z', 2400, 1100)], trendStats, trendNow), 'up', 'Live data replace the same-day snapshot just as in the chart');
+console.log('PASS live K/D trend agrees with the daily chart and excludes fallbacks, resets and missing comparisons.');
 
 const gapReadings = combatHistoryReadings([19, 21, 23, 25].map((day, index) => snapshot(`2026-10-${day}T12:00:00Z`, { ...initial, killDeath: [2.01, 2, 2.02, 2.02][index] })), '30', null, new Date('2026-10-26T12:00:00Z'));
 assert.deepEqual(combatHistoryChart(gapReadings).coloredSegments.map(s => s.direction), ['down', 'up', 'flat'], 'Criban 19–21 October decline is red despite the missing 20 October reading');

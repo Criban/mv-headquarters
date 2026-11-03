@@ -15,7 +15,7 @@
       @else {
         <div class="main-stat-value">
           @if (state.status === 'ready') {
-            <button class="kd-history-button" type="button" aria-haspopup="dialog" [attr.aria-expanded]="kdHistory() !== null" [attr.aria-label]="'K/D-Verlauf für ' + player().name + ' öffnen, aktuelle K/D ' + state.killDeath" (click)="openKdHistory()"><strong>{{ state.killDeath }}</strong><span class="kd-history-hint">VERLAUF ↗</span></button>
+            <button class="kd-history-button" type="button" aria-haspopup="dialog" [attr.aria-expanded]="kdHistory() !== null" [attr.aria-label]="'K/D-Verlauf für ' + player().name + ' öffnen, aktuelle K/D ' + state.killDeath + (state.trend === 'up' ? ', K/D-Trend gestiegen' : state.trend === 'down' ? ', K/D-Trend gesunken' : '')" (click)="openKdHistory()"><strong>{{ state.killDeath }}</strong><span class="kd-history-hint">VERLAUF <app-kd-trend [direction]="state.trend" /></span></button>
           } @else { <strong>—</strong> }
           @if (state.status === 'ready' && state.changes.killDeath; as change) { <span [class]="'stat-change ' + change.direction">({{ change.text }})</span> }
         </div>

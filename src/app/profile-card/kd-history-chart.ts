@@ -172,3 +172,15 @@ export function combatHistoryChart(readings: CombatReading[], width = 720) {
   return { points, lines: segments, coloredSegments, barWidth: Math.min(14, spacing * .3),
     ticks: Array.from({ length: 5 }, (_, i) => ({ value: ratioMax - (ratioMax - ratioMin) * i / 4, count: countMax * (1 - i / 4), y: 32 + i * 53 })) };
 }
+
+/** Match the final segment of the default 30-day chart, without comparing fallback data. */
+export function liveKdTrend(snapshots: StatsSnapshot[], stats: { killDeath: number; kills: number | null; deaths: number | null; hoursPlayed: number | null; matchesPlayed: number | null; accuracy: number | null; shotsFired: number | null; capturedAt?: string }, now = new Date()): 'up' | 'down' | null {
+  if (stats.capturedAt || stats.kills === null || stats.deaths === null) return null;
+  const today = historyDateKey(now);
+  const earlier = snapshots.filter(snapshot => historyDateKey(snapshot.savedAt) !== today);
+  const current: StatsSnapshot = { savedAt: now.toISOString(), values: { killDeath: stats.killDeath, kills: stats.kills, deaths: stats.deaths, hoursPlayed: stats.hoursPlayed, matchesPlayed: stats.matchesPlayed, accuracy: stats.accuracy, shotsFired: stats.shotsFired } };
+  const readings = combatHistoryReadings([...earlier, current], '30', null, now);
+  if (readings.length < 2) return null;
+  const direction = readings.at(-1)?.impact.direction;
+  return direction === 'up' || direction === 'down' ? direction : null;
+}

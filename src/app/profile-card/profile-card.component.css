@@ -18,7 +18,7 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
 .extra-stats dd.rank-value { height:auto; min-height:36px; flex-wrap:wrap; gap:0 8px; }
 .main-stat-value { display:flex; align-items:baseline; justify-content:flex-end; flex-wrap:wrap; gap:4px 10px; }
 .kd-history-button { display:flex; flex-direction:column; align-items:flex-end; gap:4px; border:0; padding:0; background:transparent; color:var(--accent); cursor:pointer; }
-.kd-history-hint { color:var(--muted); font-size:9px; letter-spacing:1px; }
+.kd-history-hint { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:9px; letter-spacing:1px; }
 .kd-history-button:hover .kd-history-hint { color:var(--accent); }
 .stat-change { font:600 16px/1.4 'Barlow Condensed',sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .stat-change.positive { color:#8cdb96; }
