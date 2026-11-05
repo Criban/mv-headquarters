@@ -52,4 +52,4 @@ Der Workflow `.github/workflows/pages.yml` baut und veröffentlicht die Seite na
 
 ## Gemeinsame Statistik-Historie
 
-Dateien, automatische Speicherung und Diagramm: [Historie](docs/history.md). Der Pages-Workflow erfasst täglich um 12:00, 21:45 und 23:30 Uhr Berliner Zeit validierte BF6-Tagesstände und veröffentlicht daraus die Historie sowie aktuelle Ersatzdaten. Eine Datenbank oder ein Datenbank-Secret ist nicht erforderlich.
+Dateien, automatische Speicherung und Diagramm: [Historie](docs/history.md). Ein separater Statistik-Workflow erfasst täglich um 12:00, 21:45 und 23:30 Uhr Berliner Zeit validierte BF6-Tagesstände und startet nach erfolgreichen Datenänderungen die Veröffentlichung. Der Pages-Workflow veröffentlicht Änderungen unabhängig von der API. Eine Datenbank oder ein Datenbank-Secret ist nicht erforderlich.

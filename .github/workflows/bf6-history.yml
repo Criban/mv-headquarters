@@ -1,0 +1,85 @@
+name: Capture BF6 history
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+      timezone: 'Europe/Berlin'
+    - cron: '45 21 * * *'
+      timezone: 'Europe/Berlin'
+    - cron: '30 23 * * *'
+      timezone: 'Europe/Berlin'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: bf6-history
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Capture and export shared history
+        run: |
+          for attempt in 1 2 3; do
+            if npm run history:sync; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "History capture failed after three attempts; keeping the previous publication."
+              exit 1
+            fi
+            delay=$((attempt * 30))
+            echo "History capture failed on attempt $attempt; retrying in $delay seconds."
+            sleep "$delay"
+          done
+      - name: Persist daily history
+        id: persist
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          capture_path="$RUNNER_TEMP/bf6-capture.json"
+          cp public/data/bf6-stats-snapshot.json "$capture_path"
+          for attempt in 1 2 3; do
+            # Discard only regenerated files, then advance to the latest source and history.
+            git restore --source=HEAD --staged --worktree -- public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
+            git pull --ff-only origin main
+            node scripts/file-history.mjs --merge-snapshot "$capture_path"
+            npm ci
+            npm run test:history
+            git add public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json
+            if git diff --cached --quiet; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              break
+            fi
+            git commit -m "Update BF6 daily history"
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              break
+            fi
+            # Undo only the bot commit just created; the capture remains saved outside Git.
+            git reset --soft HEAD^
+            if [ "$attempt" -eq 3 ]; then
+              echo "Unable to persist history after three attempts; keeping the previous publication."
+              exit 1
+            fi
+            echo "Push rejected; merging the capture into the latest main before retrying."
+          done
+      - name: Publish updated data
+        if: steps.persist.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
