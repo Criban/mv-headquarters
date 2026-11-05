@@ -39,8 +39,8 @@
       <text class="axis-label axis-title" [attr.x]="chartWidth() / 2" y="297" text-anchor="middle">{{ monthly() ? 'MONAT' : 'TAG' }}</text>
     </svg>
     <div class="impact-legend" aria-label="Einfluss auf Gesamt-K/D"><span><i class="up-key"></i>↑ Verbessert</span><span><i class="down-key"></i>↓ Gesenkt</span><span><i class="flat-key"></i>→ Unverändert</span></div>
-      @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler an zwei aufeinanderfolgenden Tagen gespeichert sind.</p> }
-      @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} gespeicherten Tagesständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
+      @if (!hasCombat()) { <p class="aggregation">Das Gesamt-K/D bleibt sichtbar. Die Tagesbalken kommen hinzu, sobald Kills- und Deaths-Zähler in zwei Ständen gespeichert sind.</p> }
+      @if (monthly() && hasCombat()) { <p class="aggregation">Balkensummen aus {{ point.validDays }} von {{ point.recordedDays }} Tagen mit erfassten oder als unverändert angenommenen Ständen. Die Linie zeigt den letzten Gesamt-K/D-Stand je Monat.</p> }
     @if (monthly()) { <button class="detail-button" type="button" (click)="openMonth()">{{ formatMonth(point.savedAt) }}: Tageswerte ansehen →</button> }
     @if (chart().points.length > 1) {
       <label class="slider-label" for="kd-history-day">{{ monthly() ? 'MONAT AUSWÄHLEN' : 'TAG AUSWÄHLEN' }} <span>{{ chart().points.length }} {{ monthly() ? 'Monatswerte' : 'Tagesstände' }}</span></label>

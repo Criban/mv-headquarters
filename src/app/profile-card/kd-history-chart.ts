@@ -91,16 +91,25 @@ export function combatHistoryReadings(snapshots: StatsSnapshot[], period: KdHist
   for (const snapshot of [...snapshots].filter(s => Number.isFinite(Date.parse(s.savedAt)) && Date.parse(s.savedAt) <= now.getTime()
     && typeof s.values.killDeath === 'number' && Number.isFinite(s.values.killDeath) && s.values.killDeath >= 0)
     .sort((a, b) => Date.parse(a.savedAt) - Date.parse(b.savedAt))) days.set(historyDateKey(snapshot.savedAt), snapshot);
-  const source = [...days.values()];
+  const recorded = [...days.values()];
+  const source: StatsSnapshot[] = [];
+  for (const snapshot of recorded) {
+    const previous = source.at(-1);
+    if (previous) {
+      for (let time = calendarTime(previous.savedAt) + 86400000; time < calendarTime(snapshot.savedAt); time += 86400000) {
+        source.push({ savedAt: new Date(time).toISOString(), values: { ...previous.values } });
+      }
+    }
+    source.push(snapshot);
+  }
   const selected = kdHistoryReadings(source, period, month, now);
   const monthly = period !== '30' && !month;
   const keys = new Set(selected.map(s => historyDateKey(s.savedAt).slice(0, monthly ? 7 : 10)));
   const daily = source.map((snapshot, index): CombatReading => {
     const previous = source[index - 1];
-    const consecutive = previous && calendarTime(snapshot.savedAt) - calendarTime(previous.savedAt) === 86400000;
     const current = snapshot.values;
     const before = previous?.values;
-    const valid = consecutive && validCounter(current.kills) && validCounter(current.deaths)
+    const valid = !!previous && validCounter(current.kills) && validCounter(current.deaths)
       && validCounter(before?.kills) && validCounter(before?.deaths)
       && current.kills >= before.kills && current.deaths >= before.deaths;
     const kills = valid ? current.kills! - before!.kills! : null;
@@ -174,8 +183,17 @@ export function combatHistoryChart(readings: CombatReading[], width = 720) {
 }
 
 /** Match the final segment of the default 30-day chart, without comparing fallback data. */
-export function liveKdTrend(snapshots: StatsSnapshot[], stats: { killDeath: number; kills: number | null; deaths: number | null; hoursPlayed: number | null; matchesPlayed: number | null; accuracy: number | null; shotsFired: number | null; capturedAt?: string }, now = new Date()): 'up' | 'down' | null {
-  if (stats.capturedAt || stats.kills === null || stats.deaths === null) return null;
+export function liveKdTrend(snapshots: StatsSnapshot[], stats: { killDeath: number; kills: number | null; deaths: number | null; hoursPlayed: number | null; matchesPlayed: number | null; accuracy: number | null; shotsFired: number | null; capturedAt?: string; source?: string }, now = new Date()): 'up' | 'down' | null {
+  if (stats.capturedAt) {
+    if (stats.source !== 'tracker.gg (manuell)' || historyDateKey(stats.capturedAt) !== historyDateKey(now)) return null;
+    const readings = combatHistoryReadings(snapshots, '30', null, now);
+    const last = readings.at(-1);
+    const matching = snapshots.find(snapshot => snapshot.savedAt === stats.capturedAt);
+    if (!last || last.savedAt !== stats.capturedAt || !matching || matching.values.kills !== stats.kills || matching.values.deaths !== stats.deaths) return null;
+    const direction = last.impact.direction;
+    return direction === 'up' || direction === 'down' ? direction : null;
+  }
+  if (stats.kills === null || stats.deaths === null) return null;
   const today = historyDateKey(now);
   const earlier = snapshots.filter(snapshot => historyDateKey(snapshot.savedAt) !== today);
   const current: StatsSnapshot = { savedAt: now.toISOString(), values: { killDeath: stats.killDeath, kills: stats.kills, deaths: stats.deaths, hoursPlayed: stats.hoursPlayed, matchesPlayed: stats.matchesPlayed, accuracy: stats.accuracy, shotsFired: stats.shotsFired } };

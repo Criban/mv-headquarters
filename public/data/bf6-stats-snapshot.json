@@ -1,11 +1,11 @@
 {
   "players": {
     "MV-8lackh4wk": {
-      "capturedAt": "2026-11-04T02:30:48.473Z",
+      "capturedAt": "2026-11-05T21:09:24.000Z",
       "response": {
-        "infantryKillDeath": 2.61,
+        "infantryKillDeath": 2.62,
         "kills": 16910,
-        "deaths": 5574,
+        "deaths": 5591,
         "accuracy": "24.15%",
         "secondsPlayed": 922125,
         "gameModeGroups": [
@@ -1492,7 +1492,7 @@
           }
         ],
         "dividedKills": {
-          "human": 14563
+          "human": 14645
         }
       },
       "profile": {
@@ -1504,14 +1504,16 @@
             "rankName": "Captain III"
           }
         ]
-      }
+      },
+      "previousCapturedAt": "2026-11-04T02:30:48.473Z",
+      "source": "tracker.gg (manuell)"
     },
     "MV-Criban": {
-      "capturedAt": "2026-11-04T02:30:49.554Z",
+      "capturedAt": "2026-11-05T21:09:24.000Z",
       "response": {
-        "infantryKillDeath": 2.01,
+        "infantryKillDeath": 2.02,
         "kills": 11571,
-        "deaths": 5613,
+        "deaths": 5631,
         "accuracy": "22.93%",
         "secondsPlayed": 925359,
         "gameModeGroups": [
@@ -3342,7 +3344,7 @@
           }
         ],
         "dividedKills": {
-          "human": 11288
+          "human": 11355
         }
       },
       "profile": {
@@ -3354,7 +3356,9 @@
             "rankName": "Captain IV"
           }
         ]
-      }
+      },
+      "previousCapturedAt": "2026-11-04T02:30:49.554Z",
+      "source": "tracker.gg (manuell)"
     },
     "MV-54bI44": {
       "capturedAt": "2026-11-04T02:30:50.575Z",

@@ -41,7 +41,7 @@ export function validateReading(reading) {
     if (reading.values[key] !== null && counter(reading.values[key]) !== reading.values[key]) throw new Error('Invalid history counter');
     values[key] = reading.values[key];
   }
-  return { savedAt: new Date(reading.savedAt).toISOString(), values };
+  return { savedAt: new Date(reading.savedAt).toISOString(), ...(reading.source === 'tracker.gg (manuell)' ? { source: reading.source } : {}), values };
 }
 
 /** Retain the latest actual reading per player and Berlin calendar day. */

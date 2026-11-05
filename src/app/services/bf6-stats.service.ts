@@ -4,9 +4,9 @@ import { catchError, defer, finalize, forkJoin, map, Observable, of, shareReplay
 import { topWeapons, type WeaponStats } from './weapon-stats';
 import { parseAccuracy } from './accuracy';
 import { setSharedStatsHistory } from './bf6-stats-history';
-export interface Bf6Stats { killDeath: number; kills: number | null; deaths: number | null; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; }
+export interface Bf6Stats { killDeath: number; kills: number | null; deaths: number | null; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; previousCapturedAt?: string; source?: string; }
 type ProfileResponse = { playerProfiles?: { playerCard?: { rank?: unknown }; rankName?: unknown; stats?: { name?: string; value?: unknown }[] }[] };
-type Snapshot = { players: Record<string, { capturedAt: string; response: Record<string, unknown>; profile: ProfileResponse }> };
+type Snapshot = { players: Record<string, { capturedAt: string; previousCapturedAt?: string; source?: string; response: Record<string, unknown>; profile: ProfileResponse }> };
 @Injectable({ providedIn: 'root' })
 export class Bf6StatsService {
   private readonly http = inject(HttpClient);
@@ -40,7 +40,7 @@ export class Bf6StatsService {
         map(snapshot => {
           const player = snapshot.players[name];
           if (!player || !Number.isFinite(Date.parse(player.capturedAt))) throw new Error('Kein gültiger Statistik-Abzug vorhanden.');
-          return { ...this.parseStats(player.response, player.profile), capturedAt: player.capturedAt };
+          return { ...this.parseStats(player.response, player.profile), capturedAt: player.capturedAt, previousCapturedAt: player.previousCapturedAt, source: player.source };
         })
       )),
       shareReplay({ bufferSize: 1, refCount: false })
