@@ -1,11 +1,11 @@
 {
   "players": {
     "MV-8lackh4wk": {
-      "capturedAt": "2026-11-05T21:09:24.000Z",
+      "capturedAt": "2026-11-06T21:46:12.000Z",
       "response": {
         "infantryKillDeath": 2.62,
         "kills": 16910,
-        "deaths": 5591,
+        "deaths": 5624,
         "accuracy": "24.15%",
         "secondsPlayed": 922125,
         "gameModeGroups": [
@@ -1492,7 +1492,7 @@
           }
         ],
         "dividedKills": {
-          "human": 14645
+          "human": 14733
         }
       },
       "profile": {
