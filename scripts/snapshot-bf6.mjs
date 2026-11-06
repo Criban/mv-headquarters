@@ -6,16 +6,16 @@ const endpoint = 'https://api.gametools.network/bf6/';
 export async function captureSnapshots() {
 const players = {};
 for (const { name, playerid } of identities) {
-  const common = { platform: 'ea', skip_battlelog: 'true', lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
+  const common = { skip_battlelog: 'true', lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
   const fetchData = async (path, params) => {
     const response = await fetch(`${endpoint}${path}/?${new URLSearchParams(params)}`, { signal: AbortSignal.timeout(30000) });
     if (!response.ok) throw new Error(`${name}: ${path} returned HTTP ${response.status}`);
     return response.json();
   };
-  const fetchPlayer = async identity => {
+  const fetchPlayer = async (identity, platform) => {
     const [stats, profile] = await Promise.all([
-      fetchData('stats', { ...common, ...identity, categories: 'multiplayer', raw: 'false', format_values: 'true', seperation: 'false' }),
-      fetchData('profile', { ...common, ...identity })
+      fetchData('stats', { ...common, ...identity, platform, categories: 'multiplayer', raw: 'false', format_values: 'true', seperation: 'false' }),
+      fetchData('profile', { ...common, ...identity, platform })
     ]);
     const kd = stats.infantryKillDeath;
     if (kd === null || kd === undefined || kd === '' || !Number.isFinite(Number(kd)) || Number(kd) < 0) {
@@ -34,9 +34,13 @@ for (const { name, playerid } of identities) {
     }
     return { stats, profile, rank };
   };
-  const { stats, profile, rank } = await fetchPlayer({ name }).catch(error => {
-    console.log(`${name}: name lookup failed (${error.message}); trying playerid=${playerid}`);
-    return fetchPlayer({ playerid });
+  const attempt = platform => fetchPlayer({ name }, platform).catch(error => {
+    console.log(`${name}: ${platform} name lookup failed (${error.message}); trying playerid=${playerid}`);
+    return fetchPlayer({ playerid }, platform);
+  });
+  const { stats, profile, rank } = await attempt('ea').catch(error => {
+    console.log(`${name}: ea lookup failed (${error.message}); trying pc`);
+    return attempt('pc');
   });
   players[name] = {
     capturedAt: new Date().toISOString(),

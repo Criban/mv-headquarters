@@ -16,14 +16,13 @@ type PreviewState = { status: 'loading' | 'error' | 'private' } | { status: 'rea
   imports: [KdHistoryComponent, KdTrendComponent],
   template: `
     <div class="kd-preview" [attr.aria-label]="'K/D für ' + player().name" [attr.aria-busy]="state().status === 'loading'">
-      <span class="kd-label">K/D<small>KILLS / TODE</small></span>
+      <span class="kd-label">K/D</span>
       @switch (state().status) {
         @case ('loading') { <span class="kd-message" role="status">LÄDT …</span> }
         @case ('private') { <span class="kd-message">PRIVATES PROFIL</span> }
         @case ('error') { <button type="button" class="retry" (click)="retry()">NICHT VERFÜGBAR<br>ERNEUT LADEN ↻</button> }
         @case ('ready') { @if (state(); as ready) { @if (ready.status === 'ready') {
-          <div class="kd-value"><div class="kd-number"><button type="button" class="history-button" aria-haspopup="dialog" [attr.aria-label]="'K/D-Verlauf für ' + player().name + ' öffnen, aktuelle K/D ' + ready.value + (ready.trend === 'up' ? ', K/D-Trend gestiegen' : ready.trend === 'down' ? ', K/D-Trend gesunken' : '')" (click)="openHistory(ready.stats)"><strong>{{ ready.value }}</strong><small class="history-hint">VERLAUF <app-kd-trend [direction]="ready.trend" /></small></button></div>
-            @if (ready.savedAt) { <small class="saved" [attr.title]="'Gespeicherter Abzug vom ' + ready.savedAt + ' Uhr (Berlin)'">GESPEICHERT</small> }
+          <div class="kd-value"><div class="kd-number"><button type="button" class="history-button" [attr.title]="ready.savedAt ? 'Gespeicherter Abzug vom ' + ready.savedAt + ' Uhr (Berlin)' : null" aria-haspopup="dialog" [attr.aria-label]="'K/D-Verlauf für ' + player().name + ' öffnen, aktuelle K/D ' + ready.value + (ready.trend === 'up' ? ', K/D-Trend gestiegen' : ready.trend === 'down' ? ', K/D-Trend gesunken' : '')" (click)="openHistory(ready.stats)"><strong>{{ ready.value }}</strong><small class="history-hint">VERLAUF <app-kd-trend [direction]="ready.trend" /></small></button></div>
             @if (ready.change !== null) { <span class="change" [class.negative]="ready.change < 0">({{ ready.change > 0 ? '+' : '−' }}{{ formatChange(ready.change) }})</span> }
           </div>
         } } }
@@ -40,7 +39,7 @@ type PreviewState = { status: 'loading' | 'error' | 'private' } | { status: 'rea
       .history-hint { display:flex; align-items:center; justify-content:flex-end; gap:4px; }
       .kd-number { display:flex; align-items:baseline; justify-content:flex-end; gap:4px; }
       .kd-value { text-align:right; min-width:0; } .kd-value strong { color:var(--accent); font:600 42px/1 'Barlow Condensed',sans-serif; font-variant-numeric:tabular-nums; }
-      .kd-value .saved { color:var(--accent); } .kd-message, .retry { max-width:85px; color:var(--text); font-size:9px; line-height:1.4; text-align:right; }
+      .kd-message, .retry { max-width:85px; color:var(--text); font-size:9px; line-height:1.4; text-align:right; }
       button { border:0; padding:0; background:transparent; cursor:pointer; color:inherit; } .history-button { min-height:44px; text-align:right; } .retry { min-height:44px; }
       .change { display:block; color:#8cdb96; font:600 14px/1.2 'Barlow Condensed',sans-serif; white-space:nowrap; } .change.negative { color:#ff9990; }
     }

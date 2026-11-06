@@ -109,7 +109,7 @@ try {
     const usesSnapshot = mode === 'both-error' || mode === 'unknown-id';
     assert.equal(result.capturedAt, usesSnapshot ? snapshot.players[playerName].capturedAt : undefined);
     const idCalls = calls.filter(call => call.playerid);
-    assert.equal(idCalls.length, mode === 'name-success' || mode === 'unknown-id' ? 0 : 2);
+    assert.equal(idCalls.length, mode === 'name-success' || mode === 'unknown-id' ? 0 : mode === 'both-error' ? 4 : 2);
     for (const call of idCalls) {
       assert.equal(call.playerid, '353727533');
       assert.equal(call.name, null, 'ID lookup must omit name');
@@ -125,6 +125,45 @@ try {
     }
     console.log(`PASS playerid fallback ${mode}`);
   }
+  for (const mode of ['pc-name', 'pc-id', 'both-fail']) {
+    const attempts = [];
+    const http = { get(url, options) {
+      if (url === 'data/bf6-stats-history.json') return of({ version: 2, players: {} });
+      if (url.startsWith('data/')) return of(snapshot);
+      const params = options.params;
+      const platform = params.get('platform');
+      const byId = params.has('playerid');
+      attempts.push({ platform, byId });
+      if (platform === 'ea' || mode === 'both-fail' || (mode === 'pc-id' && !byId)) return throwError(() => new Error('API failure'));
+      return of(url.includes('/profile/') ? snapshot.players[name].profile : snapshot.players[name].response);
+    } };
+    const service = runInInjectionContext(Injector.create({ providers: [{ provide: HttpClient, useValue: http }] }), () => new Bf6StatsService());
+    const result = await firstValueFrom(service.getStats(name, '1811857213'));
+    assert.equal(!!result.capturedAt, mode === 'both-fail');
+    assert.ok(attempts.some(call => call.platform === 'pc'));
+    assert.ok(attempts.slice(0, 4).every(call => call.platform === 'ea'));
+    if (mode === 'pc-id') assert.ok(attempts.some(call => call.platform === 'pc' && call.byId));
+  }
+  console.log('PASS pc platform fallback, player ID retry and stored fallback');
+  const { captureSnapshots } = await import('./snapshot-bf6.mjs');
+  const originalFetch = globalThis.fetch;
+  const platforms = [];
+  try {
+    globalThis.fetch = async url => {
+      const parsed = new URL(url);
+      const platform = parsed.searchParams.get('platform');
+      platforms.push(platform);
+      if (platform === 'ea') return { ok: false, status: 503 };
+      const player = snapshot.players[name];
+      return { ok: true, json: async () => parsed.pathname.endsWith('/profile/') ? player.profile : player.response };
+    };
+    const captured = await captureSnapshots();
+    assert.equal(Object.keys(captured.players).length, 3);
+    assert.ok(platforms.includes('ea') && platforms.includes('pc'));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  console.log('PASS scheduled snapshot pc platform fallback');
   const { historyTotals } = await import(pathToFileURL(path.join(temporary, 'history-totals.mjs')));
   const { BATTLEFIELD_HISTORY } = await import(pathToFileURL(path.join(temporary, 'battlefield-history.mjs')));
   const bf6 = { hoursPlayed: 10.25, shotsFired: 2000, matchesPlayed: 12 };

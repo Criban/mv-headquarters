@@ -33,8 +33,11 @@ export class Bf6StatsService {
     this.cache.delete(key);
     const pending = this.pending.get(key);
     if (pending) return pending;
-    const statsRequest = this.fetchStats({ name }).pipe(
-      catchError(error => /^\d+$/.test(playerId ?? '') ? this.fetchStats({ playerid: playerId! }) : throwError(() => error)),
+    const attempt = (platform: 'ea' | 'pc') => this.fetchStats({ name }, platform).pipe(
+      catchError(error => /^\d+$/.test(playerId ?? '') ? this.fetchStats({ playerid: playerId! }, platform) : throwError(() => error))
+    );
+    const statsRequest = attempt('ea').pipe(
+      catchError(() => attempt('pc')),
       catchError(() => this.http.get<Snapshot>('data/bf6-stats-snapshot.json').pipe(
         timeout(5000),
         map(snapshot => {
@@ -49,8 +52,8 @@ export class Bf6StatsService {
     this.pending.set(key, request);
     return request;
   }
-  private fetchStats(identity: { name: string } | { playerid: string }): Observable<Bf6Stats> {
-    const common = { ...identity, platform: 'ea', skip_battlelog: true, lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
+  private fetchStats(identity: { name: string } | { playerid: string }, platform: 'ea' | 'pc'): Observable<Bf6Stats> {
+    const common = { ...identity, platform, skip_battlelog: true, lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
     const params = new HttpParams({ fromObject: { ...common, categories: 'multiplayer', raw: false, format_values: true, seperation: false } });
     return forkJoin({
       response: this.http.get<Record<string, unknown>>('https://api.gametools.network/bf6/stats/', { params }).pipe(timeout(20000)),
