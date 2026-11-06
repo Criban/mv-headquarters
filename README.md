@@ -1,6 +1,6 @@
 # MV / Battlefield
 
-Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. MV-8lackh4wk, MV-Criban, MV-KingCoffee und MV-54bI44 sind per Klick oder Tastatur auswählbar. Die Statistikansicht zeigt die BF6-Werte des ausgewählten Spielers. MV-KingCoffee und MV-54bI44 haben private Profile und lösen keine API-Abfragen aus. MV-KingCoffee lehnt mit einem Kaffeebecher an einer Versorgungskiste und wird aus vier separaten Bildebenen animiert; links leicht hinter ihm steht ein Schäferhund als fünfte Bildebene (public/images/kingcoffee-coffee-rig/). MV-54bI44 sitzt während seiner Einsatzpause auf einem Campingstuhl. Sein Porträt liegt in `public/images/54bi44-camping-chair.png`.
+Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. MV-8lackh4wk, MV-Criban, MV-KingCoffee und MV-54bI44 sind per Klick oder Tastatur auswählbar. Die Statistikansicht zeigt die BF6-Werte des ausgewählten Spielers. MV-KingCoffee hat ein privates Profil und löst keine API-Abfragen aus. MV-KingCoffee lehnt mit einem Kaffeebecher an einer Versorgungskiste und wird aus vier separaten Bildebenen animiert; links leicht hinter ihm steht ein Schäferhund als fünfte Bildebene (public/images/kingcoffee-coffee-rig/). MV-54bI44 sitzt während seiner Einsatzpause auf einem Campingstuhl. Sein Porträt liegt in `public/images/54bi44-camping-chair.png`.
 
 Die Battlefield-Historie lässt sich für öffentliche Profile öffnen.
 
@@ -41,7 +41,7 @@ Für Live-Statistiken und automatische Abzüge wird zunächst `platform=ea` vers
 
 Die BF6-Ansicht zeigt auch die abgefeuerten Schüsse (`shotsFired`). Die Historie summiert Spielzeit, Schüsse und Matches aus den numerischen `totals` der Einträge in `src/app/data/battlefield-history.ts` und den aktuellen BF6-Werten (bei API-Problemen aus dem lokalen Abzug). BF6 wird einmal gezählt. Fehlende Werte werden nicht als null Schüsse oder null Matches interpretiert, sondern als unvollständige Summe gekennzeichnet. Bei neuen historischen Einträgen die numerischen `totals` zusammen mit den angezeigten `stats` pflegen.
 
-`npm run snapshot:bf6` ruft die Statistiken und den Rang von MV-8lackh4wk und MV-Criban ab und speichert sie mit dem jeweiligen Abrufdatum in `public/data/bf6-stats-snapshot.json`. Private Profile werden nicht abgerufen. Ein bestehender Abzug wird erst ersetzt, wenn beide Spieler erfolgreich abgerufen und K/D sowie Rang geprüft wurden.
+`npm run snapshot:bf6` ruft die Statistiken und den Rang von MV-8lackh4wk, MV-Criban und MV-54bI44 ab und speichert sie mit dem jeweiligen Abrufdatum in `public/data/bf6-stats-snapshot.json`. Private Profile werden nicht abgerufen. Erfolgreiche Abrufe werden nach Prüfung von K/D und Rang je Spieler übernommen; bei fehlgeschlagenen Abrufen bleiben dessen gespeicherte Werte erhalten.
 
 Der Abzug wird mit der Seite ausgeliefert. Bei API-Fehlern, ungültiger K/D oder Zeitüberschreitungen lädt die Statistikansicht automatisch diese Datei. Sie kennzeichnet die gespeicherten Werte und zeigt Datum und Uhrzeit des Abzugs in der Zeitzone Europe/Berlin. „Live-Daten erneut laden“ versucht erneut die API. Bei erfolgreichen API-Abfragen werden weiterhin Live-Daten angezeigt. Zum Aktualisieren den Befehl erneut ausführen und die Seite mit der aktualisierten Datei veröffentlichen.
 

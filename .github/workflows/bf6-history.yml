@@ -32,6 +32,8 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Capture and export shared history
+        env:
+          BF6_CAPTURE_PATH: ${{ runner.temp }}/bf6-capture.json
         run: |
           for attempt in 1 2 3; do
             if npm run history:sync; then
@@ -52,7 +54,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           capture_path="$RUNNER_TEMP/bf6-capture.json"
-          cp public/data/bf6-stats-snapshot.json "$capture_path"
           for attempt in 1 2 3; do
             # Discard only regenerated files, then advance to the latest source and history.
             git restore --source=HEAD --staged --worktree -- public/data/bf6-stats-history.json public/data/bf6-stats-snapshot.json

@@ -1,4 +1,4 @@
-import { mkdir, writeFile, rename } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const identities = [{ name: 'MV-8lackh4wk', playerid: '1811857213' }, { name: 'MV-Criban', playerid: '353727533' }, { name: 'MV-54bI44', playerid: '1008896742053' }];
@@ -6,6 +6,7 @@ const endpoint = 'https://api.gametools.network/bf6/';
 export async function captureSnapshots() {
 const players = {};
 for (const { name, playerid } of identities) {
+  try {
   const common = { skip_battlelog: 'true', lang: 'de-DE', filter: '{"scopes": [{"category": "global", "name": "global"}]}' };
   const fetchData = async (path, params) => {
     const response = await fetch(`${endpoint}${path}/?${new URLSearchParams(params)}`, { signal: AbortSignal.timeout(30000) });
@@ -48,7 +49,11 @@ for (const { name, playerid } of identities) {
     profile: { playerProfiles: [{ playerCard: { rank }, rankName: profile.playerProfiles?.[0]?.rankName }] }
   };
   console.log(`${name}: snapshot captured (${players[name].capturedAt})`);
+  } catch (error) {
+    console.warn(`${name}: capture failed; keeping previous data (${error.message})`);
+  }
 }
+if (!Object.keys(players).length) throw new Error('No player statistics could be captured; existing data preserved.');
 return { players };
 }
 
@@ -63,5 +68,8 @@ console.log('Saved public/data/bf6-stats-snapshot.json');
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
-  await writeSnapshot(await captureSnapshots());
+  const captured = await captureSnapshots();
+  const previous = JSON.parse(await readFile(new URL('../public/data/bf6-stats-snapshot.json', import.meta.url), 'utf8'));
+  const { mergeSnapshots } = await import('./file-history.mjs');
+  await writeSnapshot(mergeSnapshots(previous, captured));
 }

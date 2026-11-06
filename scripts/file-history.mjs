@@ -74,6 +74,7 @@ async function main() {
   const captured = snapshotPath ? JSON.parse(await readFile(snapshotPath, 'utf8')) : await captureSnapshots();
   const snapshot = mergeSnapshots(JSON.parse(await readFile(new URL('../public/data/bf6-stats-snapshot.json', import.meta.url), 'utf8')), captured);
   const next = mergeHistory(history, captured);
+  if (!snapshotPath && process.env.BF6_CAPTURE_PATH) await writeFile(process.env.BF6_CAPTURE_PATH, JSON.stringify(captured) + '\n');
   await writeSnapshot(snapshot);
   const temporary = new URL(destination.href + '.tmp');
   await writeFile(temporary, JSON.stringify(next) + '\n');

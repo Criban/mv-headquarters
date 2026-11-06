@@ -158,8 +158,23 @@ try {
       return { ok: true, json: async () => parsed.pathname.endsWith('/profile/') ? player.profile : player.response };
     };
     const captured = await captureSnapshots();
-    assert.equal(Object.keys(captured.players).length, 3);
+    assert.deepEqual(Object.keys(captured.players), ['MV-8lackh4wk', 'MV-Criban', 'MV-54bI44']);
     assert.ok(platforms.includes('ea') && platforms.includes('pc'));
+    globalThis.fetch = async url => {
+      const parsed = new URL(url);
+      if (parsed.searchParams.get('name') === 'MV-Criban' || parsed.searchParams.get('playerid') === '353727533') return { ok: false, status: 503 };
+      const player = snapshot.players[name];
+      return { ok: true, json: async () => parsed.pathname.endsWith('/profile/') ? player.profile : player.response };
+    };
+    const partial = await captureSnapshots();
+    assert.deepEqual(Object.keys(partial.players), ['MV-8lackh4wk', 'MV-54bI44'], 'A failed player does not discard successful captures');
+    const { mergeHistory, mergeSnapshots } = await import('./file-history.mjs');
+    const history = JSON.parse(await readFile(path.join(root, 'public/data/bf6-stats-history.json'), 'utf8'));
+    const merged = mergeHistory(history, partial);
+    assert.deepEqual(merged.players['MV-Criban'], history.players['MV-Criban'], 'Failed player history stays unchanged');
+    assert.deepEqual(mergeSnapshots(snapshot, partial).players['MV-Criban'], snapshot.players['MV-Criban'], 'Failed player fallback stays unchanged');
+    globalThis.fetch = async () => ({ ok: false, status: 503 });
+    await assert.rejects(captureSnapshots(), /No player statistics/);
   } finally {
     globalThis.fetch = originalFetch;
   }
