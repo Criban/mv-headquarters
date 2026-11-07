@@ -44,6 +44,8 @@ export const SQUAD_VIDEOS: readonly SquadVideo[] = [
   { id: 'L4YFhLobogo', title: 'Wenn dein Mate sagt „Risky“ & du trotzdem den Panzer holst!'},
   { id: 'BRH6Flw19D4', title: 'Das erste Mal den Turm in Battlefield 6 einstürzen sehen!'},
   { id: '4hPS_PkR-70', title: '„Schaffst du das?!“ 😂 – Wenn der Rettungsversuch schiefgeht!'},
-  { id: 'JlpHvBKq3H4', title: '„Da kamen gefühlt 6 Granaten!“ 💣 – Wenn die Deckung plötzlich zur Falle wird!', publishDate: '2026-11-03'},
-  { id: 'f8Vve_jDWY0', title: '5 Kills in wenigen Sekunden! 💥', publishDate: '2026-11-03'},
+  { id: 'JlpHvBKq3H4', title: '„Da kamen gefühlt 6 Granaten!“ 💣 – Wenn die Deckung plötzlich zur Falle wird!'},
+  { id: 'f8Vve_jDWY0', title: '5 Kills in wenigen Sekunden! 💥'},
+  { id: '1hf5yu7f0KY', title: 'Einfach vom Backseat geballert!'},
+  { id: 'cUn3Cqm-7IE', title: 'Erst gespawnt & direkt den Kill geklaut bekommen!'},
 ];
