@@ -1,5 +1,12 @@
 # Profilbilder
 
+`focus/tile-verlauf.webp` und `focus/tile-historie.webp` sind verkleinerte WebP-Ausschnitte der vorhandenen Bilder `rooftop-vegas-strip.png` beziehungsweise `siege-of-cairo-squad.png`; sie verwenden keine neuen Bildprompts.
+
+`focus/tile-verlauf-v2.webp` und `focus/tile-historie-v2.webp` wurden mit dem integrierten Imagegen-Tool anhand von `focus/hangar.webp` erzeugt und auf 800 Pixel Breite als WebP mit Qualität 86 gespeichert.
+
+- Verlauf: Use case: stylized-concept. Asset: small landscape background image for a military game menu statistics tile. Use reference for cool charcoal industrial hangar atmosphere and cinematic lighting. Depict a close view of a rugged military command console with a softly illuminated tactical display showing an abstract clean line chart and minimal graph bars; physical screen, subtle teal highlights, believable metal and reflections. No people, no readable labels, no logos, no UI overlay, no watermark. The lower third should remain dark and uncluttered for real text overlay. Dramatic yet understated, sharp, realistic.
+- Historie: Use case: stylized-concept. Asset: small landscape background image for a military game menu Battlefield history tile. Use reference for cool charcoal industrial hangar atmosphere and cinematic lighting. Depict several distinct generic military dog tags and old and modern service insignia resting naturally on a dark equipment crate, tactile worn metal, fabric and understated cool teal and warm industrial highlights. Rich but grounded military memorabilia, no human figures, no readable writing, no logos, no UI overlay, no watermark. Lower third remains dark and uncluttered for real text overlay. Realistic cinematic depth.
+
 Erzeugt mit dem integrierten Imagegen-Tool. Fiktive Soldaten, keine Porträts der Spieler und keine offiziellen Battlefield-Assets.
 
 ## criban.png

@@ -3,22 +3,29 @@
   @if (player().privateProfile) {
     <p class="focus-status">PRIVATES PROFIL · Statistiken sind nicht verfügbar.</p>
   } @else {
-    <div class="focus-stats" [attr.aria-busy]="state.status === 'loading'">
-      <div><span>K/D</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.killDeath : '—' }}</strong>@if (state.status === 'ready' && !state.capturedAt) { <app-kd-trend [direction]="state.trend" /> @if (state.focusChanges.killDeath; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'K/D Änderung ' + change.text">{{ change.text }}</b> } }</p></div>
-      <div class="focus-mobile-stat"><span>RANG</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.rank : '—' }}</strong></p></div>
-      <div><span>SPIELZEIT</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.hours + (state.hours === '—' ? '' : ' H') : '—' }}</strong>@if (state.status === 'ready' && state.focusChanges.hoursPlayed; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'Spielzeit Änderung ' + change.text + ' Stunden'">{{ change.text }} H</b> }</p></div>
-      <div><span>MATCHES</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.matches : '—' }}</strong>@if (state.status === 'ready' && state.focusChanges.matchesPlayed; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'Matches Änderung ' + change.text">{{ change.text }}</b> }</p></div>
-      <div class="focus-mobile-stat"><span>TREFFGENAUIGKEIT</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.accuracy : '—' }}</strong></p></div>
-      <div class="focus-mobile-stat"><span>SCHÜSSE</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.shots : '—' }}</strong></p></div>
+    <div class="focus-rank" aria-label="Spielerrang">
+      @if (state.status === 'ready') {
+        @if (state.rankName) { <strong>{{ state.rankName }}</strong> }
+        @if (state.rank !== '—') { <span>RANG {{ state.rank }}</span> }
+        @if (!state.rankName && state.rank === '—') { <span>RANG NICHT VERFÜGBAR</span> }
+      } @else if (state.status === 'loading') { <span>RANG WIRD GELADEN …</span> }
+      @else { <span>RANG NICHT VERFÜGBAR</span> }
     </div>
-    <div class="focus-status" role="status" aria-live="polite">
+    <p class="focus-stats-heading"><span>BATTLEFIELD 6 / STATISTIK</span></p>
+    <div class="focus-stats" [attr.aria-busy]="state.status === 'loading'">
+      <div><svg class="focus-stat-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/></svg><span>Kills/Deaths</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.killDeath : '—' }}</strong>@if (state.status === 'ready' && !state.capturedAt) { <app-kd-trend [direction]="state.trend" /> @if (state.focusChanges.killDeath; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'K/D Änderung ' + change.text">{{ change.text }}</b> } }</p></div>
+      <div><svg class="focus-stat-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg><span>SPIELZEIT</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.hours + (state.hours === '—' ? '' : ' H') : '—' }}</strong>@if (state.status === 'ready' && state.focusChanges.hoursPlayed; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'Spielzeit Änderung ' + change.text + ' Stunden'">{{ change.text }} H</b> }</p></div>
+      <div><svg class="focus-stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3m0 1h12l-2 4 2 4H5"/></svg><span>MATCHES</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.matches : '—' }}</strong>@if (state.status === 'ready' && state.focusChanges.matchesPlayed; as change) { <b [class]="'focus-delta ' + change.direction" [attr.aria-label]="'Matches Änderung ' + change.text">{{ change.text }}</b> }</p></div>
+      <div class="focus-mobile-stat"><svg class="focus-stat-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg><span>TREFFGENAUIGKEIT</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.accuracy : '—' }}</strong></p></div>
+      <div class="focus-mobile-stat"><svg class="focus-stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21V8c0-2 1-4 2-5 1 1 2 3 2 5v13zm6 0V8c0-2 1-4 2-5 1 1 2 3 2 5v13zM8 17h4m2 0h4"/></svg><span>SCHÜSSE</span><p class="focus-stat-value"><strong>{{ state.status === 'ready' ? state.shots : '—' }}</strong></p></div>
+    </div>
+    <div class="focus-status" [class.focus-status-empty]="state.status === 'ready' && !state.capturedAt" role="status" aria-live="polite">
       @if (state.status === 'loading') { Statistiken werden geladen … }
       @else if (state.status === 'error') { Statistiken nicht verfügbar. <button type="button" (click)="retryStats()">Erneut laden ↻</button> }
       @else if (state.status === 'ready' && state.capturedAt) { Gespeicherter Abzug vom {{ state.capturedAt }} Uhr (Berlin). <button type="button" (click)="retryStats()">Live-Daten erneut laden ↻</button> }
-      @else if (state.status === 'ready') { {{ state.focusComparisonNote ?? 'Kein Vergleichsstand vor heute verfügbar.' }} }
     </div>
     <div class="focus-actions">
-      @if (state.status === 'ready') { <button class="focus-history-button" type="button" aria-haspopup="dialog" (click)="openKdHistory()"><svg class="focus-chart-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 15h4v7H2zm7-6h4v13H9zm7-7h4v20h-4z" /></svg><span>VERLAUF ANSEHEN</span><span aria-hidden="true">›</span></button> }
+      @if (state.status === 'ready') { <button class="focus-history-button" type="button" aria-haspopup="dialog" aria-label="K/D-Verlauf öffnen" (click)="openKdHistory()"><span class="focus-tile-copy"><strong>K/D-VERLAUF</strong></span></button> }
       <ng-content />
     </div>
   }

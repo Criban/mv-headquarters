@@ -16,7 +16,7 @@
   <div class="focus-shell">
     <header class="focus-topbar">
       <div class="focus-topbar-inner">
-        <a class="focus-brand" href="./"><b>MV</b><span>HEADQUARTERS</span></a>
+        <a class="focus-brand" href="./"><b><img src="images/mv-mark.svg" alt="MV" width="112" height="48"></b><span>HEADQUARTERS</span></a>
         <nav aria-label="Fokusmenü"><button type="button" (click)="openMainView('clan')">ÜBERSICHT</button><span aria-current="page">SPIELER</span><button type="button" (click)="openMainView('videos')">VIDEOS</button></nav>
       </div>
     </header>
@@ -24,10 +24,9 @@
       <div class="focus-scene"><img class="focus-scene-image" [src]="focusPortraits[selected()].src" [alt]="focusPortraits[selected()].alt" width="2172" height="724" fetchpriority="high"></div>
       <div class="focus-content">
         <div class="focus-copy">
-          <p class="eyebrow">BATTLEFIELD 6 / MULTIPLAYER</p>
           <h1>{{ players[selected()].name.slice(3) }}</h1>
           <app-profile-card [player]="players[selected()]" [focusMode]="true" (statsLoaded)="recordStats($event)">
-            @if (hasHistoryStats()) { <button class="focus-history" type="button" aria-controls="battlefield-history mobile-battlefield-history" [attr.aria-expanded]="historyOpen()" (click)="toggleHistory()"><svg class="focus-action-icon" viewBox="0 0 24 28" aria-hidden="true"><path d="M9 2h7l5 5v3l-8 15a3 3 0 0 1-4 1l-6-3a3 3 0 0 1-1-4L9 2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="15.5" cy="7.5" r="1.2" fill="currentColor"/></svg><span>{{ historyOpen() ? 'HISTORIE SCHLIESSEN' : 'BATTLEFIELD-HISTORIE' }}</span><span aria-hidden="true">›</span></button> }
+            @if (hasHistoryStats()) { <button class="focus-history" type="button" aria-controls="battlefield-history mobile-battlefield-history" [attr.aria-expanded]="historyOpen()" [attr.aria-label]="historyOpen() ? 'Battlefield-Historie schließen' : 'Battlefield-Historie öffnen'" (click)="toggleHistory()"><span class="focus-tile-copy"><strong>BATTLEFIELD-HISTORIE</strong></span></button> }
           </app-profile-card>
         </div>
         <div class="focus-portrait" aria-hidden="true"></div>
@@ -43,12 +42,12 @@
 } @else if (view() === 'clan') {
   <div class="clan-shell">
     <main id="main" class="clan-menu" tabindex="-1" aria-label="Clan in der Garage">
-      <div class="clan-intro"><div><p class="eyebrow">MV / HEADQUARTERS</p><h1>MOST VALUABLE</h1><p class="clan-intro-detail">BATTLEFIELD 6 &nbsp; / &nbsp; EINSATZTEAM</p></div></div>
+      <div class="clan-intro"><div><p class="eyebrow">MV / HEADQUARTERS</p><h1>MOST VALUABLE</h1><p class="clan-intro-detail">BATTLEFIELD &nbsp; / &nbsp; SQUAD</p></div></div>
       <div class="clan-stage">
         <div class="clan-picture">
           <img src="images/focus/clan-panorama-v2.webp" width="2172" height="724" alt="Blackhawk und Criban besprechen gemeinsam eine Einsatzkarte in der Garage.">
-          <button type="button" class="clan-hotspot clan-blackhawk" (click)="selectSoldier(0, true)"><span class="clan-agent"><span class="member-status">01 / STATUS: AKTIV</span><strong>8LACKH4WK</strong><app-clan-kd [player]="players[0]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
-          <button type="button" class="clan-hotspot clan-criban" (click)="selectSoldier(1, true)"><span class="clan-agent"><span class="member-status">02 / STATUS: AKTIV</span><strong>CRIBAN</strong><app-clan-kd [player]="players[1]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
+          <button type="button" class="clan-hotspot clan-blackhawk" (click)="selectSoldier(0, true)"><span class="clan-agent"><span class="member-status">STATUS: AKTIV</span><strong>{{ players[0].name.slice(3) }}</strong><app-clan-kd [player]="players[0]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
+          <button type="button" class="clan-hotspot clan-criban" (click)="selectSoldier(1, true)"><span class="clan-agent"><span class="member-status">STATUS: AKTIV</span><strong>{{ players[1].name.slice(3) }}</strong><app-clan-kd [player]="players[1]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
         </div>
       </div>
       <section class="mobile-clan" aria-label="Soldat auswählen">
@@ -56,7 +55,7 @@
           @for (portrait of focusPortraits; track portrait.src; let i = $index) {
             <button type="button" class="mobile-soldier-card" [attr.aria-label]="players[i].name + ' – Profil öffnen'" (click)="selectSoldier(i, true)">
               <img [src]="portrait.src" [alt]="portrait.alt" width="2172" height="724">
-              <span class="mobile-soldier-info"><span class="member-status">0{{ i + 1 }} / STATUS: AKTIV</span><strong>{{ players[i].name.slice(3) }}</strong><app-clan-kd [player]="players[i]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span>
+              <span class="mobile-soldier-info"><span class="member-status">STATUS: AKTIV</span><strong>{{ players[i].name.slice(3) }}</strong><app-clan-kd [player]="players[i]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span>
             </button>
           }
         </div>
@@ -72,7 +71,7 @@
 <div class="game-shell">
   <header class="focus-topbar">
     <div class="focus-topbar-inner">
-      <a class="focus-brand" href="./"><b>MV</b><span>HEADQUARTERS</span></a>
+      <a class="focus-brand" href="./"><b><img src="images/mv-mark.svg" alt="MV" width="112" height="48"></b><span>HEADQUARTERS</span></a>
       <nav aria-label="Hauptmenü"><button type="button" (click)="openMainView('clan')">ÜBERSICHT</button><button type="button" (click)="openSelectedPlayer()">SPIELER</button><span aria-current="page">VIDEOS</span></nav>
     </div>
   </header>

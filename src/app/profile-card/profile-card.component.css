@@ -73,7 +73,7 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
 .focus-status { min-height:45px; color:#e0e7e3; font-size:12px; line-height:1.5; padding:12px 0; }
 .focus-status button { border:0; padding:4px; background:none; color:#a9f3e6; text-decoration:underline; cursor:pointer; }
 .focus-history-button { padding:15px 23px; border:1px solid #87d9cc; background:#367e75d9; color:white; font-weight:700; letter-spacing:1px; cursor:pointer; }
-.focus-history-button:hover { background:#449e91; }
+.focus-history-button:hover { border-color:#e6f1f2; }
 @media(max-width:600px) { .focus-stats { gap:8px; }.focus-stats div { padding-left:10px; }.focus-stats strong { font-size:clamp(27px,8vw,40px); } }
 .focus-motto { font-size:15px; margin:0 0 36px; }
 .focus-stats { gap:0; max-width:690px; }
@@ -114,4 +114,33 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
   .focus-stats span { font-size:14px; letter-spacing:1.2px; }
   .focus-stats span::before { margin-bottom:10px; }
   .focus-stats strong { font-size:clamp(27px,7vw,36px); }
+}
+
+/* Rang und Kennzahlen im Stil der Karriereübersicht. */
+.focus-rank { display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 12px; min-height:26px; margin:0 0 24px; color:#c9d4d8; }
+.focus-rank strong { font:600 clamp(19px,1.6vw,25px)/1.2 'Barlow Condensed',sans-serif; text-transform:uppercase; }
+.focus-rank span { color:#aab9bd; font:600 13px/1.3 'Barlow',sans-serif; letter-spacing:.06em; }
+.focus-stats-heading { display:flex; align-items:center; gap:12px; margin:0 0 20px; color:#b6c2c7; font:500 13px/1 'Barlow',sans-serif; letter-spacing:.06em; }
+.focus-stats-heading span { padding:4px 7px; border:1px solid #a8b5b94d; background:#87989c24; }
+.focus-stats-heading::after { content:''; flex:1; height:1px; background:#b3c1c34d; }
+.focus-stats { position:relative; isolation:isolate; padding:12px 4px; }
+.focus-stats::before { content:''; position:absolute; z-index:-1; inset:-18px -24px; pointer-events:none; background:#07131566; backdrop-filter:blur(5px); mask-image:radial-gradient(ellipse at center,#000 45%,transparent 78%); }
+.focus-stats > div { display:flex; flex-direction:column; align-items:center; padding-inline:6px; border-left:0; text-align:center; }
+.focus-stat-icon { width:34px; height:34px; margin-bottom:10px; fill:none; stroke:#c7d3d7; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.focus-stats span::before { content:none; }
+.focus-stats > div > span { font-size:22px; }
+.focus-stat-value { justify-content:center; }
+.focus-stats strong { font-size:clamp(36px,3.4vw,52px); }
+.focus-status-empty { display:none; }
+.focus-stats:has(+ .focus-status-empty) { margin-bottom:20px; }
+@media(max-width:760px) {
+  .focus-rank { min-height:20px; margin-bottom:15px; }
+  .focus-rank strong { font-size:19px; }.focus-rank span { font-size:11px; }
+  .focus-stats-heading { margin-bottom:12px; font-size:11px; }
+  .focus-stats { gap:14px 0; }
+  .focus-stat-icon { width:26px; height:26px; margin-bottom:5px; }
+  .focus-stats > div > span { font-size:16px; }
+  .focus-stats strong { font-size:clamp(27px,6vw,30px); }
+  .focus-stat-value { margin-top:5px; }
+  .focus-stats:has(+ .focus-status-empty) { margin-bottom:16px; }
 }

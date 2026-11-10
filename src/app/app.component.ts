@@ -36,7 +36,7 @@ export class AppComponent {
   }
   skipToMain(event: Event): void { event.preventDefault(); this.document.getElementById('main')?.focus(); }
   private transitionSequence = 0;
-  private transitionScene(update: () => void, zoomPlayer?: number): void {
+  private transitionScene(update: () => void, zoomPlayer?: number, playerSwitch = false): void {
     const doc = this.document as Document & { startViewTransition?: (callback: () => Promise<void>) => { finished: Promise<void> } };
     if (!doc.startViewTransition || this.document.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       update();
@@ -45,6 +45,7 @@ export class AppComponent {
     const root = this.document.documentElement;
     const transitionId = ++this.transitionSequence;
     root.classList.add('scene-view-transition');
+    root.classList.toggle('scene-player-switch', playerSwitch);
     if (zoomPlayer !== undefined) {
       const mobile = this.document.defaultView?.matchMedia('(max-width: 760px)').matches;
       const target = mobile ? this.document.querySelectorAll<HTMLElement>('.mobile-soldier-card')[zoomPlayer] : this.document.querySelector<HTMLElement>(zoomPlayer === 0 ? '.clan-blackhawk' : '.clan-criban');
@@ -61,7 +62,7 @@ export class AppComponent {
       const transition = doc.startViewTransition(() => new Promise<void>(resolve => {
         update();
         afterNextRender(() => {
-          const image = this.document.querySelector<HTMLImageElement>(zoomPlayer === undefined ? '.clan-picture img' : '.focus-scene-image');
+          const image = this.document.querySelector<HTMLImageElement>(this.focusOpen() ? '.focus-scene-image' : '.clan-picture img');
           if (!image || typeof image.decode !== 'function') { resolve(); return; }
           // Keep the old snapshot visible until the new scene is decoded; don't block indefinitely on an image failure.
           const timeout = setTimeout(resolve, 1800);
@@ -70,13 +71,13 @@ export class AppComponent {
       }));
       const cleanup = () => {
         if (transitionId !== this.transitionSequence) return;
-        root.classList.remove('scene-view-transition', 'scene-zoom-in');
+        root.classList.remove('scene-view-transition', 'scene-zoom-in', 'scene-player-switch');
         root.style.removeProperty('--scene-origin-x');
         root.style.removeProperty('--scene-origin-y');
       };
       transition.finished.then(cleanup, cleanup);
     } catch {
-      root.classList.remove('scene-view-transition', 'scene-zoom-in');
+      root.classList.remove('scene-view-transition', 'scene-zoom-in', 'scene-player-switch');
       root.style.removeProperty('--scene-origin-x');
       root.style.removeProperty('--scene-origin-y');
       update();
@@ -176,6 +177,9 @@ export class AppComponent {
       try { this.document.defaultView?.localStorage.setItem(LAST_SOLDIER_KEY, this.players[index].name); }
       catch { /* Selection still works when storage is unavailable. */ }
     }
-    if (opening && this.view() === 'clan') this.transitionScene(update, index); else update();
+    const desktopPlayerSwitch = !opening && index !== this.selected() && this.document.defaultView?.matchMedia('(min-width: 761px)').matches;
+    if (opening && this.view() === 'clan') this.transitionScene(update, index);
+    else if (desktopPlayerSwitch) this.transitionScene(update, undefined, true);
+    else update();
   }
 }

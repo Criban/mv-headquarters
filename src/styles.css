@@ -279,7 +279,7 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 .focus-back { position:absolute; top:35px; left:4%; border:1px solid #ffffff60; padding:12px 16px; font-size:11px; letter-spacing:1px; background:#0c1617a8; }
 .focus-copy { z-index:1; padding:80px 0; max-width:700px; }
 .focus-copy .eyebrow { color:#a6e3da; }
-.focus-copy h1 { font-size:clamp(50px,6.2vw,100px); overflow-wrap:anywhere; text-transform:uppercase; }
+.focus-copy h1 { font-size:clamp(50px,6.2vw,100px); overflow-wrap:anywhere; }
 .focus-copy h1 span { color:#90d9cd; }
 .focus-portrait { align-self:end; height:min(76svh,850px); min-height:400px; display:flex; align-items:end; justify-content:center; }
 .focus-portrait .soldier-image { width:auto; height:100%; max-width:100%; margin:0; object-fit:contain; filter:drop-shadow(0 15px 22px #0008); }
@@ -362,8 +362,10 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 .focus-history { min-height:68px; border-radius:3px; font-size:20px; letter-spacing:1.3px; }
 .focus-history .focus-action-icon { width:28px; height:32px; flex:none; }
 .focus-switcher { width:min(760px,calc(55% - 28px)); bottom:35px; }
+.focus-switcher { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); }
 .focus-switcher button { border:0; padding:0; background:transparent; gap:20px; text-align:left; }
-.focus-switcher button:last-child { text-align:right; }
+.focus-switcher button:first-child { justify-self:start; }
+.focus-switcher button:last-child { justify-self:end; justify-content:flex-end; text-align:right; }
 .focus-arrow { display:grid; place-items:center; width:50px; height:46px; border:1px solid #ffffff66; border-radius:3px; background:#0c171bbf; font:400 30px/1 'Barlow',sans-serif; }
 .focus-switcher button:hover .focus-arrow { border-color:#a6e3da; background:#234741; }
 .focus-switch-copy { display:grid; gap:3px; }
@@ -541,12 +543,13 @@ button.clan-member { font-family:inherit; cursor:pointer; }
 /* Sanfte Überblendung zwischen Übersicht und Fokusansicht. */
 :root.scene-view-transition .focus-shell,:root.scene-view-transition .clan-shell { animation:none; }
 ::view-transition-old(root),::view-transition-new(root) { animation-duration:.5s; animation-timing-function:ease-in-out; }
+:root.scene-player-switch::view-transition-old(root),:root.scene-player-switch::view-transition-new(root) { animation-duration:.35s; animation-timing-function:ease-in-out; }
 @media(prefers-reduced-motion:reduce) { ::view-transition-old(root),::view-transition-new(root) { animation-duration:0s; } }
 
 /* Erst leichter Kamerafokus, dann Überblendung und die Profildaten. */
 @keyframes focus-camera { 0% { transform:scale(1); opacity:1; } 45% { opacity:1; } 100% { transform:scale(1.09); opacity:0; } }
 @keyframes focus-scene-in { 0%,20% { opacity:0; } 100% { opacity:1; } }
-@keyframes focus-data-in { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:translateX(0); } }
+@keyframes focus-data-in { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:translateX(0); } }
 :root.scene-zoom-in .focus-copy { view-transition-name:focus-data; }
 :root.scene-zoom-in::view-transition-old(root) { transform-origin:var(--scene-origin-x,50%) var(--scene-origin-y,50%); animation:focus-camera .7s ease-in-out both; }
 :root.scene-zoom-in::view-transition-new(root) { animation:focus-scene-in .7s ease-in-out both; }
@@ -569,8 +572,8 @@ button.clan-member { font-family:inherit; cursor:pointer; }
   .mobile-clan-track { display:flex; width:100%; height:100%; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; overscroll-behavior-x:contain; scrollbar-width:none; touch-action:pan-x pan-y; }
   .mobile-clan-track::-webkit-scrollbar { display:none; }
   .mobile-soldier-card { position:relative; flex:0 0 100%; width:100%; height:100%; padding:0; border:0; overflow:hidden; scroll-snap-align:start; scroll-snap-stop:always; background:#081416; color:#edf6f3; text-align:left; cursor:pointer; }
-  .mobile-soldier-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:65% center; }
-  .mobile-soldier-card:first-child img { object-position:67% center; }
+  .mobile-soldier-card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:67% center; }
+  .mobile-soldier-card:nth-child(2) img { object-position:66% center; }
   .mobile-soldier-card::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,#081416a6,transparent 30%,transparent 55%,#081416e8 100%); pointer-events:none; }
   .mobile-soldier-card:focus-visible { outline:3px solid #9be3d6; outline-offset:-5px; }
   .mobile-soldier-info { position:absolute; z-index:1; left:8%; bottom:clamp(100px,16svh,150px); display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding-left:12px; border-left:2px solid #9be3d6; text-shadow:0 2px 9px #000; }
@@ -578,4 +581,63 @@ button.clan-member { font-family:inherit; cursor:pointer; }
   .mobile-clan-controls { position:absolute; z-index:2; left:8%; right:8%; bottom:max(22px,env(safe-area-inset-bottom)); display:flex; justify-content:space-between; align-items:center; color:#d4e9e4; font:600 13px 'Barlow Condensed',sans-serif; letter-spacing:2px; }
   .mobile-clan-controls button { width:48px; height:48px; border:1px solid #b7d4ce80; background:#0b1a1dd9; color:#edf6f3; font:300 30px/1 'Barlow',sans-serif; cursor:pointer; }
   .mobile-clan-controls button:disabled { opacity:.35; cursor:default; }
+}
+
+/* Navigation im Stil der Battlefield-Menüleiste. */
+.focus-topbar { background:#111314f7; border-bottom:1px solid #687079; }
+.focus-brand b { display:flex; align-items:center; }
+.focus-brand img { display:block; width:80px; height:auto; }
+.focus-topbar nav { gap:clamp(28px,3vw,52px); }
+.focus-topbar nav button,.focus-topbar nav span {
+  position:relative; border:0; padding:0; color:#939ca3;
+  font:500 clamp(17px,1.35vw,22px)/1 'Barlow',Arial,sans-serif; letter-spacing:.04em;
+}
+.focus-topbar nav button:hover { color:#d6dce0; }
+.focus-topbar nav span[aria-current="page"] { color:#d4dce1; text-shadow:0 0 20px #d0e2ec85; background:radial-gradient(ellipse at 50% 55%,#d2e0ea24,transparent 75%); }
+.focus-topbar nav span[aria-current="page"]::before {
+  content:''; position:absolute; left:50%; bottom:-15px; transform:translateX(-50%); pointer-events:none;
+  border-left:7px solid transparent; border-right:7px solid transparent; border-bottom:9px solid #c7d5df;
+  filter:drop-shadow(0 0 4px #d6e6f0b3);
+}
+.focus-topbar nav span[aria-current="page"]::after {
+  content:''; position:absolute; left:0; right:0; bottom:0; height:5px;
+  background:#c7d5df; box-shadow:0 0 12px #d6e6f0b3;
+}
+@media(max-width:760px) {
+  .focus-brand img { width:54px; }
+  .focus-topbar nav { gap:0; }
+  .focus-topbar nav button,.focus-topbar nav span { justify-content:center; font-size:13px; letter-spacing:.03em; }
+  .focus-topbar nav span[aria-current="page"]::after { left:12%; right:12%; height:4px; }
+}
+
+/* Bildkacheln für die beiden Statistikansichten. */
+.focus-content app-profile-card .focus-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.focus-content .focus-actions .focus-history-button,
+.focus-content .focus-actions .focus-history {
+  position:relative; display:flex; align-items:flex-end; justify-content:flex-start; min-width:0; min-height:0;
+  height:clamp(145px,13vw,200px); margin:0; padding:18px; overflow:hidden; border:1px solid #c0ced380; border-radius:0;
+  background-color:#182321; background-size:cover; background-position:center; color:#fff;
+  text-align:left; white-space:normal; cursor:pointer;
+}
+.focus-content .focus-actions .focus-history-button { background-image:linear-gradient(180deg,#07101410 10%,#071014d9 100%),url('../public/images/focus/tile-verlauf-v2.webp'); }
+.focus-content .focus-actions .focus-history { background-image:linear-gradient(180deg,#07101410 10%,#071014d9 100%),url('../public/images/focus/tile-historie-v2.webp'); }
+.focus-content .focus-actions .focus-history-button:hover,
+.focus-content .focus-actions .focus-history:hover { border-color:#e6f1f2; box-shadow:inset 0 0 0 2px #e6f1f2a8; }
+.focus-content .focus-actions .focus-history-button:focus-visible,
+.focus-content .focus-actions .focus-history:focus-visible { outline:3px solid #d9f5f0; outline-offset:3px; }
+.focus-content .focus-tile-copy { display:flex; flex-direction:column; align-items:flex-start; gap:5px; text-shadow:0 2px 5px #000; }
+.focus-content .focus-tile-copy strong { font:700 clamp(22px,2vw,32px)/1 'Barlow Condensed',sans-serif; letter-spacing:.02em; overflow-wrap:anywhere; }
+.focus-content .focus-tile-copy small { color:#f2f6f4; font:500 12px/1.2 'Barlow',sans-serif; letter-spacing:.04em; }
+.focus-copy h1 { margin-bottom:8px; }
+@media(min-width:761px) {
+  .focus-main,.focus-content { min-height:calc(100svh - 71px); }
+  .focus-content { padding-top:clamp(20px,3svh,45px); padding-bottom:84px; }
+  .focus-copy { padding:0; }
+  .focus-switcher { right:clamp(28px,4vw,64px); bottom:20px; width:auto; }
+}
+@media(max-width:760px) {
+  .focus-content app-profile-card .focus-actions { gap:8px; }
+  .focus-content .focus-actions .focus-history-button,.focus-content .focus-actions .focus-history { height:112px; padding:10px; }
+  .focus-content .focus-tile-copy strong { font-size:clamp(18px,5.5vw,24px); }
+  .focus-content .focus-tile-copy small { font-size:10px; }
 }
