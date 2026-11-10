@@ -1,4 +1,4 @@
-<a class="skip-link" href="#main">Zum Inhalt</a>
+<a class="skip-link" href="#main" (click)="skipToMain($event)">Zum Inhalt</a>
 @if (loaderVisible()) {
   <div class="site-loader" role="status" aria-live="polite" aria-label="Seite wird geladen">
     <span class="loader-corner loader-corner-top-left" aria-hidden="true"></span>
@@ -12,68 +12,77 @@
     <div class="loader-meta" aria-hidden="true"><span>VERBINDUNG WIRD HERGESTELLT</span><span>BITTE WARTEN</span></div>
   </div>
 }
-<div class="game-shell">
-  <header class="topbar">
-    <a class="brand" href="./">BATTLEFIELD<span>MV / MOST VALUABLE</span></a>
-    <nav aria-label="Hauptmenü">
-      <button type="button" [class.active]="view() === 'clan'" [attr.aria-current]="view() === 'clan' ? 'page' : null" (click)="view.set('clan'); closeHistory()">UNSER CLAN</button>
-      <button type="button" [class.active]="view() === 'squad'" [attr.aria-current]="view() === 'squad' ? 'page' : null" (click)="view.set('squad')">SQUAD</button>
-      <button type="button" [class.active]="view() === 'videos'" [attr.aria-current]="view() === 'videos' ? 'page' : null" (click)="view.set('videos'); closeHistory()">VIDEOS</button>
-    </nav>
-    <div class="design-picker" (keydown.escape)="closeLocationPicker(locationTrigger); $event.stopPropagation()" (focusout)="!$any($event.currentTarget).contains($event.relatedTarget) && locationPickerOpen.set(false)">
-      <span id="location-label">EINSATZORT</span>
-      <button #locationTrigger class="location-trigger" type="button" aria-controls="location-options" [attr.aria-expanded]="locationPickerOpen()" aria-labelledby="location-label location-name" (click)="locationPickerOpen.set(!locationPickerOpen())">
-        <span id="location-name">{{ design().name }}</span><span class="location-chevron" aria-hidden="true">⌄</span>
-      </button>
-      <div id="location-options" class="location-options" [hidden]="!locationPickerOpen()" role="group" aria-label="Einsatzort auswählen">
-        <p class="location-heading">EINSATZORT WÄHLEN</p>
-        @for (preset of designs; track preset.id) {
-          <button type="button" class="location-option" [class.is-selected]="preset.id === design().id" [attr.aria-pressed]="preset.id === design().id" (click)="setDesign(preset.id); closeLocationPicker(locationTrigger)">
-            <img [attr.src]="locationPickerOpen() ? preset.preview : null" alt="" width="240" height="160">
-            <span class="location-option-copy"><strong>{{ preset.name }}</strong><small>{{ preset.description }}</small></span>
-            <span class="location-check" aria-hidden="true">{{ preset.id === design().id ? '✓' : '↗' }}</span>
-          </button>
-        }
+@if (focusOpen()) {
+  <div class="focus-shell">
+    <header class="focus-topbar">
+      <div class="focus-topbar-inner">
+        <a class="focus-brand" href="./"><b>MV</b><span>HEADQUARTERS</span></a>
+        <nav aria-label="Fokusmenü"><button type="button" (click)="openMainView('clan')">ÜBERSICHT</button><span aria-current="page">SPIELER</span><button type="button" (click)="openMainView('videos')">VIDEOS</button></nav>
       </div>
+    </header>
+    <main id="main" class="focus-main" tabindex="-1">
+      <div class="focus-scene"><img class="focus-scene-image" [src]="focusPortraits[selected()].src" [alt]="focusPortraits[selected()].alt" width="2172" height="724" fetchpriority="high"></div>
+      <div class="focus-content">
+        <div class="focus-copy">
+          <p class="eyebrow">BATTLEFIELD 6 / MULTIPLAYER</p>
+          <h1>{{ players[selected()].name.slice(3) }}</h1>
+          <app-profile-card [player]="players[selected()]" [focusMode]="true" (statsLoaded)="recordStats($event)">
+            @if (hasHistoryStats()) { <button class="focus-history" type="button" aria-controls="battlefield-history mobile-battlefield-history" [attr.aria-expanded]="historyOpen()" (click)="toggleHistory()"><svg class="focus-action-icon" viewBox="0 0 24 28" aria-hidden="true"><path d="M9 2h7l5 5v3l-8 15a3 3 0 0 1-4 1l-6-3a3 3 0 0 1-1-4L9 2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="15.5" cy="7.5" r="1.2" fill="currentColor"/></svg><span>{{ historyOpen() ? 'HISTORIE SCHLIESSEN' : 'BATTLEFIELD-HISTORIE' }}</span><span aria-hidden="true">›</span></button> }
+          </app-profile-card>
+        </div>
+        <div class="focus-portrait" aria-hidden="true"></div>
+        <div class="focus-switcher" aria-label="Spieler wechseln">
+          <button type="button" (click)="changeFocusPlayer(-1)"><span class="focus-arrow" aria-hidden="true">‹</span><span class="focus-switch-copy"><small>VORHERIGER SPIELER</small><strong>{{ players[(selected() + focusPortraits.length - 1) % focusPortraits.length].name.slice(3) }}</strong></span></button>
+          <span class="focus-dots" aria-hidden="true">@for (portrait of focusPortraits; track $index; let i = $index) { <i [class.current]="i === selected()"></i> }</span>
+          <button type="button" (click)="changeFocusPlayer(1)"><span class="focus-switch-copy"><small>NÄCHSTER SPIELER</small><strong>{{ players[(selected() + 1) % focusPortraits.length].name.slice(3) }}</strong></span><span class="focus-arrow" aria-hidden="true">›</span></button>
+        </div>
+        @if (hasHistoryStats()) { <app-battlefield-history [player]="players[selected()]" [stats]="selectedStats()" [(open)]="historyOpen" /> }
+      </div>
+    </main>
+  </div>
+} @else if (view() === 'clan') {
+  <div class="clan-shell">
+    <main id="main" class="clan-menu" tabindex="-1" aria-label="Clan in der Garage">
+      <div class="clan-intro"><div><p class="eyebrow">MV / HEADQUARTERS</p><h1>MOST VALUABLE</h1><p class="clan-intro-detail">BATTLEFIELD 6 &nbsp; / &nbsp; EINSATZTEAM</p></div></div>
+      <div class="clan-stage">
+        <div class="clan-picture">
+          <img src="images/focus/clan-panorama-v2.webp" width="2172" height="724" alt="Blackhawk und Criban besprechen gemeinsam eine Einsatzkarte in der Garage.">
+          <button type="button" class="clan-hotspot clan-blackhawk" (click)="selectSoldier(0, true)"><span class="clan-agent"><span class="member-status">01 / STATUS: AKTIV</span><strong>8LACKH4WK</strong><app-clan-kd [player]="players[0]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
+          <button type="button" class="clan-hotspot clan-criban" (click)="selectSoldier(1, true)"><span class="clan-agent"><span class="member-status">02 / STATUS: AKTIV</span><strong>CRIBAN</strong><app-clan-kd [player]="players[1]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
+        </div>
+      </div>
+      <section class="mobile-clan" aria-label="Soldat auswählen">
+        <div class="mobile-clan-track" (scroll)="onMobileClanScroll($event)">
+          @for (portrait of focusPortraits; track portrait.src; let i = $index) {
+            <button type="button" class="mobile-soldier-card" [attr.aria-label]="players[i].name + ' – Profil öffnen'" (click)="selectSoldier(i, true)">
+              <img [src]="portrait.src" [alt]="portrait.alt" width="2172" height="724">
+              <span class="mobile-soldier-info"><span class="member-status">0{{ i + 1 }} / STATUS: AKTIV</span><strong>{{ players[i].name.slice(3) }}</strong><app-clan-kd [player]="players[i]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span>
+            </button>
+          }
+        </div>
+        <div class="mobile-clan-controls" aria-label="Soldaten wechseln">
+          <button type="button" aria-label="Vorheriger Soldat" [disabled]="visibleSoldier() === 0" (click)="moveMobileSoldier(-1)">‹</button>
+          <span aria-live="polite">{{ visibleSoldier() + 1 }} / {{ focusPortraits.length }}</span>
+          <button type="button" aria-label="Nächster Soldat" [disabled]="visibleSoldier() === focusPortraits.length - 1" (click)="moveMobileSoldier(1)">›</button>
+        </div>
+      </section>
+    </main>
+  </div>
+} @else {
+<div class="game-shell">
+  <header class="focus-topbar">
+    <div class="focus-topbar-inner">
+      <a class="focus-brand" href="./"><b>MV</b><span>HEADQUARTERS</span></a>
+      <nav aria-label="Hauptmenü"><button type="button" (click)="openMainView('clan')">ÜBERSICHT</button><button type="button" (click)="openSelectedPlayer()">SPIELER</button><span aria-current="page">VIDEOS</span></nav>
     </div>
   </header>
-  <main id="main" [class.lobby]="view() !== 'videos'" [class.video-page]="view() === 'videos'" [class.mobile-kd-visible]="view() === 'squad' && selected() === visibleSoldier()">
-    @if (view() === 'videos') {
-      <app-videos />
-    } @else {
-    <section id="squad-details" class="details" aria-label="Squad-Informationen">
-      @if (view() === 'clan') {
-        <p class="eyebrow">BATTLEFIELD / CLAN MV</p><h1>MOST<br>VALUABLE<span>.</span></h1>
-        <p class="intro">Gemeinsam rein. Gemeinsam raus.</p>
-      } @else {
-        <p class="eyebrow">BATTLEFIELD 6 / MULTIPLAYER</p><h1>{{ players[selected()].name.startsWith('MV-') ? players[selected()].name.slice(3) : players[selected()].name }}<span>.</span></h1>
-        <div id="soldier-details">
-          @if (players[selected()]; as player) { <app-profile-card [player]="player" (statsLoaded)="recordStats($event)" /> }
-        </div>
-        @if (hasHistoryStats()) {
-          <button class="history-toggle" type="button" aria-controls="battlefield-history mobile-battlefield-history" [attr.aria-expanded]="historyOpen()" (click)="toggleHistory()">{{ historyOpen() ? 'ZURÜCK ZUM SQUAD' : 'BATTLEFIELD-HISTORIE' }}</button>
-        }
-      }
-      <p class="data-note">STATISTIKEN VIA GAMETOOLS<br>BF6 · EA · MULTIPLAYER</p>
-    </section>
-    <app-soldiers
-      [design]="design()"
-      [sceneTransition]="sceneTransition()"
-      [players]="players"
-      [selected]="selected()"
-      [squadActive]="view() === 'squad'"
-      [stats]="selectedStats()"
-      [(historyOpen)]="historyOpen"
-      (soldierSelected)="selectSoldier($event)"
-      (soldierActivated)="selectSoldier($event, true)"
-      (soldierBrowsed)="selectSoldier($event, false, true)"
-      (visibleSoldier)="visibleSoldier.set($event)"
-    />
-    }
+  <main id="main" tabindex="-1" [class.lobby]="view() !== 'videos'" [class.clan-page]="view() !== 'videos'" [class.video-page]="view() === 'videos'">
+    <app-videos />
   </main>
 
   <footer><span><b>MV</b> / BATTLEFIELD COMMUNITY</span><span>Inoffizielles Fanprojekt · Nicht mit EA oder DICE verbunden.</span></footer>
 </div>
+}
 
 
 

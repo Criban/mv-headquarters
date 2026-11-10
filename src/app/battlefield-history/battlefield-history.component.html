@@ -19,12 +19,13 @@
               <div><dt>Abgefeuerte Schüsse gesamt</dt><dd>{{ formatTotal(totals.shots.value) }}</dd></div>
               <div><dt>Matches gesamt</dt><dd>{{ formatTotal(totals.matches.value) }}</dd></div>
             </dl>
+            @if (totals.hours.partial || totals.shots.partial || totals.matches.partial) { <p class="history-date">Einige Werte fehlen; die Summen können unvollständig sein.</p> }
             @if (stats()?.capturedAt; as capturedAt) {
               <p class="history-date">BF6-Abzug vom {{ formatSnapshotDate(capturedAt) }} Uhr (Berlin).</p>
             }
           </section>
           <ol class="history-timeline" aria-label="Battlefield-Timeline">
-            @for (entry of entries(); track $index) {
+            @for (entry of newestEntries(); track $index) {
               @if (entry.period; as period) {
                 <li [class.current]="!period.to">
                   <span class="timeline-period">@if (period.from) { {{ period.from }} – {{ period.to ?? 'heute' }} } @else { Bis {{ period.to }} }</span>
@@ -34,8 +35,25 @@
               }
             }
           </ol>
-          @for (entry of entries(); track $index) {
-            @if (entry.stats.length) {
+          @for (entry of newestEntries(); track $index) {
+            @if (entry.game === 'Battlefield 6') {
+            <article class="history-entry">
+              <h3>Battlefield 6</h3>
+              @if (stats(); as bf6) {
+                @if (bf6.capturedAt; as capturedAt) { <p class="history-date">Gespeicherter Abzug vom {{ formatSnapshotDate(capturedAt) }} Uhr (Berlin).</p> }
+                <dl>
+                  <div><dt>K/D</dt><dd>{{ formatTotal(bf6.killDeath, 2) }}</dd></div>
+                  <div><dt>Kills (Spieler)</dt><dd>{{ formatTotal(bf6.kills) }}</dd></div>
+                  <div><dt>Deaths</dt><dd>{{ formatTotal(bf6.deaths) }}</dd></div>
+                  <div><dt>Spielzeit</dt><dd>{{ formatTotal(bf6.hoursPlayed, 1) }} @if (bf6.hoursPlayed !== null) { h }</dd></div>
+                  <div><dt>Matches</dt><dd>{{ formatTotal(bf6.matchesPlayed) }}</dd></div>
+                  <div><dt>Abgefeuerte Schüsse</dt><dd>{{ formatTotal(bf6.shotsFired) }}</dd></div>
+                  <div><dt>Treffgenauigkeit</dt><dd>{{ formatTotal(bf6.accuracy, 1) }} @if (bf6.accuracy !== null) { % }</dd></div>
+                  <div><dt>Rang</dt><dd>{{ formatTotal(bf6.rank) }} @if (bf6.rankName) { {{ bf6.rankName }} }</dd></div>
+                </dl>
+              } @else { <p class="history-date">BF6-Statistiken werden geladen oder sind nicht verfügbar.</p> }
+            </article>
+            } @else if (entry.stats.length) {
             <article class="history-entry">
               <h3>{{ entry.game }}</h3>
               @if (entry.recordedAt) { <p class="history-date">Stand: {{ entry.recordedAt }}</p> }

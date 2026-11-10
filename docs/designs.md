@@ -1,34 +1,5 @@
-# Design-Auswahl
+# Gestaltung
 
-Das Dropdown in der Kopfzeile zeigt das aktuelle Design und archivierte Varianten.
-Neue Besucher erhalten das als `current` markierte Design. Eine bewusste Auswahl
-wird unter `mv-design` im lokalen Browser gespeichert und nach einem Neuladen
-wiederhergestellt. Unbekannte IDs oder gesperrter Browserspeicher fallen auf das
-aktuelle Design zurück; der Wechsel selbst funktioniert auch ohne Speicherung.
+Die Clanübersicht, die Spieleransichten und die Videoseite verwenden die dunkle Garagenoptik mit türkisen Akzenten. Die Übersicht nutzt das Panorama `public/images/focus/clan-panorama-v2.webp`; für die Spieleransichten gibt es eigene Varianten derselben Kulisse. Eine Auswahl alternativer Einsatzorte wird nicht mehr angeboten.
 
-Die Varianten stehen in `src/app/data/designs.ts` mit stabiler ID, Anzeigename,
-Browserfarbe und Soldatenbeleuchtung. Derzeit ist **Stadteinsatz** aktuell und
-**Urban Night** archiviert. Ein Wechsel verändert weder die Spielerauswahl noch
-die geöffnete Ansicht oder Historie. Soldaten und Animationen bleiben eingebunden.
-
-Im Stadteinsatz steigen transparente Rauchtexturen über den Brandstellen auf,
-ziehen auseinander und blenden aus. Zwei versetzte Schwaden je Quelle halten die
-Bewegung sichtbar. Die Zyklen dauern 42 bzw. 52 Sekunden, passend zur Entfernung;
-die Schwaden sind um etwa 30 Grad nach rechts geneigt und ziehen nach rechts oben.
-Die Quellen sind an derselben Bildebene wie die Kulisse ausgerichtet. Der Effekt
-liegt hinter den Soldaten, fängt keine Eingaben ab und wird im Archivdesign
-entfernt. Bei `prefers-reduced-motion: reduce` bleibt nur das statische Bild.
-
-## Eine neue Variante ergänzen
-
-1. Neue Hintergrund- und gegebenenfalls Beleuchtungsbilder unter `public/images/`
-   hinzufügen. Für die gespiegelte Sitzpose eine gespiegelte Lichtkarte vorsehen.
-2. Einen Eintrag in `DESIGNS` ergänzen. Genau einen Eintrag als `current: true`
-   markieren, ältere Einträge mit `current: false` behalten.
-3. In `src/styles.css` über `:root[data-design="neue-id"]` die Farbvariablen,
-   `--scene-image`, Belichtung, Sättigung und Oberflächen definieren. Bei Bedarf
-   die Porträtbelichtung mit passenden Soldaten-Selektoren überschreiben.
-4. `npm run build` ausführen und die neue Variante sowie den Rückwechsel prüfen.
-
-Das Dropdown entsteht automatisch aus den registrierten Varianten. IDs bleiben
-stabil, damit bereits gespeicherte Auswahlen nach einem Update weiter funktionieren.
+Die Farbvariablen und das Layout stehen in `src/styles.css`; die Gestaltung der Videothek liegt in `src/app/videos/videos.component.css`. Bildquellen und Prompts sind in `public/images/GENERATION.md` dokumentiert.

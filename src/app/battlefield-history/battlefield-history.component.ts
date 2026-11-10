@@ -16,7 +16,13 @@ export class BattlefieldHistoryComponent {
   readonly player = input.required<PlayerProfile>();
   readonly stats = input<Bf6Stats | null>(null);
   readonly open = model(false);
-  readonly entries = computed(() => BATTLEFIELD_HISTORY[this.player().id] ?? []);
+  readonly entries = computed(() => {
+    const entries = BATTLEFIELD_HISTORY[this.player().id] ?? [];
+    return !this.player().privateProfile && !entries.some(entry => entry.game === 'Battlefield 6')
+      ? [...entries, { game: 'Battlefield 6', period: { from: 'Oktober 2025' }, stats: [] }]
+      : entries;
+  });
+  readonly newestEntries = computed(() => [...this.entries()].reverse());
   readonly overallStats = computed(() => historyTotals(this.entries(), this.stats()));
   private readonly mobile = signal(window.matchMedia('(max-width: 760px)').matches);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('historyDialog');
