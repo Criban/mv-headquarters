@@ -45,7 +45,11 @@
       <div class="clan-intro"><div><p class="eyebrow">MV / HEADQUARTERS</p><h1>MOST VALUABLE</h1><p class="clan-intro-detail">BATTLEFIELD &nbsp; / &nbsp; SQUAD</p></div></div>
       <div class="clan-stage">
         <div class="clan-picture">
-          <img src="images/focus/clan-panorama-v2.webp" width="2172" height="724" alt="Blackhawk und Criban besprechen gemeinsam eine Einsatzkarte in der Garage.">
+          <img src="images/focus/clan-panorama-v2.webp" width="2172" height="724" alt="Blackhawk und Criban besprechen eine Einsatzkarte in der Garage. 54bI44 steht beim Fahrzeug, KingCoffee steht mit Sanitätsausrüstung am Helikopter.">
+          <img class="clan-background-overlay clan-overlay-54" src="images/focus/clan-panorama-squad-v3.webp" width="2172" height="724" alt="" aria-hidden="true">
+          <img class="clan-background-overlay clan-overlay-coffee" src="images/focus/clan-panorama-squad-v3.webp" width="2172" height="724" alt="" aria-hidden="true">
+          <span class="clan-background-person clan-background-54"><span class="clan-background-tag"><small>STATUS: INAKTIV</small><strong>{{ players[3].name.slice(3) }}</strong></span></span>
+          <span class="clan-background-person clan-background-coffee"><span class="clan-background-tag"><small>STATUS: INAKTIV</small><strong>{{ players[2].name.slice(3) }}</strong></span></span>
           <button type="button" class="clan-hotspot clan-blackhawk" (click)="selectSoldier(0, true)"><span class="clan-agent"><span class="member-status">STATUS: AKTIV</span><strong>{{ players[0].name.slice(3) }}</strong><app-clan-kd [player]="players[0]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
           <button type="button" class="clan-hotspot clan-criban" (click)="selectSoldier(1, true)"><span class="clan-agent"><span class="member-status">STATUS: AKTIV</span><strong>{{ players[1].name.slice(3) }}</strong><app-clan-kd [player]="players[1]" /><span class="member-action">PROFIL ÖFFNEN <span aria-hidden="true">↗</span></span></span></button>
         </div>

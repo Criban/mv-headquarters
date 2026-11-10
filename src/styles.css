@@ -458,6 +458,10 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
 .clan-stage .clan-picture { width:100%; isolation:auto; }
 .clan-stage .clan-picture::before,.clan-stage .clan-picture::after { display:none; }
 .clan-stage .clan-picture img { mask-image:none; }
+.clan-stage .clan-picture img.clan-background-overlay { display:none; position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+@supports (mask-image:radial-gradient(#000,transparent)) { .clan-stage .clan-picture img.clan-background-overlay { display:block; } }
+.clan-stage .clan-picture img.clan-overlay-54 { mask-image:radial-gradient(ellipse 4% 18% at 36.6% 55%,#000 60%,transparent 100%); }
+.clan-stage .clan-picture img.clan-overlay-coffee { mask-image:radial-gradient(ellipse 4% 15% at 79% 53%,#000 60%,transparent 100%); }
 .clan-stage .clan-hotspot { transition:background-color .2s,border-color .2s; }
 .clan-members { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); background:#0c181b; }
 .clan-member { min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding:18px clamp(10px,1.4vw,24px); border:0; border-top:2px solid #d5e5dc27; border-right:1px solid #d5e5dc24; background:transparent; color:#ecf2ef; text-align:left; }
@@ -524,6 +528,13 @@ button.clan-member { font-family:inherit; cursor:pointer; }
 .clan-stage .clan-criban { left:56%; width:10%; }
 .clan-agent { position:absolute; bottom:0; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:150px; padding:8px 12px; border-left:2px solid #9be3d6; text-shadow:0 2px 9px #000,0 1px 4px #000; }
 .clan-agent strong { font:700 clamp(20px,1.6vw,28px)/1 'Barlow Condensed',sans-serif; letter-spacing:1px; }
+.clan-background-person { position:absolute; z-index:1; width:4.5%; cursor:default; }
+.clan-background-person::after { content:''; position:absolute; inset:0 -5px -34px; border:1px solid transparent; pointer-events:none; }
+.clan-background-person:hover::after { border-color:#a9eee56e; background:#8ae7d514; }
+.clan-background-tag { position:absolute; top:100%; left:50%; display:flex; flex-direction:column; gap:3px; transform:translateX(-50%); padding:4px 7px; border-left:2px solid #a7b9b4; color:#e2ebe8; font:600 clamp(11px,.8vw,14px)/1.1 'Barlow Condensed',sans-serif; letter-spacing:.04em; text-shadow:0 1px 5px #000,0 2px 9px #000; white-space:nowrap; pointer-events:none; }
+.clan-background-tag small { color:#b6c5c0; font:500 9px/1.1 'Barlow Condensed',sans-serif; letter-spacing:.06em; }
+.clan-background-54 { left:34.35%; top:47%; height:17%; }
+.clan-background-coffee { left:76.75%; top:46.5%; height:14%; }
 .clan-hotspot:hover .clan-agent { background:#08191dc9; }
 @media(max-width:760px) { .clan-stage .clan-picture { width:100%; aspect-ratio:3 / 1; }.clan-stage .clan-picture img { mask-image:none; }.clan-agent { min-width:95px; padding:6px; }.clan-agent strong { font-size:14px; }.clan-stage .clan-hotspot { width:13%; }.clan-stage .clan-blackhawk { left:37%; }.clan-stage .clan-criban { left:52%; } }
 /* Umbruch innerhalb der Seite: kurzer, ruhiger Szenenwechsel. */

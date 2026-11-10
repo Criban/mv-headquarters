@@ -1,6 +1,6 @@
 # MV / Battlefield
 
-Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. Die Clanübersicht ist der menüfreie Einstieg und zeigt Blackhawk und Criban bei der Einsatzvorbereitung in der Garage; beide öffnen per Klick oder Tastatur ihre Fokusansicht. Videos sind über das Menü der Fokusansicht erreichbar.
+Persönliche, responsive Battlefield-Fanseite für den Clan MV als interaktives Spielmenü. Die Clanübersicht ist der menüfreie Einstieg und zeigt Blackhawk und Criban bei der Einsatzvorbereitung in der Garage; beide öffnen per Klick oder Tastatur ihre Fokusansicht. KingCoffee und 54bI44 sind im Hintergrund zu sehen und nicht auswählbar. Videos sind über das Menü der Fokusansicht erreichbar.
 
 Die Battlefield-Historie lässt sich für öffentliche Profile öffnen.
 
@@ -21,7 +21,7 @@ Die passende Node-22-Laufzeit wird als lokale Entwicklungsabhängigkeit installi
 
 Die Profile samt Tracker-Links stehen im typisierten `players`-Array in `src/main.ts`. Das Menü und die Soldatenauswahl stehen in `src/app/app.component.html`. Die wiederverwendbare `ProfileCardComponent` in `src/app/profile-card/` zeigt die Statistikansicht des ausgewählten Spielers. Globale Farben und Layout stehen in `src/styles.css`.
 
-Die Clanansicht nutzt `public/images/focus/clan-panorama-v2.webp`. Für die Fokusansicht zeigen eigene Panorama-Szenen derselben Garage jeweils Blackhawk oder Criban im Vordergrund; über die Pfeile kann zwischen ihnen gewechselt werden. Auf Desktop blendet der Spielerwechsel kurz über, sofern der Browser dies unterstützt und keine reduzierte Bewegung eingestellt ist. Der zuletzt ausgewählte Soldat wird lokal gespeichert und lässt sich von der Videoseite über „Spieler“ wieder öffnen. Auf schmalen Bildschirmen zeigt die Clanübersicht jeweils einen Soldaten; Wischen oder die Pfeile wechseln zum anderen Profil. In der Fokusansicht stehen die verfügbaren Rangdaten unter dem Namen. Mobil zeigt sie zusätzlich Treffgenauigkeit und Schüsse ohne Soldatenbild.
+Die Clanansicht nutzt `public/images/focus/clan-panorama-v2.webp` als ursprüngliche Szene; die beiden Hintergrundfiguren werden aus `clan-panorama-squad-v3.webp` räumlich begrenzt darübergelegt. Für die Fokusansicht zeigen eigene Panorama-Szenen derselben Garage jeweils Blackhawk oder Criban im Vordergrund; über die Pfeile kann zwischen ihnen gewechselt werden. Auf Desktop blendet der Spielerwechsel kurz über, sofern der Browser dies unterstützt und keine reduzierte Bewegung eingestellt ist. Der zuletzt ausgewählte Soldat wird lokal gespeichert und lässt sich von der Videoseite über „Spieler“ wieder öffnen. Auf schmalen Bildschirmen zeigt die Clanübersicht jeweils einen Soldaten; Wischen oder die Pfeile wechseln zum anderen Profil. In der Fokusansicht stehen die verfügbaren Rangdaten unter dem Namen. Mobil zeigt sie zusätzlich Treffgenauigkeit und Schüsse ohne Soldatenbild.
 
 Criban trägt eine schwarze Vollgesichtsmaske und einen Helm mit hochgeklapptem Nachtsichtgerät. Er hält sein Gewehr einhändig schräg vor dem Körper, mit dem Lauf nach unten (`public/images/criban-black-armor-low-ready.png`). Seine fünf Animationsebenen und die Bildprompts liegen in `public/images/criban-black-rig/`.
 
