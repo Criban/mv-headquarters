@@ -22,6 +22,7 @@ export class AppComponent {
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
   readonly loaderVisible = signal(true);
+  readonly clanOpening = signal(true);
   readonly focusOpen = signal(false);
   readonly focusPortraits = [
     { src: 'images/focus/blackhawk-panorama.webp', alt: 'Blackhawk steht mit Gewehr in der Garage.' },
@@ -145,7 +146,9 @@ export class AppComponent {
 
   ngOnInit(): void {
     const loaderTimeout = setTimeout(() => this.loaderVisible.set(false), 2000);
+    const openingTimeout = setTimeout(() => this.clanOpening.set(false), 7000);
     this.destroyRef.onDestroy(() => clearTimeout(loaderTimeout));
+    this.destroyRef.onDestroy(() => clearTimeout(openingTimeout));
     this.syncRoute();
     try {
       const savedName = this.document.defaultView?.localStorage.getItem(LAST_SOLDIER_KEY);

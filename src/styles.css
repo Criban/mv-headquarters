@@ -597,6 +597,33 @@ button.clan-member { font-family:inherit; cursor:pointer; }
 }
 
 /* Navigation im Stil der Battlefield-Menüleiste. */
+/* Der erste Blick gehört der Szene; die Beschriftungen erscheinen danach gestaffelt. */
+@keyframes clan-type-in { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0); } }
+@keyframes clan-controls-in { from { opacity:0; } to { opacity:1; } }
+.clan-intro app-squad-kd { display:block; }
+@media (prefers-reduced-motion:no-preference) {
+  .clan-opening .clan-intro .eyebrow,
+  .clan-opening .clan-intro h1,
+  .clan-opening .clan-intro-detail,
+  .clan-opening .clan-intro app-squad-kd,
+  .clan-opening .clan-agent,
+  .clan-opening .clan-background-tag,
+  .clan-opening .mobile-soldier-info { animation:clan-type-in 1.1s steps(24,end) both; }
+  .clan-opening .clan-intro .eyebrow { animation-delay:.8s; }
+  .clan-opening .clan-intro h1 { animation-delay:1.2s; }
+  .clan-opening .clan-intro-detail { animation-delay:1.7s; }
+  .clan-opening .clan-intro app-squad-kd { animation-delay:2.1s; }
+  .clan-opening .clan-agent,.clan-opening .clan-background-tag,.clan-opening .mobile-soldier-info { animation-delay:2.5s; }
+  .clan-opening .mobile-clan-controls { animation:clan-controls-in .3s 3.4s both; }
+  .clan-opening:focus-within .clan-intro .eyebrow,
+  .clan-opening:focus-within .clan-intro h1,
+  .clan-opening:focus-within .clan-intro-detail,
+  .clan-opening:focus-within .clan-intro app-squad-kd,
+  .clan-opening:focus-within .clan-agent,
+  .clan-opening:focus-within .clan-background-tag,
+  .clan-opening:focus-within .mobile-soldier-info,
+  .clan-opening:focus-within .mobile-clan-controls { animation:none; }
+}
 .focus-topbar { background:#111314f7; border-bottom:1px solid #687079; }
 .focus-brand b { display:flex; align-items:center; }
 .focus-brand img { display:block; width:80px; height:auto; }

@@ -40,7 +40,7 @@
     </main>
   </div>
 } @else if (view() === 'clan') {
-  <div class="clan-shell">
+  <div class="clan-shell" [class.clan-opening]="clanOpening() && !loaderVisible()">
     <main id="main" class="clan-menu" tabindex="-1" aria-label="Clan in der Garage">
       <div class="clan-intro"><div><p class="eyebrow">MV / HEADQUARTERS</p><h1>MOST VALUABLE</h1><p class="clan-intro-detail">BATTLEFIELD &nbsp; / &nbsp; SQUAD</p><app-squad-kd [players]="squadPlayers" /></div></div>
       <div class="clan-stage">
