@@ -144,3 +144,8 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
   .focus-stat-value { margin-top:5px; }
   .focus-stats:has(+ .focus-status-empty) { margin-bottom:16px; }
 }
+
+/* Die Änderung beeinflusst die Zentrierung des Hauptwerts nicht. */
+.focus-stat-value { position:relative; }
+.focus-stat-changes { position:absolute; left:100%; bottom:0; display:flex; align-items:baseline; gap:8px; padding-left:8px; white-space:nowrap; }
+@media(max-width:760px) { .focus-stat-changes { gap:4px; padding-left:4px; } }
