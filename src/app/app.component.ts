@@ -8,13 +8,14 @@ import { removeLegacyStatsHistory } from './services/bf6-stats-history';
 import { VideosComponent } from './videos/videos.component';
 import { BattlefieldHistoryComponent } from './battlefield-history/battlefield-history.component';
 import { ClanKdComponent } from './clan-kd/clan-kd.component';
+import { SquadKdComponent } from './clan-kd/squad-kd.component';
 
 const LAST_SOLDIER_KEY = 'mv-last-soldier';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ProfileCardComponent, VideosComponent, BattlefieldHistoryComponent, ClanKdComponent],
+  imports: [ProfileCardComponent, VideosComponent, BattlefieldHistoryComponent, ClanKdComponent, SquadKdComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
@@ -138,6 +139,7 @@ export class AppComponent {
     { id: 'unknown', image: 'images/kingcoffee-coffee-break.png', imageAlt: 'Soldat mit Helm und Sonnenbrille lehnt entspannt mit einem Kaffeebecher an einer Versorgungskiste.', name: 'MV-KingCoffee', description: 'Noch einen Kaffee. Dann vielleicht.', privateProfile: true, onBreak: true },
     { id: '1008896742053', image: 'images/54bi44-camping-chair.png', imageAlt: 'Soldat mit Kapuze und Schutzbrille sitzt entspannt auf einem Campingstuhl', name: 'MV-54bI44', description: 'Kurze Einsatzpause.', onBreak: true },
   ];
+  readonly squadPlayers = this.players.slice(0, 2);
   private readonly statsService = inject(Bf6StatsService);
   private readonly destroyRef = inject(DestroyRef);
 
