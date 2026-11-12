@@ -525,8 +525,6 @@ button.clan-member { font-family:inherit; cursor:pointer; }
 .clan-agent { position:absolute; bottom:0; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:150px; padding:8px 12px; border-left:2px solid #9be3d6; text-shadow:0 2px 9px #000,0 1px 4px #000; }
 .clan-agent strong { font:700 clamp(20px,1.6vw,28px)/1 'Barlow Condensed',sans-serif; letter-spacing:1px; }
 .clan-background-person { position:absolute; z-index:1; width:4.5%; cursor:default; }
-.clan-background-person::after { content:''; position:absolute; inset:0 -5px -34px; border:1px solid transparent; pointer-events:none; }
-.clan-background-person:hover::after { border-color:#a9eee56e; background:#8ae7d514; }
 .clan-background-tag { position:absolute; top:100%; left:50%; display:flex; flex-direction:column; gap:3px; transform:translateX(-50%); padding:4px 7px; border-left:2px solid #a7b9b4; color:#e2ebe8; font:600 clamp(11px,.8vw,14px)/1.1 'Barlow Condensed',sans-serif; letter-spacing:.04em; text-shadow:0 1px 5px #000,0 2px 9px #000; white-space:nowrap; pointer-events:none; }
 .clan-background-tag small { color:#b6c5c0; font:500 9px/1.1 'Barlow Condensed',sans-serif; letter-spacing:.06em; }
 .clan-background-54 { left:34.35%; top:47%; height:17%; }
@@ -547,6 +545,14 @@ button.clan-member { font-family:inherit; cursor:pointer; }
   .clan-stage .clan-picture { width:max(109%,327svh); transform:translateX(-4.25%); }
   .clan-stage .clan-hotspot { top:27%; height:62%; }
 }
+/* Kameramarkierung für Maus und Tastatur. */
+.clan-stage .clan-hotspot:hover,.clan-stage .clan-hotspot:focus-visible { background:transparent; border-color:transparent; }
+.clan-tracking { position:absolute; inset:0; pointer-events:none; opacity:0; transform:scale(1.04); transition:opacity .18s ease,transform .25s ease; background:linear-gradient(#b6f5e9,#b6f5e9) left top/22px 2px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) left top/2px 22px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) right top/22px 2px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) right top/2px 22px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) left bottom/22px 2px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) left bottom/2px 22px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) right bottom/22px 2px no-repeat,linear-gradient(#b6f5e9,#b6f5e9) right bottom/2px 22px no-repeat; filter:drop-shadow(0 1px 3px #000); }
+.clan-hotspot:hover .clan-tracking,.clan-hotspot:focus-visible .clan-tracking,.clan-background-person:hover .clan-tracking { opacity:1; transform:scale(1); }
+.clan-tracking-label { position:absolute; top:9px; left:9px; color:#d5fff7; background:#08191dcc; padding:3px 5px; font:600 9px/1 'Barlow',sans-serif; letter-spacing:.12em; white-space:nowrap; }
+.clan-background-person .clan-tracking-label { top:3px; left:3px; font-size:7px; }
+.clan-tracking-label i { display:inline-block; width:5px; height:5px; margin-left:3px; border-radius:50%; background:#a6f5d5; vertical-align:middle; }
+@media(prefers-reduced-motion:reduce) { .clan-tracking { transition:none; transform:none; } }
 /* Sanfte Überblendung zwischen Übersicht und Fokusansicht. */
 :root.scene-view-transition .focus-shell,:root.scene-view-transition .clan-shell { animation:none; }
 ::view-transition-old(root),::view-transition-new(root) { animation-duration:.5s; animation-timing-function:ease-in-out; }
