@@ -18,7 +18,7 @@ type KdState = { status: 'loading' | 'error' } | { status: 'ready'; value: strin
       @let kd = state();
       @if (kd.status === 'ready') {
         <span>K/D {{ kd.value }}</span>
-        @if (!kd.savedAt) { <app-kd-trend [direction]="kd.trend" /> }
+        @if (!kd.savedAt) { <app-kd-trend [direction]="kd.trend" [animated]="true" /> }
         @if (kd.savedAt) { <small [attr.title]="'Gespeicherter Abzug vom ' + kd.savedAt + ' Uhr (Berlin)'">ABZUG {{ kd.savedAt }} UHR (BERLIN)</small> }
       } @else if (kd.status === 'loading') { <span>K/D LÄDT …</span> }
       @else { <span>K/D NICHT VERFÜGBAR</span> }
