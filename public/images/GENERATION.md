@@ -1,5 +1,7 @@
 # Profilbilder
 
+Die Waffen-Kachel verwendet gegebenenfalls die von der GameTools-BF6-API gelieferten weißen `altImage`-Varianten vom CDN `cdn.gametools.network`; die Bilder werden extern geladen und nicht im Repository gespeichert. Ohne gültigen Link oder bei Ladefehler bleibt die jeweilige Waffenzeile ohne Bild sichtbar.
+
 ## Action-Panorama der Clanübersicht
 
 Die aktuelle Fassung kombiniert die ursprünglichen Vordergrundfiguren und die Kiste aus `focus/clan-panorama-v2.webp` mit der Action-Atmosphäre der vorherigen Fassung. Sie wurde mit dem integrierten Imagegen-Tool erstellt und als WebP mit Qualität 88 gespeichert. Prompt: Edit image 1, the original 3:1 panorama. Preserve exactly the two original foreground soldiers and the map crate, their appearance, gear, weapons, poses, proportions and positions. Transfer the atmospheric background treatment from image 2: smoke and distant fire outside the open hangar, subtle drifting dust and cool dramatic light. Retain the two small background soldiers by the vehicle and helicopter. Preserve the camera and architecture; no extra people, text or interface.

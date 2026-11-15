@@ -25,6 +25,20 @@
       @else if (state.status === 'ready' && state.capturedAt) { Gespeicherter Abzug vom {{ state.capturedAt }} Uhr (Berlin). <button type="button" (click)="retryStats()">Live-Daten erneut laden ↻</button> }
     </div>
     <div class="focus-actions">
+    <section class="focus-weapons" aria-label="Drei Waffen mit den meisten Kills" [attr.aria-busy]="state.status === 'loading'">
+      <h2><span>TOP 3 WAFFEN</span><span>KILLS</span></h2>
+      @if (state.status === 'loading') {
+        <p>Waffendaten werden geladen …</p>
+      } @else if (state.status === 'ready' && state.weapons.length) {
+        <ol>
+          @for (weapon of state.weapons; track $index) {
+            <li><span class="focus-weapon-number">{{ $index + 1 < 10 ? '0' : '' }}{{ $index + 1 }}</span><span class="focus-weapon-details"><span class="focus-weapon-name">{{ weapon.weaponName }}</span>@if (weapon.image; as weaponImage) { <img #weaponArt class="focus-weapon-art" [src]="weaponImage" alt="" aria-hidden="true" (error)="weaponArt.style.visibility = 'hidden'" (load)="weaponArt.style.visibility = 'visible'"> }</span><strong>{{ weapon.kills }}</strong></li>
+          }
+        </ol>
+      } @else {
+        <p>Keine Waffendaten verfügbar.</p>
+      }
+    </section>
       @if (state.status === 'ready') { <button class="focus-history-button" type="button" aria-haspopup="dialog" aria-label="K/D-Verlauf öffnen" (click)="openKdHistory()"><span class="focus-tile-copy"><strong>K/D-VERLAUF</strong></span></button> }
       <ng-content />
     </div>
