@@ -685,3 +685,11 @@ button.clan-member { font-family:inherit; cursor:pointer; }
   .focus-content app-profile-card .focus-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .focus-content .focus-actions .focus-weapons { grid-column:1 / -1; }
 }
+@media(max-width:760px) {
+  .focus-content { padding-bottom:calc(92px + env(safe-area-inset-bottom)); }
+  .focus-content app-profile-card .focus-actions { display:block; }
+  .focus-content .focus-history-menu { position:fixed; z-index:10; right:0; bottom:0; left:0; display:flex; height:auto; gap:8px; padding:8px max(8px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); background:#101d1ef5; border-top:1px solid #b7d4ce42; }
+  .focus-content .focus-actions .focus-history-button,.focus-content .focus-actions .focus-history { flex:1 1 0; height:auto; min-height:52px; align-items:center; justify-content:center; padding:8px; background-image:none; background-color:#254b47; text-align:center; }
+  .focus-content .focus-history-menu .focus-tile-copy { align-items:center; }
+  .focus-content .focus-history-menu .focus-tile-copy strong { font-size:16px; }
+}

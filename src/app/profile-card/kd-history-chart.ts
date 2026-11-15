@@ -160,7 +160,7 @@ export function combatHistoryChart(readings: CombatReading[], width = 720) {
   const first = readings.length ? calendarTime(readings[0].savedAt) : 0;
   const last = readings.length ? calendarTime(readings.at(-1)!.savedAt) : 0;
   const points = readings.map(reading => ({ ...reading,
-    x: last === first ? width / 2 : 80 + (calendarTime(reading.savedAt) - first) / (last - first) * (width - 160),
+    x: last === first ? width / 2 : 52 + (calendarTime(reading.savedAt) - first) / (last - first) * (width - 104),
     y: reading.value === null ? null : 244 - (reading.value - ratioMin) / (ratioMax - ratioMin) * 212,
     killsY: reading.kills === null ? null : 244 - reading.kills / countMax * 212,
     deathsY: reading.deaths === null ? null : 244 - reading.deaths / countMax * 212

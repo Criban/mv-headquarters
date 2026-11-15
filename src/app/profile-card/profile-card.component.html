@@ -39,8 +39,10 @@
         <p>Keine Waffendaten verfügbar.</p>
       }
     </section>
-      @if (state.status === 'ready') { <button class="focus-history-button" type="button" aria-haspopup="dialog" aria-label="K/D-Verlauf öffnen" (click)="openKdHistory()"><span class="focus-tile-copy"><strong>K/D-VERLAUF</strong></span></button> }
-      <ng-content />
+      <nav class="focus-history-menu" aria-label="Statistikansichten">
+        @if (state.status === 'ready') { <button class="focus-history-button" type="button" aria-haspopup="dialog" aria-label="K/D-Verlauf öffnen" (click)="openKdHistory()"><span class="focus-tile-copy"><strong>K/D-VERLAUF</strong></span></button> }
+        <ng-content />
+      </nav>
     </div>
   }
 } @else {

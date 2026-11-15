@@ -26,8 +26,10 @@ h2 { font:600 36px/1 'Barlow Condensed',sans-serif; margin:0; }
 .reading small { font:500 12px 'Barlow',sans-serif; color:var(--muted); }
 .reading > span { color:var(--muted); font-size:13px; text-align:right; }
 .reading > span small { display:block; margin-top:7px; font-size:11px; }
+.reading > span .reading-impact.impact-up { color:var(--kd-up); }
+.reading > span .reading-impact.impact-down { color:var(--kd-down); }
 .aggregation { margin:14px 0 0; color:var(--muted); font-size:12px; line-height:1.5; }
-svg { display:block; width:100%; overflow:visible; }
+svg { display:block; width:100%; }
 .grid-line { stroke:var(--line); stroke-dasharray:4 6; }
 .axis-label { fill:var(--muted); font:13px 'Barlow',sans-serif; }
 .history-line, .history-line-outline { fill:none; stroke-width:3.5; stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke; }
@@ -57,4 +59,4 @@ input:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
 .empty-state { padding:44px 0; }
 .empty-state h3 { color:var(--accent); font:600 24px 'Barlow Condensed',sans-serif; margin:0 0 12px; }
 .empty-state p { color:var(--muted); font-size:14px; line-height:1.6; }
-@media(max-width:480px) { dialog { padding:20px 16px; } h2 { font-size:30px; } .reading strong { font-size:40px; } .periods button { flex:1; } }
+@media(max-width:760px) { dialog { position:fixed; inset:0; box-sizing:border-box; width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:calc(20px + env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); border:0; overscroll-behavior:contain; } h2 { font-size:30px; } .reading strong { font-size:40px; } .periods button { flex:1; } }

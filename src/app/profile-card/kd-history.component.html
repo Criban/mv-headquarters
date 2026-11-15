@@ -14,15 +14,16 @@
       <strong>{{ selectedValue() }} <small>GESAMT-K/D</small></strong>
       <span>{{ monthly() ? formatMonth(point.savedAt) : formatDate(point.savedAt) }}
         <small>{{ formatCount(point.kills) }} Kills · {{ formatCount(point.deaths) }} Deaths {{ monthly() ? 'im Monat' : 'am Tag' }}</small>
+        @if (point.impact.delta !== null) { <small class="reading-impact" [class]="'impact-' + point.impact.direction">{{ impactText(point) }}</small> }
       </span>
     </div>
     <div class="chart-legend" aria-label="Datenreihen"><span><i class="kills-key"></i>KILLS (SPIELER)</span><span><i class="deaths-key"></i>DEATHS</span><span><i class="ratio-key"></i>GESAMT-K/D</span></div>
     <svg [attr.viewBox]="'0 0 ' + chartWidth() + ' 300'" role="img" aria-label="Kills und Deaths pro Tag als Balken, Gesamt-K/D als Linie: grün verbessert, rot gesenkt, grau gestrichelt unverändert. Werte und Änderung mit dem Regler auswählen." (pointermove)="selectPoint($event)" (pointerdown)="selectPoint($event)" (click)="openPointMonth($event)">
-      <text class="axis-label axis-title" x="64" y="16">ANZAHL</text><text class="axis-label axis-title" [attr.x]="chartWidth() - 64" y="16" text-anchor="end">K/D · ZOOM</text>
+      <text class="axis-label axis-title" x="44" y="16">ANZAHL</text><text class="axis-label axis-title" [attr.x]="chartWidth() - 44" y="16" text-anchor="end">K/D · ZOOM</text>
       @for (tick of chart().ticks; track $index) {
-        <line class="grid-line" x1="64" [attr.x2]="chartWidth() - 64" [attr.y1]="tick.y" [attr.y2]="tick.y" />
-        <text class="axis-label" x="50" [attr.y]="tick.y + 5" text-anchor="end">{{ formatCount(tick.count) }}</text>
-        <text class="axis-label" [attr.x]="chartWidth() - 50" [attr.y]="tick.y + 5">{{ formatValue(tick.value) }}</text>
+        <line class="grid-line" x1="44" [attr.x2]="chartWidth() - 44" [attr.y1]="tick.y" [attr.y2]="tick.y" />
+        <text class="axis-label" x="38" [attr.y]="tick.y + 5" text-anchor="end">{{ formatCount(tick.count) }}</text>
+        <text class="axis-label" [attr.x]="chartWidth() - 38" [attr.y]="tick.y + 5">{{ formatValue(tick.value) }}</text>
       }
       @for (reading of chart().points; track reading.savedAt) {
         @if (reading.killsY !== null) { <rect class="kills-bar" [class.active-bar]="reading.savedAt === point.savedAt" [attr.x]="reading.x - chart().barWidth - 1" [attr.y]="reading.killsY" [attr.width]="chart().barWidth" [attr.height]="244 - reading.killsY" /> }

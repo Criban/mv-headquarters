@@ -83,6 +83,7 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
 .focus-stats strong { margin-top:9px; font:700 clamp(38px,3.8vw,62px)/1 'Barlow Condensed',sans-serif; }
 .focus-status { min-height:48px; }
 .focus-actions { display:flex; flex-wrap:wrap; align-items:stretch; gap:14px; max-width:690px; }
+@media(min-width:761px) { .focus-history-menu { display:contents; } }
 .focus-history-button { flex:1 1 220px; min-height:62px; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid #8de4d8; background:linear-gradient(#428f86,#246057); color:white; font:600 17px 'Barlow Condensed',sans-serif; letter-spacing:1.4px; text-align:left; }
 .focus-history-button span:last-child { font-size:25px; line-height:1; }
 .focus-chart-icon { font:700 20px/1 sans-serif; letter-spacing:-3px; }
@@ -144,6 +145,14 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
   .focus-stat-value { margin-top:5px; }
   .focus-stats:has(+ .focus-status-empty) { margin-bottom:16px; }
 }
+@media(max-width:760px) {
+  .focus-stats { grid-template-columns:minmax(0,1fr); gap:0; }
+  .focus-stats > div, .focus-stats .focus-mobile-stat { display:grid; grid-template-columns:26px minmax(0,1fr) auto; align-items:center; gap:12px; padding:7px 0; border:0; border-bottom:1px solid #ffffff26; text-align:left; }
+  .focus-stat-icon { margin:0; }
+  .focus-stats > div > span { font-size:15px; }
+  .focus-stat-value { margin:0; justify-content:flex-end; }
+  .focus-stats strong { font-size:26px; }
+}
 
 /* Die Änderung beeinflusst die Zentrierung des Hauptwerts nicht. */
 .focus-stat-value { position:relative; }
@@ -160,3 +169,4 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
 .focus-weapons strong { flex:none; font-variant-numeric:tabular-nums; }
 .focus-weapons p { margin:12px 0 4px; color:#c6d2ce; font-size:13px; }
 @media(max-width:760px) { .focus-stat-changes { gap:4px; padding-left:4px; } }
+@media(max-width:760px) { .focus-stat-changes { position:static; } }
