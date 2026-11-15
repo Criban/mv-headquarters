@@ -48,4 +48,5 @@ export const SQUAD_VIDEOS: readonly SquadVideo[] = [
   { id: 'f8Vve_jDWY0', title: '5 Kills in wenigen Sekunden! 💥'},
   { id: '1hf5yu7f0KY', title: 'Einfach vom Backseat geballert!'},
   { id: 'cUn3Cqm-7IE', title: 'Erst gespawnt & direkt den Kill geklaut bekommen!'},
+  { id: 'VHBAU2c2F_I', title: 'Weg vom Panzer vorausgesehen & mit C4 zerlegt!'},
 ];
