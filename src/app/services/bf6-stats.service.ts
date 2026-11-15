@@ -36,8 +36,8 @@ export class Bf6StatsService {
     const attempt = (platform: 'ea' | 'pc') => this.fetchStats({ name }, platform).pipe(
       catchError(error => /^\d+$/.test(playerId ?? '') ? this.fetchStats({ playerid: playerId! }, platform) : throwError(() => error))
     );
-    const statsRequest = attempt('ea').pipe(
-      catchError(() => attempt('pc')),
+    const statsRequest = attempt('pc').pipe(
+      catchError(() => attempt('ea')),
       catchError(() => this.http.get<Snapshot>('data/bf6-stats-snapshot.json').pipe(
         timeout(5000),
         map(snapshot => {

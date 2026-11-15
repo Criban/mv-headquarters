@@ -39,9 +39,9 @@ for (const { name, playerid } of identities) {
     console.log(`${name}: ${platform} name lookup failed (${error.message}); trying playerid=${playerid}`);
     return fetchPlayer({ playerid }, platform);
   });
-  const { stats, profile, rank } = await attempt('ea').catch(error => {
-    console.log(`${name}: ea lookup failed (${error.message}); trying pc`);
-    return attempt('pc');
+  const { stats, profile, rank } = await attempt('pc').catch(error => {
+    console.log(`${name}: pc lookup failed (${error.message}); trying ea`);
+    return attempt('ea');
   });
   players[name] = {
     capturedAt: new Date().toISOString(),

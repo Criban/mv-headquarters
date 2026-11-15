@@ -39,7 +39,7 @@ Die alten Local-Storage-Schlüssel bf6-stats-history:v1: und bf6-stats-history:v
 
 Erfolgreich geladene API-Statistiken werden pro Spieler für fünf Minuten im Arbeitsspeicher gecached. Beim Spielerwechsel werden sie wiederverwendet; parallele Abfragen für denselben Spieler teilen einen Request. Nach einem Neuladen der Seite beginnt der Cache neu. „Erneut laden“ leert den Cache des ausgewählten Spielers. Fehler und lokale Statistik-Abzüge werden nicht gecached.
 
-Für Live-Statistiken und automatische Abzüge wird zunächst `platform=ea` versucht, jeweils mit Spielernamen und bei Bedarf Spieler-ID. Scheitern beide Abfragen, folgt dieselbe Reihenfolge mit `platform=pc`. Erst wenn beide Plattformen fehlschlagen, verwendet die Website den gespeicherten Abzug; die automatische Erfassung erhält die vorhandenen Daten.
+Für Live-Statistiken und automatische Abzüge wird zunächst `platform=pc` versucht, jeweils mit Spielernamen und bei Bedarf Spieler-ID. Scheitern beide Abfragen, folgt dieselbe Reihenfolge mit `platform=ea`. Erst wenn beide Plattformen fehlschlagen, verwendet die Website den gespeicherten Abzug; die automatische Erfassung erhält die vorhandenen Daten.
 
 Die BF6-Ansicht zeigt auch die abgefeuerten Schüsse (`shotsFired`). Die Historie summiert Spielzeit, Schüsse und Matches aus den numerischen `totals` der Einträge in `src/app/data/battlefield-history.ts` und den aktuellen BF6-Werten (bei API-Problemen aus dem lokalen Abzug). BF6 wird einmal gezählt. Fehlende Werte werden nicht als null Schüsse oder null Matches interpretiert, sondern als unvollständige Summe gekennzeichnet. Bei neuen historischen Einträgen die numerischen `totals` zusammen mit den angezeigten `stats` pflegen.
 
