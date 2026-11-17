@@ -10,6 +10,11 @@ const late = make('2026-10-02T10:00:00Z', { dividedKills: { human: 150 }, deaths
 const reading = normalizeReading(early);
 assert.equal(reading.values.kills, 100, 'Human kills match the existing infantry K/D');
 assert.equal(reading.values.deaths, 50);
+assert.equal(reading.values.revives, fixture.response.gameModeGroups.find(group => group.gamemodeName === 'All').revives);
+assert.equal(normalizeReading(make(early.capturedAt, { gameModeGroups: [] })).values.revives, null);
+assert.equal(normalizeReading(make(early.capturedAt, { gameModeGroups: [{ gamemodeName: 'All', revives: -1 }] })).values.revives, null);
+assert.throws(() => validateReading({ ...reading, values: { ...reading.values, revives: 1.5 } }));
+assert.equal(validateReading(reading).values.revives, reading.values.revives);
 assert.equal(normalizeReading(make(early.capturedAt, { dividedKills: undefined, kills: 999 })).values.kills, null, 'Never substitute total kills or derive kills from a rounded ratio');
 assert.equal(normalizeReading(make(early.capturedAt, { dividedKills: { human: -1 }, deaths: 1.5 })).values.deaths, null);
 assert.equal(normalizeReading(make(early.capturedAt, { accuracy: '25,4 %' })).values.accuracy, 25.4);

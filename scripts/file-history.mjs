@@ -26,7 +26,8 @@ export function normalizeReading(player) {
     accuracy: accuracy !== null && accuracy <= 100 ? accuracy : null,
     shotsFired: number(response.weaponGroups?.find(group => group.id === 'wp_temp')?.shotsFired),
     // BF6 infantryKillDeath is human kills / deaths, not total kills / deaths.
-    kills: counter(response.dividedKills?.human), deaths: counter(response.deaths)
+    kills: counter(response.dividedKills?.human), deaths: counter(response.deaths),
+    revives: counter(response.gameModeGroups?.find(group => group.gamemodeName === 'All')?.revives)
   };
   if (killDeath === 0 && !(values.hoursPlayed > 0) && !(values.matchesPlayed > 0)) throw new Error('Empty reading');
   return { savedAt: new Date(player.capturedAt).toISOString(), values };
@@ -37,7 +38,7 @@ export function validateReading(reading) {
   if (!reading.values || metrics.some(key => reading.values[key] !== null && (typeof reading.values[key] !== 'number' || !Number.isFinite(reading.values[key]) || reading.values[key] < 0))) throw new Error('Invalid history metrics');
   if (reading.values.killDeath === null || (reading.values.accuracy !== null && reading.values.accuracy > 100)) throw new Error('Invalid K/D or accuracy');
   const values = Object.fromEntries(metrics.map(key => [key, reading.values[key]]));
-  for (const key of ['kills', 'deaths']) if (Object.hasOwn(reading.values, key)) {
+  for (const key of ['kills', 'deaths', 'revives']) if (Object.hasOwn(reading.values, key)) {
     if (reading.values[key] !== null && counter(reading.values[key]) !== reading.values[key]) throw new Error('Invalid history counter');
     values[key] = reading.values[key];
   }

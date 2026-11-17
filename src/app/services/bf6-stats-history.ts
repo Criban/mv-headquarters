@@ -2,7 +2,7 @@ import type { Bf6Stats } from './bf6-stats.service';
 
 export const HISTORY_METRICS = ['killDeath', 'hoursPlayed', 'matchesPlayed', 'accuracy', 'shotsFired'] as const;
 export type HistoryMetric = typeof HISTORY_METRICS[number];
-type Values = Record<HistoryMetric, number | null> & { kills?: number | null; deaths?: number | null };
+type Values = Record<HistoryMetric, number | null> & { kills?: number | null; deaths?: number | null; revives?: number | null };
 export type StatsSnapshot = { savedAt: string; values: Values };
 export type StatsComparison = { baseline: StatsSnapshot | null; savedAt: string };
 type LegacyStorage = Pick<Storage, 'length' | 'key' | 'removeItem'>;
@@ -30,7 +30,7 @@ function validSnapshot(value: unknown): value is StatsSnapshot {
     && (snapshot.values.killDeath !== 0 || (snapshot.values.hoursPlayed ?? 0) > 0 || (snapshot.values.matchesPlayed ?? 0) > 0)
     && HISTORY_METRICS.every(key => snapshot.values[key] === null
       || (typeof snapshot.values[key] === 'number' && Number.isFinite(snapshot.values[key]) && snapshot.values[key]! >= 0))
-    && (['kills', 'deaths'] as const).every(key => snapshot.values[key] == null
+    && (['kills', 'deaths', 'revives'] as const).every(key => snapshot.values[key] == null
       || (Number.isSafeInteger(snapshot.values[key]) && snapshot.values[key]! >= 0));
 }
 
