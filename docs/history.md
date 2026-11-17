@@ -5,6 +5,8 @@ Die Historie liegt in `public/data/bf6-stats-history.json`, der neueste API-Abzu
 ## Automatische Erfassung
 Die Tagesstände speichern auch den kumulierten Wiederbelebungszähler `revives` aus der Spielmodusgruppe „All“. Fehlt ein gültiger Wert, bleibt er leer; ältere Stände ohne diesen Zähler bleiben unverändert. Die vorhandenen API-Abzüge vom 17.11.2026 ergänzen den Zähler nur bei den zeitlich exakt passenden Tagesständen von Blackhawk und Criban. Frühere Tageswerte werden nicht rekonstruiert.
 
+Auf Angabe des Betreibers entsprechen die Wiederbelebungszähler der Abzüge vom 17.11.2026 auch den Ständen vom Vorabend. Daher wurden sie zusätzlich für den 16.11. bei Blackhawk und Criban eingetragen; die ursprünglichen Aufnahmezeitpunkte bleiben erhalten.
+
 
 Der separate Workflow „Capture BF6 history“ erfasst täglich um 12:00 und 18:00 Uhr Berliner Zeit sowie bei manuellen Läufen die öffentlichen Profile. Pro Spieler und Berliner Kalendertag bleibt der neueste erfolgreiche Stand erhalten. Alle älteren Tage bleiben in der Datei. Erfolgreiche Abrufe werden unabhängig pro Spieler übernommen; für fehlgeschlagene Spieler bleiben Abzug und Historie unverändert. Nur wenn kein Spieler erfolgreich abgerufen wurde, wird der vollständige Abruf bis zu zweimal nach 30 bzw. 60 Sekunden wiederholt; nach drei Fehlschlägen bleiben alle vorhandenen Daten erhalten. Teilweise Fehler stehen im Protokoll. Private Profile werden nicht abgefragt. Der Pages-Workflow veröffentlicht Änderungen auf main unabhängig von der API.
 
