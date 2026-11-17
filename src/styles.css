@@ -401,7 +401,7 @@ footer { display:flex; justify-content:space-between; gap:20px; margin:0 3%; pad
   .focus-scene-image { display:none; }.focus-scene::after { display:none; }
   .focus-portrait { display:none; }
   .focus-main,.focus-content { min-height:calc(100svh - 109px); }
-  .focus-content { display:flex; flex-direction:column; align-items:stretch; justify-content:space-between; padding:clamp(36px,8svh,80px) 5% 24px; }
+  .focus-content { display:flex; flex-direction:column; align-items:stretch; justify-content:space-between; padding:24px 5% 24px; }
   .focus-switcher { position:static; width:100%; margin-top:40px; }
 }
 

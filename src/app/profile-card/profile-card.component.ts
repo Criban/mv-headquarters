@@ -85,7 +85,7 @@ export class ProfileCardComponent {
       const current = stats[key];
       const previous = comparison?.baseline?.values[key];
       if (current === null || previous === null || previous === undefined) return [key, null];
-      return [key, changes[key] ?? { text: '±0', direction: 'neutral' }];
+      return [key, changes[key]];
     })) as Record<typeof focusKeys[number], FocusChange | null>;
     return { changes, focusChanges, focusComparisonNote: comparison?.baseline ? `Vergleich zum gespeicherten Stand vom ${date} Uhr (Berlin).` : null, comparisonNote: comparison?.baseline && Object.values(changes).some(change => change !== null)
       ? `Änderung zum gespeicherten BF6-Stand vom ${date} Uhr (Berlin). Ein Stand pro Tag aus der gemeinsamen Historie. PP = Prozentpunkte.`
