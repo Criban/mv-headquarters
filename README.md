@@ -29,6 +29,8 @@ Weitere Bildprompts und Herkunft sind in `public/images/GENERATION.md` dokumenti
 
 `Bf6StatsService` lädt K/D, Matches und Spielzeit über `/bf6/stats/`. Die Stunden werden aus `secondsPlayed / 3600` berechnet (numerische Entsprechung zu `timePlayed`). Der Rang kommt separat aus `/bf6/profile/`, Feld `playerProfiles[0].playerCard.rank`. Schlägt nur die Profilabfrage fehl, bleiben die anderen Werte sichtbar; der Rang wird als nicht verfügbar markiert. Die Karten zeigen Lade- und Fehlerzustände mit Wiederholen-Button. Die API kann Daten zwischenspeichern; die Werte sind keine Echtzeit-Spielstände.
 
+Die Spieleransicht zeigt „Revives / Match“ als Gesamtdurchschnitt: Wiederbelebungen geteilt durch Matches aus der Spielmodusgruppe „All“. Fehlen gültige Zähler oder sind keine Matches vorhanden, erscheint „—“. Bei API-Ausfall gilt die Kennzeichnung des gespeicherten Abzugs auch für diesen Wert.
+
 Nach Änderungen an `angular.json` den Entwicklungsserver neu starten (`Strg+C`, dann `npm start`), damit neue Asset-Verzeichnisse wie `public/images/` ausgeliefert werden.
 
 ## BF6-Statistik-Abzug

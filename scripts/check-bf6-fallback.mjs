@@ -31,6 +31,13 @@ try {
   assert.equal(parseMatches([{ gamemodeName: 'All', matches: -1 }]), null);
   assert.equal(parseMatches([{ gamemodeName: 'All' }]), null);
   console.log('PASS matches from All gameModeGroups entry, zero and missing/invalid counts');
+  const parseRevivesPerMatch = gameModeGroups => parser.parseStats({ infantryKillDeath: 2, gameModeGroups }, {}).revivesPerMatch;
+  assert.equal(parseRevivesPerMatch([{ gamemodeName: 'All', matches: 10, revives: 25 }]), 2.5);
+  assert.equal(parseRevivesPerMatch([{ gamemodeName: 'All', matches: 10, revives: 0 }]), 0);
+  for (const group of [{ matches: 0, revives: 5 }, { matches: 10 }, { matches: 10, revives: -1 }, { matches: 1.5, revives: 5 }, { matches: 10, revives: 1.5 }]) {
+    assert.equal(parseRevivesPerMatch([{ gamemodeName: 'All', ...group }]), null);
+  }
+  assert.equal(parseRevivesPerMatch([{ gamemodeName: 'Multiplayer', matches: 10, revives: 25 }]), null);
   const parseShots = weaponGroups => parser.parseStats({ infantryKillDeath: 2, shotsFired: 999, weaponGroups }, {}).shotsFired;
   assert.equal(parseShots([{ id: 'wp_other', shotsFired: 123 }, { id: 'wp_temp', shotsFired: 236067 }]), 236067);
   assert.equal(parseShots([{ id: 'wp_temp', shotsFired: '236067' }]), 236067);
@@ -65,6 +72,7 @@ try {
       assert.equal(result.killDeath, Number(snapshot.players[name].response.infantryKillDeath));
       assert.equal(result.shotsFired, Number(snapshot.players[name].response.weaponGroups.find(group => group.id === 'wp_temp').shotsFired));
       assert.equal(result.matchesPlayed, Number(snapshot.players[name].response.gameModeGroups.find(group => group.gamemodeName === 'All').matches));
+      assert.equal(result.revivesPerMatch, 1343 / 653);
       assert.ok(Number.isFinite(result.shotsFired));
       assert.ok(result.weapons.length > 0);
       assert.equal(result.capturedAt, mode === 'live' ? undefined : snapshot.players[name].capturedAt);

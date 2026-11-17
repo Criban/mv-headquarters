@@ -4,7 +4,7 @@ import { catchError, defer, finalize, forkJoin, map, Observable, of, shareReplay
 import { topWeapons, type WeaponStats } from './weapon-stats';
 import { parseAccuracy } from './accuracy';
 import { setSharedStatsHistory } from './bf6-stats-history';
-export interface Bf6Stats { killDeath: number; kills: number | null; deaths: number | null; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; previousCapturedAt?: string; source?: string; }
+export interface Bf6Stats { killDeath: number; kills: number | null; deaths: number | null; accuracy: number | null; rank: number | null; rankName: string | null; hoursPlayed: number | null; matchesPlayed: number | null; revivesPerMatch: number | null; shotsFired: number | null; weapons: WeaponStats[]; capturedAt?: string; previousCapturedAt?: string; source?: string; }
 type ProfileResponse = { playerProfiles?: { playerCard?: { rank?: unknown }; rankName?: unknown; stats?: { name?: string; value?: unknown }[] }[] };
 type Snapshot = { players: Record<string, { capturedAt: string; previousCapturedAt?: string; source?: string; response: Record<string, unknown>; profile: ProfileResponse }> };
 @Injectable({ providedIn: 'root' })
@@ -80,12 +80,14 @@ export class Bf6StatsService {
       const gameModeGroups = response['gameModeGroups'];
       const allModes = Array.isArray(gameModeGroups) ? gameModeGroups.find(group => group?.gamemodeName === 'All') : undefined;
       const matchesPlayed = number(allModes?.matches);
+      const revives = number(allModes?.revives);
+      const revivesPerMatch = revives !== null && Number.isSafeInteger(revives) && matchesPlayed !== null && Number.isSafeInteger(matchesPlayed) && matchesPlayed > 0 ? revives / matchesPlayed : null;
       const weaponGroups = response['weaponGroups'];
       const allWeapons = Array.isArray(weaponGroups) ? weaponGroups.find(group => group?.id === 'wp_temp') : undefined;
       const shotsFired = number(allWeapons?.shotsFired);
       const playerProfile = profile?.playerProfiles?.[0];
       const rankName = typeof playerProfile?.rankName === 'string' ? playerProfile.rankName.trim() || null : null;
       const dividedKills = response['dividedKills'] as { human?: unknown } | undefined;
-      return { killDeath, kills: number(dividedKills?.human), deaths: number(response['deaths']), accuracy: parseAccuracy(response['accuracy']), rank: number(playerProfile?.playerCard?.rank), rankName, hoursPlayed: seconds === null ? null : seconds / 3600, matchesPlayed, shotsFired, weapons: topWeapons(response['weapons']) };
+      return { killDeath, kills: number(dividedKills?.human), deaths: number(response['deaths']), accuracy: parseAccuracy(response['accuracy']), rank: number(playerProfile?.playerCard?.rank), rankName, hoursPlayed: seconds === null ? null : seconds / 3600, matchesPlayed, revivesPerMatch, shotsFired, weapons: topWeapons(response['weapons']) };
   }
 }

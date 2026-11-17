@@ -94,6 +94,7 @@ small { display:block; margin-top:6px; color:var(--muted); font-size:9px; letter
 }
 .focus-chart-icon { flex:none; width:23px; height:23px; }
 .focus-stats { max-width:760px; }
+@media(min-width:761px) { .focus-stats { grid-template-columns:repeat(4,minmax(0,1fr)); } }
 .focus-stats span { font-size:20px; }
 .focus-stats strong { font-size:clamp(40px,4vw,62px); }
 .focus-status { min-height:60px; }
